@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import ReduxProvider from "@/app/Provider";
+import ReduxProvider from "@/providers/ReduxProvider";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 
 export const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +20,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ReduxProvider>
-        <body className={`${inter.className} antialiased`}>{children}</body>
+        <ThemeProvider>
+          <body
+            className={`${inter.className} antialiased bg-background text-foreground`}
+          >
+            {children}
+          </body>
+        </ThemeProvider>
       </ReduxProvider>
     </html>
   );
