@@ -1,10 +1,19 @@
 import GoogleSvg from "@/svg/Google";
 
-function GoogleButton({ disable = false }: { disable?: boolean }) {
+function GoogleButton({
+  disable = false,
+  handleClick = () => {},
+}: {
+  disable?: boolean;
+  handleClick?: () => void;
+}) {
   return (
     <button
       disabled={disable}
-      className="flex gap-5 items-center cursor-pointer px-5 py-3 rounded-md bg-secondary-background w-full"
+      onClick={handleClick}
+      className={`flex gap-5 items-center  px-5 py-3 rounded-md bg-secondary-background w-full ${
+        disable ? "cursor-not-allowed opacity-40" : "cursor-pointer opacity-100"
+      }`}
     >
       <GoogleSvg width={20} />
       <p>Continue with Google</p>

@@ -8,6 +8,7 @@ import loginCredentialSchema from "@/schemas/loginCredentialSchema";
 import GoogleButton from "@/components/auth/GoogleButton";
 import GithubButton from "@/components/auth/GithubButton";
 import Link from "next/link";
+import { useState } from "react";
 
 function LoginForm() {
   const {
@@ -18,9 +19,16 @@ function LoginForm() {
     resolver: zodResolver(loginCredentialSchema),
   });
 
-  const onSubmit = (data: LoginCredential) => {
+  const [disabled, setDisabled] = useState<boolean>(false);
+
+  const onSubmit = async (data: LoginCredential) => {
+    await new Promise((res) => setTimeout(res, 5000));
     console.log(data);
   };
+
+  function disableClick() {
+    setDisabled(true);
+  }
 
   return (
     <div>
@@ -29,6 +37,7 @@ function LoginForm() {
           register={register("email")}
           label="Email"
           placeholder="Enter Your Name"
+          disabled={disabled || isSubmitting}
           error={errors.email?.message}
         />
 
@@ -36,18 +45,23 @@ function LoginForm() {
           register={register("password")}
           label="Password"
           placeholder="Enter your password"
+          link="/reset-password"
+          disabled={disabled || isSubmitting}
           error={errors.password?.message}
         />
 
         <button
           type="submit"
-          className="w-fit mx-auto mt-7 px-5 py-2 rounded-md cursor-pointer bg-primary font-semibold text-white"
+          disabled={disabled || isSubmitting}
+          className={`w-fit mx-auto mt-7 px-7 py-2 rounded-md  bg-primary font-semibold text-white ${
+            disabled || isSubmitting ? "cursor-wait" : "cursor-pointer"
+          }`}
         >
-          Submit
+          {isSubmitting ? "Submiting..." : "Submit"}
         </button>
       </form>
 
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col mt-7 gap-5">
         <div className="w-full relative mt-5">
           <div className="h-px w-[40%] bg-tertiary/50 absolute left-0 top-2.5" />
           <div className="h-px w-[40%] bg-tertiary/50 absolute right-0 top-2.5" />
@@ -55,11 +69,17 @@ function LoginForm() {
         </div>
 
         <div className="flex gap-5 mt-5">
-          <GoogleButton disable={isSubmitting} />
-          <GithubButton disable={isSubmitting} />
+          <GoogleButton
+            disable={disabled || isSubmitting}
+            handleClick={disableClick}
+          />
+          <GithubButton
+            disable={disabled || isSubmitting}
+            handleClick={disableClick}
+          />
         </div>
 
-        <p className="text-center text-secondary">
+        <p className="text-center text-sm text-secondary">
           Don’t have an account?{" "}
           <Link href={"/register"} className="underline">
             Create one now.
