@@ -31,7 +31,6 @@ export async function register(req: Request, res: Response) {
       data: resData,
     });
   } catch (err: any) {
-    console.log(err);
     if (err?.constraint === "users_email_key") {
       return safeReject(res, {
         path: req.originalUrl,

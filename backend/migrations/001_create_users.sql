@@ -8,6 +8,7 @@ CREATE TABLE users (
     password_hash TEXT DEFAULT NULL,                 
     name TEXT NOT NULL,
     avatar_url TEXT,
+    email_verified BOOLEAN NOT NULL DEFAULT FALSE,
     email_notification BOOLEAN NOT NULL DEFAULT FALSE,
     last_active TIMESTAMPTZ NOT NULL DEFAULT NOW(),    
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),   

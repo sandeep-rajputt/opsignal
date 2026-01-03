@@ -5,6 +5,7 @@ const _config = {
   PORT: process.env.PORT || 3002,
   ENV: process.env.ENV || "production",
   POSTGRESQL_URI: process.env.POSTGRESQL_URI,
+  REDIS_URL: process.env.REDIS_URL,
 };
 
 const config = Object.freeze(_config);
