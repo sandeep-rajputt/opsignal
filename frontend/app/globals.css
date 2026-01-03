@@ -10,6 +10,7 @@
   --color-tertiary: #8b8b8b;
   --color-secondary-foreground: #f0f0f9;
   --color-card: #ffffff;
+  --color-danger: #fa5252;
 }
 
 @theme dark {
@@ -20,6 +21,7 @@
   --color-tertiary: #8b8b8b;
   --color-secondary-background: #f0f0f9;
   --color-card: #0d0d0d;
+  --color-danger: #fa5252;
 }
 
 .dark {
