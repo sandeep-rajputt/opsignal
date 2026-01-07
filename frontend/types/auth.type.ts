@@ -1,6 +1,7 @@
 type Auth = {
-  token: string;
-  isLoading: boolean;
+  token: null | string;
+  status: "initial" | "pending" | "success" | "failed";
+  userId: null | string;
 };
 
 export { type Auth };

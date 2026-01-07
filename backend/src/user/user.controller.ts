@@ -71,7 +71,7 @@ export async function loginUser(req: Request, res: Response) {
       status: 200,
       message: "Logged in successfully.",
       path: req.originalUrl,
-      data: null,
+      data: { token: "ajdfvhgav", userId: "sdjbhchjdsbc" },
     });
   } catch {
     return safeReject(res, {

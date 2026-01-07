@@ -4,8 +4,7 @@ import emailSchema from "@/schemas/common/emailSchema";
 
 const loginCredentialSchema = z.object({
   email: emailSchema,
-
-  password: z.string().min(1, { message: "Password is required" }),
+  password: passwordSchema,
 });
 export type LoginCredential = z.infer<typeof loginCredentialSchema>;
 export default loginCredentialSchema;
