@@ -28,7 +28,6 @@ const loginApi = baseApi.injectEndpoints({
             dispatch(
               authLogin({
                 token: parseData.data.data.token,
-                userId: parseData.data.data.userId,
               })
             );
             toastQueue.add(

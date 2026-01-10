@@ -4,7 +4,6 @@ import { z } from "zod";
 const loginResponseSchema = baseApiResponseSchema.extend({
   data: z.object({
     token: z.string().min(1, "Token is required"),
-    userId: z.string().min(1, "User id is required"),
   }),
 });
 
