@@ -3,6 +3,7 @@ import { createUserSchema, loginUserSchema } from "./user.validation.js";
 import safeReject from "../utils/safeReject.js";
 import { createUser, loginUser as loginUserService } from "./user.service.js";
 import safeResponse from "../utils/safeResponse.js";
+import enqueueEmail from "../jobs/queues/email.queue.js";
 
 export async function register(req: Request, res: Response) {
   try {
@@ -23,6 +24,15 @@ export async function register(req: Request, res: Response) {
     }
 
     const resData = await createUser(data.data);
+
+    await enqueueEmail({
+      from: "Opsignal <i@opsignal.sandeeprajput.in>",
+      to: email,
+      emailType: {
+        name: "verifyEmail",
+        params: { link: "http://opsignal.sandeeprajput.in" },
+      },
+    });
 
     return safeResponse(res, {
       status: 201,
