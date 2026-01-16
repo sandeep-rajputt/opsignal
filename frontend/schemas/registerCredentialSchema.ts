@@ -10,7 +10,6 @@ const registerCredentialSchema = z
       .max(20, { message: "Name cannot exceed 20 characters." }),
 
     email: emailSchema,
-
     password: passwordSchema,
     confirmPassword: z.string(),
   })

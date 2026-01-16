@@ -34,7 +34,7 @@ function LoginForm() {
       setError(resError.data?.message || "Something went wrong");
     }
 
-    if ("data" in res) {
+    if (res.data) {
       router.push("/");
     }
   };
