@@ -10,6 +10,7 @@ const _config = {
   FRONTEND_URL: process.env.FRONTEND_URL || "https://opsignal.sandeeprajput.in",
   BULL_REDIS_URL: process.env.BULL_REDIS_URL,
   RESEND_API_KEY: process.env.RESEND_API_KEY,
+  LOGIN_JWT_TOKEN_KEY: process.env.LOGIN_JWT_TOKEN_KEY,
 };
 
 const res = await configSchema.safeParseAsync(_config);

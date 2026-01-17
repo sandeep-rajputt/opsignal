@@ -4,6 +4,8 @@ import safeReject from "../utils/safeReject.js";
 import { createUser, loginUser as loginUserService } from "./user.service.js";
 import safeResponse from "../utils/safeResponse.js";
 import enqueueEmail from "../jobs/queues/email.queue.js";
+import { createToken } from "../utils/jwt.js";
+import config from "../config/config.js";
 
 export async function register(req: Request, res: Response) {
   try {
@@ -77,12 +79,28 @@ export async function loginUser(req: Request, res: Response) {
       });
     }
 
-    return safeResponse(res, {
-      status: 200,
-      message: "Logged in successfully.",
-      path: req.originalUrl,
-      data: { token: "ajdfvhgav" },
+    const accessToken = createToken({
+      key: config.LOGIN_JWT_TOKEN_KEY,
+      data: { id: resData.id },
+      expiresIn: "15m",
     });
+
+    if (accessToken.success) {
+      return safeResponse(res, {
+        status: 200,
+        message: "Logged in successfully.",
+        path: req.originalUrl,
+        data: { token: accessToken.data },
+      });
+    }
+
+    if (accessToken.error) {
+      return safeReject(res, {
+        path: req.originalUrl,
+        message: "Something went wrong",
+        status: 500,
+      });
+    }
   } catch {
     return safeReject(res, {
       path: req.originalUrl,

@@ -11,6 +11,7 @@ const configSchema = z.object({
   FRONTEND_URL: z.string().min(1, "FRONTEND_URL is required"),
   BULL_REDIS_URL: z.string().optional(),
   RESEND_API_KEY: z.string().min(1, "RESEND_API_KEY"),
+  LOGIN_JWT_TOKEN_KEY: z.string().min(1, "LOGIN_JWT_TOKEN_KEY is required"),
 });
 
 export default configSchema;
