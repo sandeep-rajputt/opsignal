@@ -1,11 +1,16 @@
 import type { Request, Response } from "express";
 import { createUserSchema, loginUserSchema } from "./user.validation.js";
 import safeReject from "../utils/safeReject.js";
-import { createUser, loginUser as loginUserService } from "./user.service.js";
+import {
+  createUser,
+  loginUser as loginUserService,
+  verifyUser,
+} from "./user.service.js";
 import safeResponse from "../utils/safeResponse.js";
 import enqueueEmail from "../jobs/queues/email.queue.js";
-import { createToken } from "../utils/jwt.js";
+import { createToken, verifyToken } from "../utils/jwt.js";
 import config from "../config/config.js";
+import redisClient from "../config/redis.js";
 
 export async function register(req: Request, res: Response) {
   try {
@@ -101,6 +106,65 @@ export async function loginUser(req: Request, res: Response) {
         status: 500,
       });
     }
+  } catch {
+    return safeReject(res, {
+      path: req.originalUrl,
+      message: "Something went wrong",
+      status: 500,
+    });
+  }
+}
+
+export async function verifyController(req: Request, res: Response) {
+  try {
+    const token = req.query.token;
+
+    if (!token) {
+      return safeReject(res, {
+        path: req.originalUrl,
+        message: "Invalid or missing verification token",
+        status: 400,
+      });
+    }
+
+    const tokenVerifyRes = await verifyToken({
+      token: String(token),
+      secret: config.EMAIL_VERIFY_JWT_TOKEN,
+    });
+
+    if (!tokenVerifyRes.success) {
+      return safeReject(res, {
+        path: req.originalUrl,
+        message: "Verification link is invalid or expired",
+        status: 401,
+      });
+    }
+    const redisRes = await redisClient.get(
+      `users:verify:${tokenVerifyRes.data.id}`,
+    );
+
+    if (redisRes) {
+      return safeReject(res, {
+        path: req.originalUrl,
+        message: "Email already verified",
+        status: 409,
+      });
+    }
+    await verifyUser(tokenVerifyRes.data.id as string);
+
+    await redisClient.set(
+      `users:verify:${tokenVerifyRes.data.id}`,
+      "true",
+      "EX",
+      60 * 60 * 3,
+    );
+
+    return safeResponse(res, {
+      path: req.originalUrl,
+      message: "Email verified successfully",
+      data: null,
+      status: 204,
+    });
   } catch {
     return safeReject(res, {
       path: req.originalUrl,

@@ -1,6 +1,10 @@
 import { createHash, hashCompare } from "../utils/hash.js";
 import type { CreateUser, LoginUser, LoginUserService } from "./user.types.js";
-import { checkUser, createUser as createUserModel } from "./users.model.js";
+import {
+  checkUser,
+  createUser as createUserModel,
+  verifyUser as verifyUserModel,
+} from "./users.model.js";
 
 export async function createUser(data: CreateUser) {
   const hashPassword = await createHash(data.password);
@@ -30,4 +34,9 @@ export async function loginUser(data: LoginUser): Promise<LoginUserService> {
   } else {
     return { success: false, message: "Invalid password" };
   }
+}
+
+export async function verifyUser(id: string) {
+  await verifyUserModel(id);
+  return;
 }

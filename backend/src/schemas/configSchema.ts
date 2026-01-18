@@ -12,6 +12,9 @@ const configSchema = z.object({
   BULL_REDIS_URL: z.string().optional(),
   RESEND_API_KEY: z.string().min(1, "RESEND_API_KEY"),
   LOGIN_JWT_TOKEN_KEY: z.string().min(1, "LOGIN_JWT_TOKEN_KEY is required"),
+  EMAIL_VERIFY_JWT_TOKEN: z
+    .string()
+    .min(1, "EMAIL_VERIFY_JWT_TOKEN is required"),
 });
 
 export default configSchema;

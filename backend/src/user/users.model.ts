@@ -12,7 +12,7 @@ export async function createUser(data: CreateUserQueryIncommingData) {
 
      RETURNING id
      `,
-    [data.name, data.email, data.hashPassword]
+    [data.name, data.email, data.hashPassword],
   );
   return res[0];
 }
@@ -20,13 +20,25 @@ export async function createUser(data: CreateUserQueryIncommingData) {
 export async function checkUser(data: string) {
   const res = await query<ChectUserQueryResponse>(
     `
-    SELECT u.email, u.password_hash AS passwordHash, u.id
+    SELECT u.email, u.password_hash AS passwordhash, u.id
     FROM users u
     WHERE u.email = $1
     AND u.deleted_at IS NULL
     `,
-    [data]
+    [data],
   );
 
   return res[0];
+}
+
+export async function verifyUser(id: string) {
+  await query(
+    `
+    UPDATE users
+    SET email_verified = true
+    WHERE id = $1
+    `,
+    [id],
+  );
+  return;
 }

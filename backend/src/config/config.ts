@@ -11,6 +11,7 @@ const _config = {
   BULL_REDIS_URL: process.env.BULL_REDIS_URL,
   RESEND_API_KEY: process.env.RESEND_API_KEY,
   LOGIN_JWT_TOKEN_KEY: process.env.LOGIN_JWT_TOKEN_KEY,
+  EMAIL_VERIFY_JWT_TOKEN: process.env.EMAIL_VERIFY_JWT_TOKEN,
 };
 
 const res = await configSchema.safeParseAsync(_config);
