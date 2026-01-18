@@ -13,9 +13,22 @@ const pool = new Pool({
 
 export async function query<T = any>(
   text: string,
-  params?: any[]
+  params?: any[],
 ): Promise<T[]> {
+  // start timer
+  const start = performance.now();
+
   const result = await pool.query(text, params);
+
+  // end timer
+  const end = performance.now();
+
+  // log only in non-production
+  if (config.ENV !== "production") {
+    const time = (end - start).toFixed(2);
+    console.log(`🗄️ PostgreSQL Query (${time} ms)`);
+    console.log(`📄 SQL: ${text}`);
+  }
 
   return result.rows as T[];
 }

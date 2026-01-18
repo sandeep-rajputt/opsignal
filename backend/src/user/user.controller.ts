@@ -13,6 +13,7 @@ import config from "../config/config.js";
 import redisClient from "../config/redis.js";
 
 export async function register(req: Request, res: Response) {
+  console.log("request come");
   try {
     const { name, email, password, confirmPassword } = req.body;
     const data = await createUserSchema.safeParseAsync({
@@ -29,18 +30,34 @@ export async function register(req: Request, res: Response) {
         path: req.originalUrl,
       });
     }
-
     const resData = await createUser(data.data);
+
+    const token = createToken({
+      key: config.EMAIL_VERIFY_JWT_TOKEN,
+      data: { id: resData?.id },
+      expiresIn: "3h",
+    });
+
+    if (!token.success) {
+      return safeReject(res, {
+        path: req.originalUrl,
+        message: "Something went wrong",
+        status: 500,
+      });
+    }
 
     await enqueueEmail({
       from: "Opsignal <i@opsignal.sandeeprajput.in>",
       to: email,
       emailType: {
         name: "verifyEmail",
-        params: { link: "http://opsignal.sandeeprajput.in" },
+        params: {
+          link: `${config.FRONTEND_URL.split(",")[0]}/verify?token=${token.data}`,
+        },
       },
     });
 
+    console.log("step d");
     return safeResponse(res, {
       status: 201,
       message: "Account created successfully.",
