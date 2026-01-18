@@ -1,9 +1,6 @@
-import jwt, {
-  type SignOptions,
-  type Secret,
-  TokenExpiredError,
-  JsonWebTokenError,
-} from "jsonwebtoken";
+import jwt, { type SignOptions, type Secret } from "jsonwebtoken";
+
+const { TokenExpiredError, JsonWebTokenError } = jwt;
 
 type TokenResult<T = unknown> =
   | { success: true; data: T }
