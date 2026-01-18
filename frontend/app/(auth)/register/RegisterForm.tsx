@@ -41,6 +41,12 @@ function RegisterForm() {
     <div>
       {step === "form" && (
         <>
+          <h2 className="text-4xl text-center font-bold text-foreground">
+            Register
+          </h2>
+          <p className="text-secondary w-full mx-auto  mt-3 mb-7 max-w-sm text-center">
+            Create your account to manage your workspaces and get started.
+          </p>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-5"
@@ -127,8 +133,9 @@ function RegisterForm() {
             your inbox and confirm your email to complete registration.
           </p>
 
-          <p className="text-sm text-secondary">
-            Didn’t receive the email? Check your spam folder or try again.
+          <p className="text-sm text-danger/70 max-w-sm">
+            If you don’t verify your email within 3 hours, this account will be
+            deleted automatically.
           </p>
         </div>
       )}
