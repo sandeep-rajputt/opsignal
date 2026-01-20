@@ -1,9 +1,7 @@
 import baseApi from "@/Store/api/baseApi";
 import type { LoginCredential } from "@/schemas/loginCredentialSchema";
-import loginResponseSchema, {
-  type LoginResponse,
-} from "@/schemas/loginResponseSchema";
-import { authFailed, authLogin, authPending } from "@/Store/slices/authSlice";
+import { type LoginResponse } from "@/schemas/loginResponseSchema";
+import { authFailed, authPending } from "@/Store/slices/authSlice";
 import { toastQueue } from "@/providers/ToastProvider";
 
 const loginApi = baseApi.injectEndpoints({
@@ -21,22 +19,10 @@ const loginApi = baseApi.injectEndpoints({
 
         try {
           const { data: res } = await queryFulfilled;
-
-          const parseData = loginResponseSchema.safeParse(res);
-
-          if (parseData.success) {
-            dispatch(
-              authLogin({
-                token: parseData.data.data.token,
-              })
-            );
-            toastQueue.add(
-              { message: parseData.data.message, variant: "success" },
-              { timeout: 5000 }
-            );
-          } else {
-            dispatch(authFailed());
-          }
+          toastQueue.add(
+            { message: res.message, variant: "success" },
+            { timeout: 5000 },
+          );
         } catch {
           dispatch(authFailed());
         }
