@@ -3,6 +3,7 @@ import type { LoginCredential } from "@/schemas/loginCredentialSchema";
 import { type LoginResponse } from "@/schemas/loginResponseSchema";
 import { authFailed, authPending } from "@/Store/slices/authSlice";
 import { toastQueue } from "@/providers/ToastProvider";
+import isApiError from "@/utils/isApiError";
 
 const loginApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -23,7 +24,26 @@ const loginApi = baseApi.injectEndpoints({
             { message: res.message, variant: "success" },
             { timeout: 5000 },
           );
-        } catch {
+        } catch (error) {
+          if (error && typeof error === "object" && "error" in error) {
+            const apiError = isApiError(error.error);
+            if (apiError) {
+              toastQueue.add(
+                { message: apiError.message, variant: "error" },
+                { timeout: 5000 },
+              );
+            } else {
+              toastQueue.add(
+                { message: "Something went wrong", variant: "error" },
+                { timeout: 5000 },
+              );
+            }
+          } else {
+            toastQueue.add(
+              { message: "Something went wrong", variant: "error" },
+              { timeout: 5000 },
+            );
+          }
           dispatch(authFailed());
         }
       },

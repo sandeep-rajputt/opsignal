@@ -23,17 +23,9 @@ function LoginForm() {
   const router = useRouter();
   const [login] = useLoginMutation();
   const [disabled, setDisabled] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
 
   const onSubmit = async (data: LoginCredential) => {
-    setError(null);
     const res = await login(data);
-
-    if ("error" in res) {
-      const resError = res.error as { data?: { message?: string } };
-      setError(resError.data?.message || "Something went wrong");
-    }
-
     if (res.data) {
       router.push("/");
     }
@@ -72,7 +64,6 @@ function LoginForm() {
         >
           {isSubmitting ? "Submiting..." : "Submit"}
         </button>
-        {error && <p className="text-center text-danger">{error}</p>}
       </form>
 
       <div className="flex flex-col mt-7 gap-5">

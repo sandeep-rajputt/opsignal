@@ -37,6 +37,14 @@ const registerApi = baseApi.injectEndpoints({
               },
               { timeout: 5000 },
             );
+          } else {
+            toastQueue.add(
+              {
+                message: "Something Went wrong",
+                variant: "error",
+              },
+              { timeout: 5000 },
+            );
           }
         }
       },
