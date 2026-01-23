@@ -4,6 +4,7 @@ import "./globals.css";
 import ReduxProvider from "@/providers/ReduxProvider";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import ToastProvider from "@/providers/ToastProvider";
+import NuqsProvider from "@/providers/NuqsProvider";
 
 export const inter = Inter({ subsets: ["latin"] });
 
@@ -20,16 +21,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <ReduxProvider>
-        <ThemeProvider>
-          <body
-            className={`${inter.className} antialiased bg-background text-foreground`}
-          >
-            {children}
-          </body>
-          <ToastProvider />
-        </ThemeProvider>
-      </ReduxProvider>
+      <NuqsProvider>
+        <ReduxProvider>
+          <ThemeProvider>
+            <body
+              className={`${inter.className} antialiased bg-background text-foreground`}
+            >
+              {children}
+            </body>
+            <ToastProvider />
+          </ThemeProvider>
+        </ReduxProvider>
+      </NuqsProvider>
     </html>
   );
 }
