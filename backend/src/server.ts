@@ -6,6 +6,9 @@ import "./jobs/workers/start-workers.js";
 
 const { PORT } = config;
 
+/**
+ * Routes
+ */
 app.use("/api/user", userRouter);
 
 app.get("/status", (_req, res) => {
@@ -16,10 +19,13 @@ app.get("/status", (_req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log("Server is running on PORT : " + PORT);
-});
-
+/**
+ * Global error handler MUST be before listen
+ */
 app.use(globalErrorHandler);
+
+app.listen(PORT, () => {
+  console.log("Server is running on PORT:", PORT);
+});
 
 export default app;
