@@ -1,7 +1,7 @@
 import baseApi from "@/Store/api/baseApi";
 import { toastQueue } from "@/providers/ToastProvider";
-import { type RegisterCredential } from "@/schemas/registerCredentialSchema";
-import { type RegisterResponse } from "@/schemas/registerResponseSchema";
+import { type RegisterCredential } from "@/Store/api/registerApi/schemas/registerCredentialSchema";
+import { type RegisterResponse } from "@/Store/api/registerApi/schemas/registerResponseSchema";
 import isApiError from "@/utils/isApiError";
 
 const registerApi = baseApi.injectEndpoints({

@@ -1,15 +1,15 @@
 "use client";
 import { useForm } from "react-hook-form";
 import PasswordInput from "@/components/rhd_inputs/PasswordInput";
-import type { LoginCredential } from "@/schemas/loginCredentialSchema";
+import type { LoginCredential } from "@/Store/api/loginApi/schemas/loginCredentialSchema";
 import TextInput from "@/components/rhd_inputs/TextInput";
 import { zodResolver } from "@hookform/resolvers/zod";
-import loginCredentialSchema from "@/schemas/loginCredentialSchema";
+import loginCredentialSchema from "@/Store/api/loginApi/schemas/loginCredentialSchema";
 import GoogleButton from "@/components/auth/GoogleButton";
 import GithubButton from "@/components/auth/GithubButton";
 import Link from "next/link";
 import { useState } from "react";
-import { useLoginMutation } from "@/Store/api/loginApi";
+import { useLoginMutation } from "@/Store/api/index";
 import { useRouter } from "next/navigation";
 
 function LoginForm() {

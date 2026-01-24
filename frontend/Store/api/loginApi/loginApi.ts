@@ -1,6 +1,6 @@
 import baseApi from "@/Store/api/baseApi";
-import type { LoginCredential } from "@/schemas/loginCredentialSchema";
-import { type LoginResponse } from "@/schemas/loginResponseSchema";
+import type { LoginCredential } from "@/Store/api/loginApi/schemas/loginCredentialSchema";
+import { type LoginResponse } from "@/Store/api/loginApi/schemas/loginResponseSchema";
 import { authFailed, authPending } from "@/Store/slices/authSlice";
 import { toastQueue } from "@/providers/ToastProvider";
 import isApiError from "@/utils/isApiError";

@@ -4,21 +4,21 @@ import { z } from "zod";
 export type CreateUser = z.infer<typeof createUserSchema>;
 export type LoginUser = z.infer<typeof loginUserSchema>;
 
-export type CreateUserQueryIncommingData = {
+export interface CreateUserQueryIncommingData {
   name: string;
   email: string;
   hashPassword: string;
-};
+}
 
-export type CreateUserQueryOutgoingData = {
+export interface CreateUserQueryOutgoingData {
   id: string;
-};
+}
 
-export type ChectUserQueryResponse = {
+export interface CheckUserQueryResponse {
   email: string;
   id: string;
   passwordhash: string;
-};
+}
 
 export type LoginUserService =
   | { success: false; message: string }

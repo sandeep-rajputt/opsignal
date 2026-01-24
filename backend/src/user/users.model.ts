@@ -2,7 +2,7 @@ import { query } from "../config/db.js";
 import type {
   CreateUserQueryIncommingData,
   CreateUserQueryOutgoingData,
-  ChectUserQueryResponse,
+  CheckUserQueryResponse,
 } from "./user.types.js";
 
 export async function createUser(data: CreateUserQueryIncommingData) {
@@ -18,7 +18,7 @@ export async function createUser(data: CreateUserQueryIncommingData) {
 }
 
 export async function checkUser(data: string) {
-  const res = await query<ChectUserQueryResponse>(
+  const res = await query<CheckUserQueryResponse>(
     `
     SELECT u.email, u.password_hash AS passwordhash, u.id
     FROM users u

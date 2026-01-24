@@ -1,5 +1,5 @@
 import { NullApiResponse } from "@/schemas/common/nullApiResponse";
-import baseApi from "./baseApi";
+import baseApi from "@/Store/api/baseApi";
 
 const verifyAccountApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({

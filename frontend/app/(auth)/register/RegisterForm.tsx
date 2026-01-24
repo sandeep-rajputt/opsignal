@@ -1,15 +1,15 @@
 "use client";
 import { useForm } from "react-hook-form";
 import PasswordInput from "@/components/rhd_inputs/PasswordInput";
-import type { RegisterCredential } from "@/schemas/registerCredentialSchema";
+import type { RegisterCredential } from "@/Store/api/registerApi/schemas/registerCredentialSchema";
 import TextInput from "@/components/rhd_inputs/TextInput";
 import { zodResolver } from "@hookform/resolvers/zod";
-import registerCredentialSchema from "@/schemas/registerCredentialSchema";
+import registerCredentialSchema from "@/Store/api/registerApi/schemas/registerCredentialSchema";
 import GoogleButton from "@/components/auth/GoogleButton";
 import GithubButton from "@/components/auth/GithubButton";
 import Link from "next/link";
 import { useState } from "react";
-import { useRegisterMutation } from "@/Store/api/registerApi";
+import { useRegisterMutation } from "@/Store/api/index";
 import { MailCheck } from "lucide-react";
 
 function RegisterForm() {

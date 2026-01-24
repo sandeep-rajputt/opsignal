@@ -1,6 +1,6 @@
 "use client";
 import { useQueryState } from "nuqs";
-import { useVerifyMutation } from "@/Store/api/verifyAccountApi";
+import { useVerifyMutation } from "@/Store/api/index";
 import { useEffect, useState } from "react";
 import FlyingLoader from "@/components/shared/FlyingLoader";
 import { MailCheck, TriangleAlert } from "lucide-react";
