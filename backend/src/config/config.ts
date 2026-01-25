@@ -1,6 +1,13 @@
+import { existsSync } from "fs";
 import dotenv from "dotenv";
 import configSchema from "../schemas/configSchema.js";
+
 dotenv.config();
+
+const renderEnvPath = "/etc/secrets/.env.production";
+if (existsSync(renderEnvPath)) {
+  dotenv.config({ path: renderEnvPath, override: true });
+}
 
 const _config = {
   PORT: process.env.PORT || 3002,
@@ -15,8 +22,10 @@ const _config = {
 };
 
 const res = await configSchema.safeParseAsync(_config);
+
 if (res.error) {
-  throw new Error("Please add all required enviroment veriables");
+  console.error(res.error);
+  throw new Error("Please add all required environment variables");
 }
 
 const config = Object.freeze(res.data);
