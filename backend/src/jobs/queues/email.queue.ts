@@ -1,6 +1,6 @@
 import { Queue } from "bullmq";
 import { queueOptions } from "../../config/bullmq.js";
-import { type EmailJobPayload } from "../../types/emailJobPayload.js";
+import { type EmailJobPayload } from "../../types/jobs/email/emailJobPayload.js";
 
 export const emailQueueName = "email-queue";
 

@@ -1,4 +1,4 @@
-import type { VerifyEmail } from "../emails/verifyEmail.js";
+import type { VerifyEmail } from "../../../emails/verifyEmail.js";
 
 export type EmailJobPayload = {
   from: string;

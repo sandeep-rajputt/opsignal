@@ -1,5 +1,5 @@
 import verifyEmailHandler from "./verifyEmailHandler.js";
-import { type EmailJobPayload } from "../../../types/emailJobPayload.js";
+import { type EmailJobPayload } from "../../../types/jobs/email/emailJobPayload.js";
 
 async function emailHandler(job: EmailJobPayload) {
   const name = job.emailType.name;
