@@ -14,7 +14,7 @@ export async function enqueueEmail(payload: EmailJobPayload) {
       delay: 2000,
     },
     removeOnComplete: true,
-    removeOnFail: false,
+    removeOnFail: true,
   });
 }
 

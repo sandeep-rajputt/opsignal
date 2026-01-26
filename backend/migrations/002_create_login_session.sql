@@ -1,16 +1,14 @@
 CREATE TABLE sessions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    refreshToken UUID UNIQUE NOT NULL,
-    userId UUID NOT NULL REFERENCES users(id),
-    ipAddress TEXT,
-    userAgent TEXT,
-    expiresAt TIMESTAMPTZ NOT NULL,
+    refresh_token UUID NOT NULL,
+    user_id UUID NOT NULL REFERENCES users(id),
+    ip_address TEXT,
     location TEXT,
     device TEXT,
-    isRevoked BOOLEAN DEFAULT FALSE,
-    createdAt TIMESTAMPTZ DEFAULT NOW(),
-    updatedAt TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    expires_at TIMESTAMPTZ NOT NULL
 );
 
-CREATE INDEX idx_session_user_id ON sessions(userId);
-CREATE INDEX idx_session_expires_at ON sessions(expiresAt)
+CREATE INDEX idx_session_user_id ON sessions(user_id);
+CREATE INDEX idx_session_expires_at ON sessions(refresh_token, expires_at);

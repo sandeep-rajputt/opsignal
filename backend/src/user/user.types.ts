@@ -23,3 +23,10 @@ export interface CheckUserQueryResponse {
 export type LoginUserService =
   | { success: false; message: string }
   | { success: true; id: string };
+
+export interface CreateUserSession {
+  userId: string;
+  ipAddress: string | null;
+  device: string;
+  token: string;
+}

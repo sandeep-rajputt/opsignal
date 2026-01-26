@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { createUserSchema, loginUserSchema } from "./user.validation.js";
 import safeReject from "../utils/safeReject.js";
 import {
+  createSession,
   createUser,
   loginUser as loginUserService,
   verifyUser,
@@ -13,7 +14,6 @@ import config from "../config/config.js";
 import redisClient from "../config/redis.js";
 
 export async function register(req: Request, res: Response) {
-  console.log("request come");
   try {
     const { name, email, password, confirmPassword } = req.body;
     const data = await createUserSchema.safeParseAsync({
@@ -32,9 +32,17 @@ export async function register(req: Request, res: Response) {
     }
     const resData = await createUser(data.data);
 
+    if (!resData?.id) {
+      return safeReject(res, {
+        path: req.originalUrl,
+        message: "Something went wrong",
+        status: 500,
+      });
+    }
+
     const token = createToken({
       key: config.EMAIL_VERIFY_JWT_TOKEN,
-      data: { id: resData?.id },
+      data: { id: resData.id },
       expiresIn: "3h",
     });
 
@@ -45,6 +53,8 @@ export async function register(req: Request, res: Response) {
         status: 500,
       });
     }
+
+    await createSession({ req, id: resData.id });
 
     await enqueueEmail({
       from: "Opsignal <i@opsignal.sandeeprajput.in>",
@@ -57,7 +67,6 @@ export async function register(req: Request, res: Response) {
       },
     });
 
-    console.log("step d");
     return safeResponse(res, {
       status: 201,
       message: "Account created successfully.",
@@ -65,6 +74,7 @@ export async function register(req: Request, res: Response) {
       data: resData,
     });
   } catch (err: any) {
+    console.error(err);
     if (err?.constraint === "users_email_key") {
       return safeReject(res, {
         path: req.originalUrl,

@@ -3,6 +3,7 @@ const userRouter = express.Router();
 import { loginUser, register } from "./user.controller.js";
 import ipRateLimiter from "../middlewares/ipRateLimiter.js";
 import { verifyController } from "./user.controller.js";
+import userAgentMiddleware from "../middlewares/userAgentMiddleware.js";
 
 userRouter.post(
   "/register",
@@ -11,6 +12,7 @@ userRouter.post(
     timeInMilliseconds: 60000,
     path: "register",
   }),
+  userAgentMiddleware,
   register,
 );
 
@@ -21,6 +23,7 @@ userRouter.post(
     timeInMilliseconds: 60000,
     path: "login",
   }),
+  userAgentMiddleware,
   loginUser,
 );
 
