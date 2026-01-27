@@ -6,6 +6,7 @@ import FlyingLoader from "@/components/shared/FlyingLoader";
 import { MailCheck, TriangleAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
 import isApiError from "@/utils/isApiError";
+import { toast } from "sonner";
 
 function VerifyAccount() {
   const router = useRouter();
@@ -45,6 +46,11 @@ function VerifyAccount() {
   }
 
   if (verified) {
+    toast.success("Account Verified Successfully", {
+      description:
+        "Your account is ready. You can now log in and start using the app.",
+    });
+
     return (
       <div className="flex flex-col my-5 items-center justify-center gap-5">
         <MailCheck size={50} className="text-green-500" />

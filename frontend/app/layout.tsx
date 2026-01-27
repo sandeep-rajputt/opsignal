@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import ReduxProvider from "@/providers/ReduxProvider";
 import { ThemeProvider } from "@/providers/ThemeProvider";
-import ToastProvider from "@/providers/ToastProvider";
+import ExtraProviders from "@/providers/ExtraProviders";
 import NuqsProvider from "@/providers/NuqsProvider";
 
 export const inter = Inter({ subsets: ["latin"] });
@@ -27,9 +27,8 @@ export default function RootLayout({
             <body
               className={`${inter.className} antialiased bg-background text-foreground`}
             >
-              {children}
+              <ExtraProviders>{children}</ExtraProviders>
             </body>
-            <ToastProvider />
           </ThemeProvider>
         </ReduxProvider>
       </NuqsProvider>

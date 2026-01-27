@@ -2,7 +2,7 @@ import baseApi from "@/Store/api/baseApi";
 import type { LoginCredential } from "@/Store/api/loginApi/schemas/loginCredentialSchema";
 import { type LoginResponse } from "@/Store/api/loginApi/schemas/loginResponseSchema";
 import { authFailed, authPending } from "@/Store/slices/authSlice";
-import { toastQueue } from "@/providers/ToastProvider";
+import { toast } from "sonner";
 import isApiError from "@/utils/isApiError";
 
 const loginApi = baseApi.injectEndpoints({
@@ -20,29 +20,17 @@ const loginApi = baseApi.injectEndpoints({
 
         try {
           const { data: res } = await queryFulfilled;
-          toastQueue.add(
-            { message: res.message, variant: "success" },
-            { timeout: 5000 },
-          );
+          toast.warning(res.message);
         } catch (error) {
           if (error && typeof error === "object" && "error" in error) {
             const apiError = isApiError(error.error);
             if (apiError) {
-              toastQueue.add(
-                { message: apiError.message, variant: "error" },
-                { timeout: 5000 },
-              );
+              toast.warning(apiError.message);
             } else {
-              toastQueue.add(
-                { message: "Something went wrong", variant: "error" },
-                { timeout: 5000 },
-              );
+              toast.warning("Something went wrong");
             }
           } else {
-            toastQueue.add(
-              { message: "Something went wrong", variant: "error" },
-              { timeout: 5000 },
-            );
+            toast.warning("Something went wrong");
           }
           dispatch(authFailed());
         }

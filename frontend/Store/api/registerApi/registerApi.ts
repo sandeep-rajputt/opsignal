@@ -1,5 +1,5 @@
 import baseApi from "@/Store/api/baseApi";
-import { toastQueue } from "@/providers/ToastProvider";
+import { toast } from "sonner";
 import { type RegisterCredential } from "@/Store/api/registerApi/schemas/registerCredentialSchema";
 import { type RegisterResponse } from "@/Store/api/registerApi/schemas/registerResponseSchema";
 import isApiError from "@/utils/isApiError";
@@ -21,30 +21,12 @@ const registerApi = baseApi.injectEndpoints({
           if (error && typeof error === "object" && "error" in error) {
             const apiError = isApiError(error.error);
             if (!apiError) {
-              toastQueue.add(
-                {
-                  message: "Something Went wrong",
-                  variant: "error",
-                },
-                { timeout: 5000 },
-              );
+              toast.warning("Something went wrong");
               return;
             }
-            toastQueue.add(
-              {
-                message: apiError.message,
-                variant: "error",
-              },
-              { timeout: 5000 },
-            );
+            toast.warning(apiError.message);
           } else {
-            toastQueue.add(
-              {
-                message: "Something Went wrong",
-                variant: "error",
-              },
-              { timeout: 5000 },
-            );
+            toast.warning("Something went wrong");
           }
         }
       },
