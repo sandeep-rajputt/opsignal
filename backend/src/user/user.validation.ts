@@ -25,4 +25,21 @@ const loginUserSchema = z.object({
   password: passwordSchema,
 });
 
-export { createUserSchema, loginUserSchema };
+const changeUserPasswordSchema = z
+  .object({
+    token: z.string().min(1, "Token is required"),
+    id: z.string().min(1, "ID is required"),
+    newPassword: passwordSchema,
+    confirmNewPassword: passwordSchema,
+  })
+  .superRefine((data, ctx) => {
+    if (data.newPassword !== data.confirmNewPassword) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["confirmNewPassword"],
+        message: "Passwords do not match.",
+      });
+    }
+  });
+
+export { createUserSchema, loginUserSchema, changeUserPasswordSchema };

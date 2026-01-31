@@ -60,3 +60,44 @@ export async function createUserSession({
   );
   return res[0]!;
 }
+
+export async function getUserIdByEmail(email: string) {
+  const res = await query<{ id: string }>(
+    `
+    SELECT u.id
+    FROM users u
+    WHERE u.email = $1
+    AND u.deleted_at IS NULL
+    `,
+    [email],
+  );
+
+  return res[0];
+}
+
+export async function checkUserExistById(id: string) {
+  const res = await query<{ exists: boolean }>(
+    `
+    SELECT EXISTS (
+      SELECT 1
+      FROM users
+      WHERE id = $1
+    );
+    `,
+    [id],
+  );
+
+  return res[0]?.exists;
+}
+
+export async function updateUserPassword(id: string, hashedPassword: string) {
+  await query(
+    `
+    UPDATE users
+    SET password_hash = $1
+    WHERE id = $2
+    `,
+    [hashedPassword, id],
+  );
+  return;
+}

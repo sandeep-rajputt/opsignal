@@ -1,4 +1,4 @@
-import ChangePasswordForm from "@/app/(auth)/change-password/ChangePasswordForm";
+import ChangePasswordClient from "@/app/(auth)/change-password/ChangePasswordForm.client";
 
 export const metadata = {
   title: "Change Password - Update Account Security | Opsignal",
@@ -10,15 +10,7 @@ function Login() {
   return (
     <div>
       <div>
-        <h2 className="text-4xl text-center font-bold text-foreground">
-          Change password
-        </h2>
-
-        <p className="text-secondary w-full mx-auto mt-3 mb-7 max-w-sm text-center">
-          Set a new password to keep your account secure and continue.
-        </p>
-
-        <ChangePasswordForm />
+        <ChangePasswordClient />
       </div>
     </div>
   );

@@ -1,11 +1,18 @@
 import type { Request, Response } from "express";
-import { createUserSchema, loginUserSchema } from "./user.validation.js";
+import {
+  createUserSchema,
+  loginUserSchema,
+  changeUserPasswordSchema,
+} from "./user.validation.js";
 import safeReject from "../utils/safeReject.js";
 import {
+  checkUserExistByIdService,
   createSession,
   createUser,
+  getUserIdByEmailService,
   loginUser as loginUserService,
   verifyUser,
+  changeUserPasswordService,
 } from "./user.service.js";
 import safeResponse from "../utils/safeResponse.js";
 import enqueueEmail from "../jobs/queues/email.queue.js";
@@ -15,6 +22,8 @@ import redisClient from "../config/redis.js";
 import addAccessToken from "../utils/addAccessToken.js";
 import addRefreshToken from "../utils/addRefreshToken.js";
 import { updateRefreshTokenInDb } from "../utils/refreshAccessToken.js";
+import emailSchema from "../schemas/common/emailSchema.js";
+import { v4 as uuidv4 } from "uuid";
 
 export async function register(req: Request, res: Response) {
   try {
@@ -198,6 +207,123 @@ export async function verifyController(req: Request, res: Response) {
   }
 }
 
+export async function resetPassword(req: Request, res: Response) {
+  try {
+    const { email } = req.body;
+    const resData = await emailSchema.safeParseAsync(email);
+    if (!resData.success) {
+      return safeReject(res, {
+        path: req.originalUrl,
+        message: "Invalid email address",
+        status: 400,
+      });
+    }
+
+    const data = await getUserIdByEmailService(resData.data);
+
+    if (!data?.id) {
+      return safeReject(res, {
+        path: req.originalUrl,
+        message: "Email address not found",
+        status: 400,
+      });
+    }
+
+    const token = createToken({
+      key: config.RESET_PASSWORD_TOKEN,
+      data: { id: data.id },
+      expiresIn: "1h",
+    });
+
+    const redisId = uuidv4();
+
+    await redisClient.set(redisId, data.id, "EX", 60 * 60 * 1000);
+
+    await enqueueEmail({
+      from: "Opsignal <i@opsignal.sandeeprajput.in>",
+      to: resData.data,
+      emailType: {
+        name: "resetPasswordEmail",
+        params: {
+          link: `${config.FRONTEND_URL}/change-password?token=${token}&id=${redisId}`,
+        },
+      },
+    });
+    return safeResponse(res, {
+      path: req.originalUrl,
+      message: "Email sent successfully",
+      data: null,
+      status: 200,
+    });
+  } catch (error) {
+    console.log(error);
+    return safeReject(res, {
+      path: req.originalUrl,
+      message: "Something went wrong",
+      status: 500,
+    });
+  }
+}
+
+export async function checkChangePasswordToken(req: Request, res: Response) {
+  try {
+    const { token, id } = req.body;
+    const redisId = await redisClient.get(id);
+    if (!redisId) {
+      return safeReject(res, {
+        path: req.originalUrl,
+        message: "Requested link is invalid or expired",
+        status: 400,
+      });
+    }
+
+    const tokenResult = verifyToken({
+      token,
+      secret: config.RESET_PASSWORD_TOKEN,
+    });
+
+    if (!tokenResult.success) {
+      return safeReject(res, {
+        path: req.originalUrl,
+        message: "Requested link is invalid",
+        status: 400,
+      });
+    }
+
+    if (redisId !== tokenResult.data.id) {
+      return safeReject(res, {
+        path: req.originalUrl,
+        message: "Requested link is invalid",
+        status: 400,
+      });
+    }
+
+    const userExist = await checkUserExistByIdService(redisId);
+
+    if (!userExist) {
+      return safeReject(res, {
+        path: req.originalUrl,
+        message: "Requested link is invalid",
+        status: 400,
+      });
+    }
+
+    return safeResponse(res, {
+      path: req.originalUrl,
+      message: "Password chnaged successfully",
+      data: null,
+      status: 200,
+    });
+  } catch (error) {
+    console.log(error);
+    return safeReject(res, {
+      path: req.originalUrl,
+      message: "Something went wrong",
+      status: 500,
+    });
+  }
+}
+
 export function checkAuth(_req: Request, res: Response) {
   return safeResponse(res, {
     status: 200,
@@ -205,4 +331,83 @@ export function checkAuth(_req: Request, res: Response) {
     path: "/me",
     data: null,
   });
+}
+
+export async function changeUserPassword(req: Request, res: Response) {
+  try {
+    const { token, id, newPassword, confirmNewPassword } = req.body;
+
+    const data = await changeUserPasswordSchema.safeParseAsync({
+      token,
+      id,
+      newPassword,
+      confirmNewPassword,
+    });
+
+    if (!data.success) {
+      return safeReject(res, {
+        status: 400,
+        message:
+          "Validation failed. Some fields contain invalid or missing data.",
+        path: req.originalUrl,
+      });
+    }
+
+    const redisId = await redisClient.get(data.data.id);
+    if (!redisId) {
+      return safeReject(res, {
+        path: req.originalUrl,
+        message: "Requested link is invalid or expired",
+        status: 400,
+      });
+    }
+
+    const tokenResult = verifyToken({
+      token: data.data.token,
+      secret: config.RESET_PASSWORD_TOKEN,
+    });
+
+    if (!tokenResult.success) {
+      return safeReject(res, {
+        path: req.originalUrl,
+        message: "Requested link is invalid",
+        status: 400,
+      });
+    }
+
+    if (redisId !== tokenResult.data.id) {
+      return safeReject(res, {
+        path: req.originalUrl,
+        message: "Requested link is invalid",
+        status: 400,
+      });
+    }
+
+    const userExists = await checkUserExistByIdService(redisId);
+    if (!userExists) {
+      return safeReject(res, {
+        path: req.originalUrl,
+        message: "Requested link is invalid",
+        status: 400,
+      });
+    }
+
+    await changeUserPasswordService(redisId, data.data.newPassword);
+
+    await redisClient.del(data.data.id);
+
+    return safeResponse(res, {
+      path: req.originalUrl,
+      message: "Password changed successfully",
+      data: null,
+      status: 200,
+    });
+  } catch (error) {
+    console.log(error);
+    return safeReject(res, {
+      path: req.originalUrl,
+      message: "Something went wrong",
+      status: 500,
+    });
+  }
 }

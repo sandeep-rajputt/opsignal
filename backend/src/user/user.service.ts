@@ -3,9 +3,12 @@ import { createHash, hashCompare } from "../utils/hash.js";
 import type { CreateUser, LoginUser, LoginUserService } from "./user.types.js";
 import {
   checkUser,
+  checkUserExistById,
   createUser as createUserModel,
   createUserSession,
+  getUserIdByEmail,
   verifyUser as verifyUserModel,
+  updateUserPassword,
 } from "./users.model.js";
 
 export async function createUser(data: CreateUser) {
@@ -57,7 +60,24 @@ export async function loginUser(data: LoginUser): Promise<LoginUserService> {
   }
 }
 
+export async function getUserIdByEmailService(email: string) {
+  return await getUserIdByEmail(email);
+}
+
+export async function checkUserExistByIdService(id: string) {
+  return await checkUserExistById(id);
+}
+
 export async function verifyUser(id: string) {
   await verifyUserModel(id);
+  return;
+}
+
+export async function changeUserPasswordService(
+  id: string,
+  newPassword: string,
+) {
+  const hashedPassword = await createHash(newPassword);
+  await updateUserPassword(id, hashedPassword);
   return;
 }

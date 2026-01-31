@@ -14,6 +14,7 @@ const configSchema = z
     RESEND_API_KEY: z.string().min(1, "RESEND_API_KEY"),
     ACCESS_TOKEN_SECRET: z.string().min(1, "ACCESS_TOKEN_SECRET is required"),
     REFRESH_TOKEN_SECRET: z.string().min(1, "REFRESH_TOKEN_SECRET is required"),
+    RESET_PASSWORD_TOKEN: z.string().min(1, "RESET_PASSWORD_TOKEN is required"),
     EMAIL_VERIFY_JWT_TOKEN: z
       .string()
       .min(1, "EMAIL_VERIFY_JWT_TOKEN is required"),

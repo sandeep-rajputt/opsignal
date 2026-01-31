@@ -6,6 +6,9 @@ import { z } from "zod";
 import { MailCheck } from "lucide-react";
 import TextInput from "@/components/rhd_inputs/TextInput";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useResetPasswordMutation } from "@/Store/api/resetPasswordApi/resetPasswordApi";
+import { toast } from "sonner";
+import isApiError from "@/utils/isApiError";
 
 const FormDataSchema = z.object({
   email: emailSchema,
@@ -15,6 +18,7 @@ type FormData = z.infer<typeof FormDataSchema>;
 
 function ResetPassword() {
   const [step, setStep] = useState<"form" | "mail">("form");
+  const [resetPassword] = useResetPasswordMutation();
   const {
     register,
     formState: { errors, isSubmitting },
@@ -22,8 +26,16 @@ function ResetPassword() {
   } = useForm<FormData>({ resolver: zodResolver(FormDataSchema) });
 
   async function onSubmit(data: FormData) {
-    await new Promise((res) => setTimeout(res, 5000));
-    setStep("mail");
+    const res = await resetPassword(data);
+    if ("data" in res) {
+      setStep("mail");
+    } else {
+      const apiError = isApiError(res.error);
+      console.log(apiError);
+      toast.error(
+        apiError?.message || "Something went wrong, please try again later",
+      );
+    }
   }
   return (
     <div>

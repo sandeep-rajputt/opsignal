@@ -33,7 +33,6 @@ function LoginForm() {
       toast.success("Logged in Successfully");
     } else {
       const apiError = isApiError(error);
-      console.log(apiError);
       toast.error(
         apiError?.message || "Something went wrong, please try again later",
       );
