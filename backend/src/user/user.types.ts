@@ -18,6 +18,7 @@ export interface CheckUserQueryResponse {
   email: string;
   id: string;
   passwordhash: string;
+  emailverified: boolean;
 }
 
 export type LoginUserService =
@@ -28,5 +29,4 @@ export interface CreateUserSession {
   userId: string;
   ipAddress: string | null;
   device: string;
-  token: string;
 }

@@ -11,6 +11,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { useLoginMutation } from "@/Store/api/index";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import isApiError from "@/utils/isApiError";
 
 function LoginForm() {
   const {
@@ -21,13 +23,20 @@ function LoginForm() {
     resolver: zodResolver(loginCredentialSchema),
   });
   const router = useRouter();
-  const [login] = useLoginMutation();
+  const [login, { isSuccess, error }] = useLoginMutation();
   const [disabled, setDisabled] = useState<boolean>(false);
 
   const onSubmit = async (data: LoginCredential) => {
-    const res = await login(data);
-    if (res.data) {
-      router.push("/");
+    await login(data);
+    if (isSuccess) {
+      router.push("/dashboard");
+      toast.success("Logged in Successfully");
+    } else {
+      const apiError = isApiError(error);
+      console.log(apiError);
+      toast.error(
+        apiError?.message || "Something went wrong, please try again later",
+      );
     }
   };
 

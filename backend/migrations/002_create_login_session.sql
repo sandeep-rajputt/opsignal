@@ -1,7 +1,7 @@
 CREATE TABLE sessions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    refresh_token UUID NOT NULL,
-    user_id UUID NOT NULL REFERENCES users(id),
+    refresh_token TEXT DEFAULT NULL,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     ip_address TEXT,
     location TEXT,
     device TEXT,
@@ -11,4 +11,4 @@ CREATE TABLE sessions (
 );
 
 CREATE INDEX idx_session_user_id ON sessions(user_id);
-CREATE INDEX idx_session_expires_at ON sessions(refresh_token, expires_at);
+CREATE INDEX idx_session_expires_at ON sessions(refresh_token);

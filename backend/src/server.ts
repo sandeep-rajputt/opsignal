@@ -3,6 +3,8 @@ import config from "./config/config.js";
 import globalErrorHandler from "./middlewares/globalErrorHandler.js";
 import userRouter from "./user/user.routes.js";
 import "./jobs/workers/start-workers.js";
+import startQueue from "./jobs/queues/start-queue.js";
+await startQueue();
 
 const { PORT } = config;
 

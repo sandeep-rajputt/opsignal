@@ -14,22 +14,6 @@ const registerApi = baseApi.injectEndpoints({
           body: data,
         };
       },
-      async onQueryStarted(_args, { queryFulfilled }) {
-        try {
-          await queryFulfilled;
-        } catch (error: unknown) {
-          if (error && typeof error === "object" && "error" in error) {
-            const apiError = isApiError(error.error);
-            if (!apiError) {
-              toast.warning("Something went wrong");
-              return;
-            }
-            toast.warning(apiError.message);
-          } else {
-            toast.warning("Something went wrong");
-          }
-        }
-      },
     }),
   }),
 });

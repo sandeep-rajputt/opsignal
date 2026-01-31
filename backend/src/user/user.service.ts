@@ -7,7 +7,6 @@ import {
   createUserSession,
   verifyUser as verifyUserModel,
 } from "./users.model.js";
-import { v4 as uuidV4 } from "uuid";
 
 export async function createUser(data: CreateUser) {
   const hashPassword = await createHash(data.password);
@@ -22,11 +21,15 @@ export async function createUser(data: CreateUser) {
 export async function createSession({ req, id }: { req: Request; id: string }) {
   const ipAddress = req.ip || null;
   const device =
-    req.useragent.browser || req.useragent.os || req.useragent.isMobile
-      ? "Mobile"
-      : "Desktop";
-  const token = uuidV4();
-  return await createUserSession({ ipAddress, device, userId: id, token });
+    req.useragent.browser ||
+    req.useragent.os ||
+    (req.useragent.isMobile ? "Mobile" : "Desktop");
+
+  return await createUserSession({
+    ipAddress,
+    device,
+    userId: id,
+  });
 }
 
 export async function loginUser(data: LoginUser): Promise<LoginUserService> {
@@ -41,8 +44,12 @@ export async function loginUser(data: LoginUser): Promise<LoginUserService> {
   if (!resData.passwordhash) {
     return { success: false, message: "Invalid password" };
   }
+  if (!resData.emailverified) {
+    return { success: false, message: "Please verify your email to login" };
+  }
 
   const match = await hashCompare(password, resData.passwordhash);
+
   if (match) {
     return { success: true, id: resData.id };
   } else {

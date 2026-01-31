@@ -17,8 +17,10 @@ const _config = {
   FRONTEND_URL: process.env.FRONTEND_URL || "https://opsignal.sandeeprajput.in",
   BULL_REDIS_URL: process.env.BULL_REDIS_URL,
   RESEND_API_KEY: process.env.RESEND_API_KEY,
-  LOGIN_JWT_TOKEN_KEY: process.env.LOGIN_JWT_TOKEN_KEY,
+  REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
+  ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
   EMAIL_VERIFY_JWT_TOKEN: process.env.EMAIL_VERIFY_JWT_TOKEN,
+  COOKIE_DOMAIN: process.env.COOKIE_DOMAIN,
 };
 
 const res = await configSchema.safeParseAsync(_config);

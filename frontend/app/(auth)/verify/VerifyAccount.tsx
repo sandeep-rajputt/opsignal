@@ -23,7 +23,11 @@ function VerifyAccount() {
       try {
         await verify(token).unwrap();
         setVerified(true);
-        router.replace("/onboarding");
+        router.replace("/login");
+        toast.success("Account Verified Successfully", {
+          description:
+            "Your account is ready. You can now log in and start using the app.",
+        });
       } catch (err) {
         const apiError = isApiError(err);
         setError(
@@ -36,7 +40,6 @@ function VerifyAccount() {
   }, [token, verify, router]);
 
   if (!token) {
-    console.log(token);
     return (
       <div className="flex flex-col my-5 items-center justify-center gap-5">
         <TriangleAlert size={50} className="text-danger" />
@@ -46,11 +49,6 @@ function VerifyAccount() {
   }
 
   if (verified) {
-    toast.success("Account Verified Successfully", {
-      description:
-        "Your account is ready. You can now log in and start using the app.",
-    });
-
     return (
       <div className="flex flex-col my-5 items-center justify-center gap-5">
         <MailCheck size={50} className="text-green-500" />

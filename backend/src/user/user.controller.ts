@@ -12,6 +12,9 @@ import enqueueEmail from "../jobs/queues/email.queue.js";
 import { createToken, verifyToken } from "../utils/jwt.js";
 import config from "../config/config.js";
 import redisClient from "../config/redis.js";
+import addAccessToken from "../utils/addAccessToken.js";
+import addRefreshToken from "../utils/addRefreshToken.js";
+import { updateRefreshTokenInDb } from "../utils/refreshAccessToken.js";
 
 export async function register(req: Request, res: Response) {
   try {
@@ -46,23 +49,13 @@ export async function register(req: Request, res: Response) {
       expiresIn: "3h",
     });
 
-    if (!token.success) {
-      return safeReject(res, {
-        path: req.originalUrl,
-        message: "Something went wrong",
-        status: 500,
-      });
-    }
-
-    await createSession({ req, id: resData.id });
-
     await enqueueEmail({
       from: "Opsignal <i@opsignal.sandeeprajput.in>",
       to: email,
       emailType: {
         name: "verifyEmail",
         params: {
-          link: `${config.FRONTEND_URL.split(",")[0]}/verify?token=${token.data}`,
+          link: `${config.FRONTEND_URL}/verify?token=${token}`,
         },
       },
     });
@@ -102,7 +95,9 @@ export async function loginUser(req: Request, res: Response) {
         path: req.originalUrl,
       });
     }
+
     const resData = await loginUserService(data.data);
+
     if (!resData.success) {
       return safeReject(res, {
         status: 400,
@@ -111,29 +106,31 @@ export async function loginUser(req: Request, res: Response) {
       });
     }
 
-    const accessToken = createToken({
-      key: config.LOGIN_JWT_TOKEN_KEY,
-      data: { id: resData.id },
-      expiresIn: "15m",
+    const sessionId = await createSession({ req, id: resData.id });
+
+    const refreshToken = createToken({
+      key: config.REFRESH_TOKEN_SECRET,
+      data: { id: resData.id, sessionId: sessionId.id },
+      expiresIn: "7d",
     });
 
-    if (accessToken.success) {
-      return safeResponse(res, {
-        status: 200,
-        message: "Logged in successfully.",
-        path: req.originalUrl,
-        data: { token: accessToken.data },
-      });
-    }
+    // update the refresh token in db
+    await updateRefreshTokenInDb(refreshToken);
 
-    if (accessToken.error) {
-      return safeReject(res, {
-        path: req.originalUrl,
-        message: "Something went wrong",
-        status: 500,
-      });
-    }
-  } catch {
+    // add refresh token in cookie
+    addRefreshToken({ res, id: null, token: refreshToken });
+
+    // add access token in cookie
+    addAccessToken({ res, id: resData.id, token: null });
+
+    return safeResponse(res, {
+      status: 200,
+      message: "Logged in successfully.",
+      path: req.originalUrl,
+      data: null,
+    });
+  } catch (error) {
+    console.log(error);
     return safeReject(res, {
       path: req.originalUrl,
       message: "Something went wrong",
@@ -199,4 +196,13 @@ export async function verifyController(req: Request, res: Response) {
       status: 500,
     });
   }
+}
+
+export function checkAuth(_req: Request, res: Response) {
+  return safeResponse(res, {
+    status: 200,
+    message: "You are here",
+    path: "/me",
+    data: null,
+  });
 }

@@ -14,13 +14,9 @@ export function createToken({
   key: Secret;
   data: Record<string, unknown>;
   expiresIn?: SignOptions["expiresIn"];
-}): TokenResult<string> {
-  try {
-    const token = jwt.sign(data, key, { expiresIn });
-    return { success: true, data: token };
-  } catch {
-    return { success: false, error: "TOKEN_CREATION_FAILED" };
-  }
+}) {
+  const token = jwt.sign(data, key, { expiresIn });
+  return token;
 }
 
 export function verifyToken({

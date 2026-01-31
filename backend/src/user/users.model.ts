@@ -21,7 +21,7 @@ export async function createUser(data: CreateUserQueryIncommingData) {
 export async function checkUser(data: string) {
   const res = await query<CheckUserQueryResponse>(
     `
-    SELECT u.email, u.password_hash AS passwordhash, u.id
+    SELECT u.email, u.password_hash AS passwordhash, u.id, u.email_verified AS emailVerified
     FROM users u
     WHERE u.email = $1
     AND u.deleted_at IS NULL
@@ -48,14 +48,15 @@ export async function createUserSession({
   userId,
   ipAddress,
   device,
-  token,
 }: CreateUserSession) {
   const res = await query<{ id: string }>(
     `
-    INSERT INTO sessions(user_id, ip_address, device,refresh_token, expires_at)
-    VALUES ($1, $2, $3,$4, NOW() + INTERVAL '7 days')
+    INSERT INTO sessions(user_id, ip_address, device, expires_at)
+    VALUES ($1, $2, $3, NOW() + INTERVAL '7 days')
+
+    RETURNING id
     `,
-    [userId, ipAddress, device, token],
+    [userId, ipAddress, device],
   );
-  return;
+  return res[0]!;
 }

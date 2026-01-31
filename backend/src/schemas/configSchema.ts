@@ -3,18 +3,29 @@ import z from "zod";
 const stringPortSchema = z.string().min(1).max(65535);
 const numberPortSchema = z.number().min(1).max(65535);
 
-const configSchema = z.object({
-  PORT: z.union([stringPortSchema, numberPortSchema]),
-  ENV: z.enum(["production", "testing", "development"]),
-  POSTGRESQL_URI: z.string().min(1, "POSTGRESQL_URI is required"),
-  REDIS_URL: z.string().min(1, "REDIS_URL is required"),
-  FRONTEND_URL: z.string().min(1, "FRONTEND_URL is required"),
-  BULL_REDIS_URL: z.string().optional(),
-  RESEND_API_KEY: z.string().min(1, "RESEND_API_KEY"),
-  LOGIN_JWT_TOKEN_KEY: z.string().min(1, "LOGIN_JWT_TOKEN_KEY is required"),
-  EMAIL_VERIFY_JWT_TOKEN: z
-    .string()
-    .min(1, "EMAIL_VERIFY_JWT_TOKEN is required"),
-});
+const configSchema = z
+  .object({
+    PORT: z.union([stringPortSchema, numberPortSchema]),
+    ENV: z.enum(["production", "testing", "development"]),
+    POSTGRESQL_URI: z.string().min(1, "POSTGRESQL_URI is required"),
+    REDIS_URL: z.string().min(1, "REDIS_URL is required"),
+    FRONTEND_URL: z.string().min(1, "FRONTEND_URL is required"),
+    BULL_REDIS_URL: z.string().optional(),
+    RESEND_API_KEY: z.string().min(1, "RESEND_API_KEY"),
+    ACCESS_TOKEN_SECRET: z.string().min(1, "ACCESS_TOKEN_SECRET is required"),
+    REFRESH_TOKEN_SECRET: z.string().min(1, "REFRESH_TOKEN_SECRET is required"),
+    EMAIL_VERIFY_JWT_TOKEN: z
+      .string()
+      .min(1, "EMAIL_VERIFY_JWT_TOKEN is required"),
+    COOKIE_DOMAIN: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.ENV === "development" && !data.COOKIE_DOMAIN) {
+      ctx.addIssue({
+        message: "COOKIE_DOMAIN is required",
+        code: z.ZodIssueCode.custom,
+      });
+    }
+  });
 
 export default configSchema;
