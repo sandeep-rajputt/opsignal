@@ -11,6 +11,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRegisterMutation } from "@/Store/api/index";
 import { MailCheck } from "lucide-react";
+import isApiError from "@/utils/isApiError";
+import { toast } from "sonner";
 
 function RegisterForm() {
   const {
@@ -24,13 +26,17 @@ function RegisterForm() {
   const [disabled, setDisabled] = useState<boolean>(false);
   const [step, setStep] = useState<"form" | "mail">("form");
   const [signUp] = useRegisterMutation();
-
   const onSubmit = async (data: RegisterCredential) => {
-    const res = await signUp(data);
-    if (res.data) {
+    try {
+      await signUp(data).unwrap();
       setStep("mail");
+      reset();
+    } catch (error) {
+      const apiError = isApiError(error);
+      toast.error(
+        apiError?.message || "Something went wrong, please try again later",
+      );
     }
-    reset();
   };
 
   function disableClick() {

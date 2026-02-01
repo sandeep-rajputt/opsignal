@@ -94,6 +94,13 @@ export async function register(req: Request, res: Response) {
 
 export async function loginUser(req: Request, res: Response) {
   try {
+    if (req.cookies.refresh_token) {
+      return safeReject(res, {
+        path: req.originalUrl,
+        message: "Already logged in",
+        status: 400,
+      });
+    }
     const { email, password } = req.body;
     const data = await loginUserSchema.safeParseAsync({ email, password });
     if (!data.success) {

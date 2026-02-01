@@ -23,15 +23,15 @@ function LoginForm() {
     resolver: zodResolver(loginCredentialSchema),
   });
   const router = useRouter();
-  const [login, { isSuccess, error }] = useLoginMutation();
+  const [login] = useLoginMutation();
   const [disabled, setDisabled] = useState<boolean>(false);
 
   const onSubmit = async (data: LoginCredential) => {
-    await login(data);
-    if (isSuccess) {
-      router.push("/dashboard");
+    try {
+      await login(data).unwrap();
+      router.push("/onboarding");
       toast.success("Logged in Successfully");
-    } else {
+    } catch (error) {
       const apiError = isApiError(error);
       toast.error(
         apiError?.message || "Something went wrong, please try again later",

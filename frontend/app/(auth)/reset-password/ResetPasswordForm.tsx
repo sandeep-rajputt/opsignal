@@ -26,17 +26,19 @@ function ResetPassword() {
   } = useForm<FormData>({ resolver: zodResolver(FormDataSchema) });
 
   async function onSubmit(data: FormData) {
-    const res = await resetPassword(data);
-    if ("data" in res) {
+    try {
+      await resetPassword(data).unwrap();
       setStep("mail");
-    } else {
-      const apiError = isApiError(res.error);
+      toast.success("Password reset link sent successfully ✉️");
+    } catch (error) {
+      const apiError = isApiError(error);
       console.log(apiError);
       toast.error(
         apiError?.message || "Something went wrong, please try again later",
       );
     }
   }
+
   return (
     <div>
       {step === "form" && (

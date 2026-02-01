@@ -39,18 +39,19 @@ function ChangePasswordForm() {
       return;
     }
 
-    const res = await changeUserPassword({
-      token,
-      id,
-      newPassword: data.password,
-      confirmNewPassword: data.confirmPassword,
-    });
+    try {
+      await changeUserPassword({
+        token,
+        id,
+        newPassword: data.password,
+        confirmNewPassword: data.confirmPassword,
+      }).unwrap();
 
-    if ("data" in res) {
       setFormState("success-change");
       toast.success("Password changed successfully");
-    } else {
-      const apiError = isApiError(res.error);
+    } catch (error) {
+      const apiError = isApiError(error);
+
       toast.error(
         apiError?.message || "Something went wrong, please try again later",
       );
@@ -61,12 +62,14 @@ function ChangePasswordForm() {
     async function verifyToken() {
       if (formState === "initial") {
         if (token && id) {
-          const res = await checkToken({ token, id });
-          if ("data" in res) {
+          try {
+            await checkToken({ token, id }).unwrap();
+
             setFormState("success");
             setError(null);
-          } else {
-            const apiError = isApiError(res.error);
+          } catch (error) {
+            const apiError = isApiError(error);
+
             setError(
               apiError?.message ||
                 "Something went wrong, Please try again later",
