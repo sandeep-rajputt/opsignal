@@ -3,7 +3,7 @@ import { Timezone, timezoneSchema } from "@/schemas/common/timezoneSchema";
 import { normalizeTimezone } from "@/utils/normalizeTimezone";
 
 async function Page() {
-  // Auto-detect user's timezone on component initialization
+  // Auto-detect user's timezone
   const detectedTimezone = normalizeTimezone(
     (() => {
       return Intl.DateTimeFormat().resolvedOptions().timeZone;

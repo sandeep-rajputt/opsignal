@@ -5,7 +5,7 @@ if (!config.POSTGRESQL_URI) {
   throw new Error("DATABASE_URL is missing in .env");
 }
 
-const pool = new Pool({
+export const pool = new Pool({
   connectionString: config.POSTGRESQL_URI,
   max: 10,
   idleTimeoutMillis: 30000,

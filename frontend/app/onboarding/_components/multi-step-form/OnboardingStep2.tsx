@@ -4,7 +4,7 @@ import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Control } from "react-hook-form";
 import { OnboardingData } from "@/schemas/onboardingSchema";
-import SelectTimezone from "@/components/rhd_inputs/SelectTimezone";
+import SelectTimezone from "@/components/rhf_inputs/SelectTimezone";
 
 interface OnboardingStep2Props {
   teamNameRegister: InputHTMLAttributes<HTMLInputElement>;
@@ -31,8 +31,12 @@ function OnboardingStep2({
       </p>
       <div className="mt-10 flex flex-col gap-5">
         <Field>
-          <FieldLabel>Team Name</FieldLabel>
-          <Input {...teamNameRegister} placeholder="e.g. Engineering Alpha" />
+          <FieldLabel htmlFor="team-name">Team Name</FieldLabel>
+          <Input
+            id="team-name"
+            {...teamNameRegister}
+            placeholder="e.g. Engineering Alpha"
+          />
           {teamNameError && (
             <FieldDescription className="text-destructive">
               {teamNameError}

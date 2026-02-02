@@ -54,7 +54,13 @@ export async function loginUser(data: LoginUser): Promise<LoginUserService> {
   const match = await hashCompare(password, resData.passwordhash);
 
   if (match) {
-    return { success: true, id: resData.id };
+    return {
+      success: true,
+      id: resData.id,
+      workspaceId: resData.workspaceId,
+      timezone: resData.timezone,
+      name: resData.name,
+    };
   } else {
     return { success: false, message: "Invalid password" };
   }

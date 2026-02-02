@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { MailCheck } from "lucide-react";
-import TextInput from "@/components/rhd_inputs/TextInput";
+import TextInput from "@/components/rhf_inputs/TextInput";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useResetPasswordMutation } from "@/Store/api/resetPasswordApi/resetPasswordApi";
 import { toast } from "sonner";

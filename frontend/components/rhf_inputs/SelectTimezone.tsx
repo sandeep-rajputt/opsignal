@@ -28,7 +28,7 @@ function SelectTimezone<T extends FieldValues>({
         <Field>
           <FieldLabel htmlFor="timezone">Your Timezone</FieldLabel>
           <Select onValueChange={field.onChange} defaultValue={field.value}>
-            <SelectTrigger>
+            <SelectTrigger id="timezone">
               <SelectValue placeholder="Select timezone" />
             </SelectTrigger>
             <SelectContent>

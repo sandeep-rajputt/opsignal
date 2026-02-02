@@ -1,3 +1,4 @@
+import type { Timezone } from "../workspace/validation/timezoneSchema.js";
 import {
   createUserSchema,
   loginUserSchema,
@@ -24,11 +25,20 @@ export interface CheckUserQueryResponse {
   id: string;
   passwordhash: string;
   emailverified: boolean;
+  workspaceId: string | null;
+  timezone: Timezone;
+  name: string;
 }
 
 export type LoginUserService =
   | { success: false; message: string }
-  | { success: true; id: string };
+  | {
+      success: true;
+      id: string;
+      workspaceId: string | null;
+      timezone: Timezone;
+      name: string;
+    };
 
 export interface CreateUserSession {
   userId: string;

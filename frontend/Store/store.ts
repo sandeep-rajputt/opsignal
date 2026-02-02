@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import baseApi from "@/Store/api/baseApi";
+import userReducer from "@/Store/slice/userSlice";
 
 const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
+    user: userReducer,
   },
   middleware: (gdm) => gdm().concat(baseApi.middleware),
 });

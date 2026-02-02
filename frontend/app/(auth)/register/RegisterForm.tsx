@@ -1,8 +1,8 @@
 "use client";
 import { useForm } from "react-hook-form";
-import PasswordInput from "@/components/rhd_inputs/PasswordInput";
+import PasswordInput from "@/components/rhf_inputs/PasswordInput";
 import type { RegisterCredential } from "@/Store/api/registerApi/schemas/registerCredentialSchema";
-import TextInput from "@/components/rhd_inputs/TextInput";
+import TextInput from "@/components/rhf_inputs/TextInput";
 import { zodResolver } from "@hookform/resolvers/zod";
 import registerCredentialSchema from "@/Store/api/registerApi/schemas/registerCredentialSchema";
 import GoogleButton from "@/components/auth/GoogleButton";

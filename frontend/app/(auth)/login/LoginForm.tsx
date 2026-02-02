@@ -1,8 +1,8 @@
 "use client";
 import { useForm } from "react-hook-form";
-import PasswordInput from "@/components/rhd_inputs/PasswordInput";
+import PasswordInput from "@/components/rhf_inputs/PasswordInput";
 import type { LoginCredential } from "@/Store/api/loginApi/schemas/loginCredentialSchema";
-import TextInput from "@/components/rhd_inputs/TextInput";
+import TextInput from "@/components/rhf_inputs/TextInput";
 import { zodResolver } from "@hookform/resolvers/zod";
 import loginCredentialSchema from "@/Store/api/loginApi/schemas/loginCredentialSchema";
 import GoogleButton from "@/components/auth/GoogleButton";
@@ -13,6 +13,8 @@ import { useLoginMutation } from "@/Store/api/index";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import isApiError from "@/utils/isApiError";
+import { useAppDispatch } from "@/Store/hooks";
+import { setUser } from "@/Store/slice/userSlice";
 
 function LoginForm() {
   const {
@@ -22,15 +24,29 @@ function LoginForm() {
   } = useForm<LoginCredential>({
     resolver: zodResolver(loginCredentialSchema),
   });
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const [login] = useLoginMutation();
   const [disabled, setDisabled] = useState<boolean>(false);
 
   const onSubmit = async (data: LoginCredential) => {
     try {
-      await login(data).unwrap();
-      router.push("/onboarding");
+      const res = await login(data).unwrap();
       toast.success("Logged in Successfully");
+      if (res.data.workspaceId) {
+        dispatch(
+          setUser({
+            id: res.data.workspaceId,
+            name: res.data.name,
+            email: res.data.email,
+            timezone: res.data.timezone,
+            primaryWorkspace: null,
+          }),
+        );
+        router.push(`/dashboard/${res.data.workspaceId}`);
+      } else {
+        router.push("/onboarding");
+      }
     } catch (error) {
       const apiError = isApiError(error);
       toast.error(

@@ -14,6 +14,7 @@ async function emailHandler(job: EmailJobPayload) {
         to: job.to,
         emailType: job.emailType,
       });
+      break;
     case "resetPasswordEmail":
       await resetPasswordEmailHandler({
         from: job.from,

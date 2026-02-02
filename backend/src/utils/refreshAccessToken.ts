@@ -30,7 +30,7 @@ async function refreshAccessToken({
       }
       const newRefreshToken = createToken({
         key: config.REFRESH_TOKEN_SECRET,
-        data: jwtRes.data,
+        data: { id, sessionId },
         expiresIn: "7d",
       });
       const newAccessToken = createToken({

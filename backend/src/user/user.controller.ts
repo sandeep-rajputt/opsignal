@@ -143,7 +143,12 @@ export async function loginUser(req: Request, res: Response) {
       status: 200,
       message: "Logged in successfully.",
       path: req.originalUrl,
-      data: null,
+      data: {
+        workspaceId: resData.workspaceId,
+        timezone: resData.timezone,
+        name: resData.name,
+        email: data.data.email,
+      },
     });
   } catch (error) {
     console.log(error);

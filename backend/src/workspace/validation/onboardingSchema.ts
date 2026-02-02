@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { timezoneSchema } from "./common/timezoneSchema";
+import { timezoneSchema } from "./timezoneSchema.js";
 
 const onboardingSchema = z.object({
   workspaceName: z

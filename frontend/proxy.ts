@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const pathAllowedToAuthUser = ["/dashboard"];
+const pathAllowedToAuthUser = ["/dashboard", "/onboarding"];
 const pathNotAllowedToAuthUser = ["/login", "/register", "/verify"];
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
-
   if (pathAllowedToAuthUser.includes(pathname)) {
     const refresh_token = req.cookies.get("refresh_token");
     if (!refresh_token?.value) {

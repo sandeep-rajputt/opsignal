@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useQueryState } from "nuqs";
 import { useForm } from "react-hook-form";
-import PasswordInput from "@/components/rhd_inputs/PasswordInput";
+import PasswordInput from "@/components/rhf_inputs/PasswordInput";
 import { zodResolver } from "@hookform/resolvers/zod";
 import changePasswordSchema from "@/schemas/changePasswordSchema";
 import { z } from "zod";

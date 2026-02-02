@@ -21,7 +21,7 @@ export async function createUser(data: CreateUserQueryIncommingData) {
 export async function checkUser(data: string) {
   const res = await query<CheckUserQueryResponse>(
     `
-    SELECT u.email, u.password_hash AS passwordhash, u.id, u.email_verified AS emailVerified
+    SELECT u.email, u.password_hash AS passwordhash, u.id, u.email_verified AS emailVerified, u.primary_workspace AS workspaceId, u.timezone, u.name
     FROM users u
     WHERE u.email = $1
     AND u.deleted_at IS NULL

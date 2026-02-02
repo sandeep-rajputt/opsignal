@@ -4,13 +4,19 @@ import { Check } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import { OnboardingData } from "@/schemas/onboardingSchema";
 import SimpleCard from "@/components/shared/SimpleCard";
+import { Spinner } from "@/components/ui/spinner";
 
 interface OnboardingStep3Props {
   control: Control<OnboardingData>;
   goBack: () => void;
+  isSubmitting: boolean;
 }
 
-function OnboardingStep3({ control, goBack }: OnboardingStep3Props) {
+function OnboardingStep3({
+  control,
+  goBack,
+  isSubmitting,
+}: OnboardingStep3Props) {
   const { watch } = useFormContext();
   const selectedPlan = watch("plan");
 
@@ -30,7 +36,9 @@ function OnboardingStep3({ control, goBack }: OnboardingStep3Props) {
               {/* Free Plan */}
               <SimpleCard
                 className="p-0!"
-                onClick={() => field.onChange("free")}
+                onClick={() => {
+                  if (!isSubmitting) field.onChange("free");
+                }}
               >
                 <div
                   className={`relative border-2 rounded-lg p-6 cursor-pointer transition-all ${
@@ -89,7 +97,9 @@ function OnboardingStep3({ control, goBack }: OnboardingStep3Props) {
               {/* Premium Plan */}
               <SimpleCard
                 className="p-0!"
-                onClick={() => field.onChange("premium")}
+                onClick={() => {
+                  if (!isSubmitting) field.onChange("premium");
+                }}
               >
                 <div
                   className={`relative border-2 rounded-lg p-6 cursor-pointer transition-all ${
@@ -155,11 +165,23 @@ function OnboardingStep3({ control, goBack }: OnboardingStep3Props) {
       </div>
 
       <div className="w-full flex justify-between mt-10">
-        <Button onClick={goBack} variant={"outline"} size={"lg"} type="button">
+        <Button
+          onClick={goBack}
+          variant={"outline"}
+          size={"lg"}
+          type="button"
+          disabled={isSubmitting}
+        >
           Back
         </Button>
-        <Button className="ml-auto" size={"lg"} type="submit">
-          {selectedPlan === "premium" ? "Premium" : "Free"} Workspace
+        <Button
+          className="ml-auto"
+          size={"lg"}
+          type="submit"
+          disabled={isSubmitting}
+        >
+          {selectedPlan === "premium" ? "Premium" : "Free"} Workspace{" "}
+          {isSubmitting && <Spinner />}
         </Button>
       </div>
     </div>

@@ -1,20 +1,22 @@
--- Enable UUID extension (run this first if not already enabled)
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- Create users table
 CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email TEXT NOT NULL UNIQUE,
     password_hash TEXT DEFAULT NULL,
     name TEXT NOT NULL,
     avatar_url TEXT,
     email_verified BOOLEAN NOT NULL DEFAULT FALSE,
+    primary_workspace UUID DEFAULT NULL,
     notification BOOLEAN NOT NULL DEFAULT FALSE,
     last_active TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    timezone VARCHAR(255) NOT NULL DEFAULT 'UTC',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     deleted_at TIMESTAMPTZ DEFAULT NULL
 );
+
 
 CREATE INDEX idx_users_email_not_deleted
 ON users(email)

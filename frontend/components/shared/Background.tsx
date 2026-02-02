@@ -12,9 +12,9 @@ function Background({ children }: { children: ReactNode }) {
           `,
           backgroundSize: "20px 30px",
           WebkitMaskImage:
-            "radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
+            "radial-gradient(ellipse 70% 60% at 50% 0%, #000 5%, transparent 100%)",
           maskImage:
-            "radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
+            "radial-gradient(ellipse 70% 50% at 50% 0%, #000 5%, transparent 100%)",
         }}
       />
 

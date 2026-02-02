@@ -25,8 +25,12 @@ function OnboardingStep1({
       <p className="text-secondary pt-1">Workspace Identity</p>
       <div className="mt-10 flex flex-col gap-5">
         <Field>
-          <FieldLabel>Workspace Name</FieldLabel>
-          <Input {...nameRegister} placeholder="eg. Acme Corp" />
+          <FieldLabel htmlFor="workspace-name">Workspace Name</FieldLabel>
+          <Input
+            id="workspace-name"
+            {...nameRegister}
+            placeholder="eg. Acme Corp"
+          />
           {workspaceNameError && (
             <FieldDescription className="text-destructive">
               {workspaceNameError}
@@ -35,8 +39,9 @@ function OnboardingStep1({
         </Field>
 
         <Field>
-          <FieldLabel>Description</FieldLabel>
+          <FieldLabel htmlFor="workspace-description">Description</FieldLabel>
           <Textarea
+            id="workspace-description"
             {...descriptionRegister}
             placeholder="What is this workspace for? e.g. Design Team collaboration space."
           />

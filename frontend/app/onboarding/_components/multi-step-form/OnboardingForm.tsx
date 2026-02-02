@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
 import OnboardingStep1 from "@/app/onboarding/_components/multi-step-form/OnboardingStep1";
 import OnboardingStep2 from "@/app/onboarding/_components/multi-step-form/OnboardingStep2";
 import OnboardingStep3 from "./OnboardingStep3";
@@ -11,6 +12,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import onboardingSchema, {
   type OnboardingData,
 } from "@/schemas/onboardingSchema";
+import { useRouter } from "next/navigation";
+import { useCreatePrimaryWorkspaceMutation } from "@/Store/api/createPrimaryWorkspaceApi/createPrimaryWorkspaceApi";
 
 function OnboardingForm({ detectedTimezone }: { detectedTimezone: Timezone }) {
   const methods = useForm<OnboardingData>({
@@ -20,7 +23,9 @@ function OnboardingForm({ detectedTimezone }: { detectedTimezone: Timezone }) {
     },
     reValidateMode: "onBlur",
   });
-  const [step, setStep] = useState<1 | 2 | 3 | "success">(1);
+  const router = useRouter();
+  const [step, setStep] = useState<1 | 2 | 3 | "success" | "error">(1);
+  const [createWorkspace] = useCreatePrimaryWorkspaceMutation();
 
   async function handleStep1Submit() {
     const isValid = await methods.trigger([
@@ -41,8 +46,16 @@ function OnboardingForm({ detectedTimezone }: { detectedTimezone: Timezone }) {
     }
   }
 
-  function onSubmit(data: OnboardingData) {
-    console.log(data);
+  async function onSubmit(data: OnboardingData) {
+    try {
+      const res = await createWorkspace(data).unwrap();
+      router.push(`/dashboard/${res.data.id}`);
+      setStep("success");
+    } catch (err) {
+      console.log("error");
+      console.log(err);
+      setStep("error");
+    }
   }
 
   return (
@@ -74,10 +87,26 @@ function OnboardingForm({ detectedTimezone }: { detectedTimezone: Timezone }) {
                 <span className="ml-auto">All steps completed</span>
               </>
             )}
+            {step === "error" && (
+              <>
+                <span>Something went wrong</span>
+                <span className="ml-auto">Please try again</span>
+              </>
+            )}
           </FieldLabel>
 
           <Progress
-            value={step === 1 ? 0 : step === 2 ? 33 : step === 3 ? 66 : 100}
+            value={
+              step === 1
+                ? 0
+                : step === 2
+                  ? 33
+                  : step === 3
+                    ? 66
+                    : step === "success"
+                      ? 100
+                      : 66
+            }
             id="form-progress"
           />
         </Field>
@@ -124,10 +153,89 @@ function OnboardingForm({ detectedTimezone }: { detectedTimezone: Timezone }) {
             <OnboardingStep3
               control={methods.control}
               goBack={() => setStep(2)}
+              isSubmitting={methods.formState.isSubmitting}
             />
           )}
         </form>
       </FormProvider>
+      {step === "success" && (
+        <div className="max-w-xl w-full mx-auto text-center mt-10">
+          <div className="mb-8">
+            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg
+                className="w-10 h-10 text-green-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <h4 className="text-4xl font-bold mb-4">Workspace Created!</h4>
+            <p className="text-secondary text-lg">
+              Your workspace is being set up. You&apos;ll be redirected to your
+              dashboard in a moment.
+            </p>
+          </div>
+
+          <div className="flex items-center justify-center space-x-2 text-secondary">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+            <span>Setting up your workspace...</span>
+          </div>
+        </div>
+      )}
+      {step === "error" && (
+        <div className="max-w-xl w-full mx-auto text-center mt-10">
+          <div className="mb-8">
+            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg
+                className="w-10 h-10 text-red-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </div>
+            <h4 className="text-4xl font-bold mb-4">
+              Oops! Something went wrong
+            </h4>
+            <p className="text-secondary text-lg mb-8">
+              We couldn&apos;t create your workspace. Please check your
+              connection and try again.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              onClick={() => setStep(3)}
+              variant="outline"
+              size="lg"
+              type="button"
+            >
+              Go Back
+            </Button>
+            <Button
+              onClick={() => methods.handleSubmit(onSubmit)()}
+              size="lg"
+              type="button"
+            >
+              Try Again
+            </Button>
+          </div>
+        </div>
+      )}
+      {step === "error" && <div></div>}
     </div>
   );
 }
