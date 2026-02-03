@@ -3,9 +3,15 @@ import { User } from "@/schemas/userSchema";
 
 interface UserSlice {
   user: User | null;
+  isAuthenticated: boolean;
+  status: "initial" | "loading" | "success" | "failed";
 }
 
-const initialState: UserSlice = { user: null };
+const initialState: UserSlice = {
+  user: null,
+  isAuthenticated: false,
+  status: "initial",
+};
 
 const userSlice = createSlice({
   name: "user",
