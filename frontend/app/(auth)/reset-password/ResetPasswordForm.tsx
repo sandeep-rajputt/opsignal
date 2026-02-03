@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useResetPasswordMutation } from "@/Store/api/resetPasswordApi/resetPasswordApi";
 import { toast } from "sonner";
 import isApiError from "@/utils/isApiError";
+import { Spinner } from "@/components/ui/spinner";
 
 const FormDataSchema = z.object({
   email: emailSchema,
@@ -67,7 +68,13 @@ function ResetPassword() {
               isSubmitting ? "cursor-wait" : "cursor-pointer"
             }`}
           >
-            {isSubmitting ? "Submiting..." : "Submit"}
+            {isSubmitting ? (
+              <>
+                Submiting <Spinner />
+              </>
+            ) : (
+              "Submit"
+            )}
           </button>
         </form>
       )}

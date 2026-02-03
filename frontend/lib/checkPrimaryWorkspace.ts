@@ -23,8 +23,9 @@ async function checkPrimaryWorkspace() {
         "Content-Type": "application/json",
       },
       credentials: "include",
+      cache: "no-store",
     });
-    const data: ResponseType = JSON.parse(await res.text()); // <-- not json
+    const data: ResponseType = JSON.parse(await res.text());
 
     if (res.status === 200 && data.data.id) {
       return { status: 200, hasWorkspace: true, workspaceId: data.data.id };

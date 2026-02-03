@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import isApiError from "@/utils/isApiError";
 import { useAppDispatch } from "@/Store/hooks";
 import { setUser } from "@/Store/slice/userSlice";
+import { Spinner } from "@/components/ui/spinner";
 
 function LoginForm() {
   const {
@@ -32,19 +33,22 @@ function LoginForm() {
   const onSubmit = async (data: LoginCredential) => {
     try {
       const res = await login(data).unwrap();
+      console.log(res.data);
       toast.success("Logged in Successfully");
       if (res.data.workspaceId) {
+        console.log("inside");
         dispatch(
           setUser({
             id: res.data.workspaceId,
             name: res.data.name,
             email: res.data.email,
             timezone: res.data.timezone,
-            primaryWorkspace: null,
+            workspace: null,
           }),
         );
         router.push(`/dashboard/${res.data.workspaceId}`);
       } else {
+        console.log("hii");
         router.push("/onboarding");
       }
     } catch (error) {
@@ -82,11 +86,17 @@ function LoginForm() {
         <button
           type="submit"
           disabled={disabled || isSubmitting}
-          className={`w-fit mx-auto mt-7 px-7 py-2 rounded-md  bg-primary font-semibold text-white ${
+          className={`w-fit mx-auto mt-7 px-7 flex items-center justify-center gap-2 py-2 rounded-md  bg-primary font-semibold text-white ${
             disabled || isSubmitting ? "cursor-wait" : "cursor-pointer"
           }`}
         >
-          {isSubmitting ? "Submiting..." : "Submit"}
+          {isSubmitting ? (
+            <>
+              Submiting <Spinner />
+            </>
+          ) : (
+            "Submit"
+          )}
         </button>
       </form>
 

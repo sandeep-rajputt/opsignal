@@ -43,7 +43,7 @@ async function checkRefreshToken(
   if (!refreshToken) {
     res.clearCookie("access_token").clearCookie("refresh_token");
     return safeReject(res, {
-      message: "Unauthorized",
+      message: "Authentication required. Please log in to access this resource",
       path: req.originalUrl,
       status: 401,
     });

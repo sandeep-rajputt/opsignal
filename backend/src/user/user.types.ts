@@ -25,7 +25,7 @@ export interface CheckUserQueryResponse {
   id: string;
   passwordhash: string;
   emailverified: boolean;
-  workspaceId: string | null;
+  workspaceid: string | null;
   timezone: Timezone;
   name: string;
 }

@@ -13,6 +13,7 @@ import { useRegisterMutation } from "@/Store/api/index";
 import { MailCheck } from "lucide-react";
 import isApiError from "@/utils/isApiError";
 import { toast } from "sonner";
+import { Spinner } from "@/components/ui/spinner";
 
 function RegisterForm() {
   const {
@@ -93,7 +94,13 @@ function RegisterForm() {
                 disabled || isSubmitting ? "cursor-wait" : "cursor-pointer"
               }`}
             >
-              {isSubmitting ? "Submiting..." : "Submit"}
+              {isSubmitting ? (
+                <>
+                  Submiting <Spinner />
+                </>
+              ) : (
+                "Submit"
+              )}
             </button>
           </form>
 

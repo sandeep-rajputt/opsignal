@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import {
   createUserSchema,
   loginUserSchema,
@@ -24,6 +24,8 @@ import addRefreshToken from "../utils/addRefreshToken.js";
 import { updateRefreshTokenInDb } from "../utils/refreshAccessToken.js";
 import emailSchema from "../schemas/common/emailSchema.js";
 import { v4 as uuidv4 } from "uuid";
+import { getUserModel } from "./users.model.js";
+import createHttpError from "http-errors";
 
 export async function register(req: Request, res: Response) {
   try {
@@ -336,12 +338,18 @@ export async function checkChangePasswordToken(req: Request, res: Response) {
   }
 }
 
-export function checkAuth(_req: Request, res: Response) {
+export async function getUser(req: Request, res: Response, next: NextFunction) {
+  const user = await getUserModel(req.user?.id!);
+
+  if (!user) {
+    next(createHttpError(400, "User Not found"));
+  }
+
   return safeResponse(res, {
     status: 200,
     message: "You are here",
     path: "/me",
-    data: null,
+    data: user,
   });
 }
 

@@ -57,7 +57,7 @@ export async function loginUser(data: LoginUser): Promise<LoginUserService> {
     return {
       success: true,
       id: resData.id,
-      workspaceId: resData.workspaceId,
+      workspaceId: resData.workspaceid,
       timezone: resData.timezone,
       name: resData.name,
     };

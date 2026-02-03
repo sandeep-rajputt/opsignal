@@ -5,7 +5,7 @@ const pathNotAllowedToAuthUser = ["/login", "/register", "/verify"];
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  if (pathAllowedToAuthUser.includes(pathname)) {
+  if (pathAllowedToAuthUser.some((path) => pathname.startsWith(path))) {
     const refresh_token = req.cookies.get("refresh_token");
     if (!refresh_token?.value) {
       return NextResponse.redirect(new URL("/login", req.url));

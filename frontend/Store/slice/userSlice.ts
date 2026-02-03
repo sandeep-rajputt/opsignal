@@ -1,10 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "@/schemas/userSchema";
 
+type status = "initial" | "loading" | "success" | "failed";
+
 interface UserSlice {
   user: User | null;
   isAuthenticated: boolean;
-  status: "initial" | "loading" | "success" | "failed";
+  status: status;
 }
 
 const initialState: UserSlice = {
@@ -17,6 +19,13 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    updateAuthentication: (
+      state,
+      action: PayloadAction<{ auth: boolean; status: status }>,
+    ) => {
+      state.isAuthenticated = action.payload.auth;
+      state.status = action.payload.status;
+    },
     setUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
     },
@@ -25,14 +34,19 @@ const userSlice = createSlice({
     },
     updatePrimaryWorkspace: (
       state,
-      action: PayloadAction<User["primaryWorkspace"]>,
+      action: PayloadAction<User["workspace"]>,
     ) => {
       if (state.user) {
-        state.user.primaryWorkspace = action.payload;
+        state.user.workspace = action.payload;
       }
     },
   },
 });
 
-export const { setUser, clearUser, updatePrimaryWorkspace } = userSlice.actions;
+export const {
+  setUser,
+  clearUser,
+  updatePrimaryWorkspace,
+  updateAuthentication,
+} = userSlice.actions;
 export default userSlice.reducer;

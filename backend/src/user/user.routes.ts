@@ -1,7 +1,7 @@
 import express from "express";
 const userRouter = express.Router();
 import {
-  checkAuth,
+  getUser,
   checkChangePasswordToken,
   loginUser,
   register,
@@ -75,6 +75,6 @@ userRouter.post(
   changeUserPassword,
 );
 
-userRouter.get("/me", authMiddleware, checkAuth);
+userRouter.get("/me", authMiddleware, getUser);
 
 export default userRouter;
