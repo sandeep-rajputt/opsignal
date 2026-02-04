@@ -5,6 +5,7 @@ import { query } from "../../config/db.js";
 const pingDbWorker = new Worker(
   "ping-db",
   async () => {
+    console.log("Ping DB");
     const start = performance.now();
     await query("SELECT 1");
     const ms = performance.now() - start;
@@ -15,5 +16,7 @@ const pingDbWorker = new Worker(
   },
   workerOptions,
 );
+
+console.log("✅ Ping DB worker started and listening for jobs");
 
 export default pingDbWorker;

@@ -27,12 +27,22 @@ export async function onboardingModel({
     const workspaceId = workspaceRes.rows[0]?.id!;
 
     // create Team
-    await client.query(
+    await client.query<{ id: string }>(
       `
         INSERT INTO teams(workspace_id, name, slug)
         VALUES($1, $2, '${uuidv4()}')
+        RETURNING id
         `,
       [workspaceId, data.teamName],
+    );
+
+    // create member
+    await client.query(
+      `
+        INSERT INTO members(user_id, workspace_id, invited_by, role)
+        VALUES ($1, $2, $3, 'owner')
+      `,
+      [userId, workspaceId, userId],
     );
 
     // update user

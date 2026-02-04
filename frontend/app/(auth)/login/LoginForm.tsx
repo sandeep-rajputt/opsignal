@@ -33,10 +33,8 @@ function LoginForm() {
   const onSubmit = async (data: LoginCredential) => {
     try {
       const res = await login(data).unwrap();
-      console.log(res.data);
       toast.success("Logged in Successfully");
       if (res.data.workspaceId) {
-        console.log("inside");
         dispatch(
           setUser({
             id: res.data.workspaceId,
@@ -48,7 +46,6 @@ function LoginForm() {
         );
         router.push(`/dashboard/${res.data.workspaceId}`);
       } else {
-        console.log("hii");
         router.push("/onboarding");
       }
     } catch (error) {

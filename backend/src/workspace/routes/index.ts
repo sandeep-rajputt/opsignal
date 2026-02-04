@@ -3,9 +3,11 @@ import basicWorkspaceRouter from "./workspace.routes.js";
 import primaryWorkspaceController, {
   checkPrimaryWorkspaceController,
 } from "../controllers/primaryWorkspace.controller.js";
+import getAllWorkspaceController from "../controllers/getAllWorkspace.controller.js";
 
 const workspaceRouter = express.Router();
 
+workspaceRouter.get("/get-all-workspace", getAllWorkspaceController);
 workspaceRouter.post("/create-primary-workspace", primaryWorkspaceController);
 workspaceRouter.get("/check-primary", checkPrimaryWorkspaceController);
 

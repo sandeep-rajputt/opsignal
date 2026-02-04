@@ -1,14 +1,21 @@
-import Background from "@/components/shared/Background";
+import { checkServerAuth } from "@/lib/validateServerAuth";
+import { redirect } from "next/navigation";
 import { ReactNode } from "react";
+import { HydrateAuth } from "./HydrateAuth";
 
-async function DashboardLayout({ children }: { children: ReactNode }) {
+async function DashboardRouteLayout({ children }: { children: ReactNode }) {
+  const { isAuthenticated, user } = await checkServerAuth();
+
+  if (!isAuthenticated) {
+    redirect("/login");
+  }
+
   return (
-    <Background>
-      <div className="h-screen w-full flex items-center justify-center">
-        {children}
-      </div>
-    </Background>
+    <>
+      <HydrateAuth user={user} auth={isAuthenticated} />
+      {children}
+    </>
   );
 }
 
-export default DashboardLayout;
+export default DashboardRouteLayout;
