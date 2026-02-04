@@ -1,6 +1,13 @@
 "use client";
-import { Sidebar, SidebarHeader, SidebarRail } from "@/components/ui/sidebar";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarRail,
+} from "@/components/ui/sidebar";
 import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 export function DashboardSidebar({
   ...props
@@ -10,6 +17,12 @@ export function DashboardSidebar({
       <SidebarHeader>
         <WorkspaceSwitcher />
       </SidebarHeader>
+      <SidebarContent>
+        <></>
+      </SidebarContent>
+      <SidebarFooter>
+        <ThemeSwitcher />
+      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

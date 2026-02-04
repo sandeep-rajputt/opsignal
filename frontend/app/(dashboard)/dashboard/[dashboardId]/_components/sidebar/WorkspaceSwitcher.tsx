@@ -1,10 +1,5 @@
 "use client";
-import {
-  ArrowLeftFromLine,
-  ArrowUpRight,
-  ChevronsUpDown,
-  CircleFadingPlus,
-} from "lucide-react";
+import { ChevronsUpDown, CircleFadingPlus } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -50,7 +45,7 @@ export function WorkspaceSwitcher() {
                 </div>
                 <div className="grid flex-1 gap-1 text-left text-sm leading-tight">
                   <Skeleton className="h-4 w-32" />
-                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="h-3 w-20" />
                 </div>
               </SidebarMenuButton>
             </DropdownMenuTrigger>
@@ -84,7 +79,9 @@ export function WorkspaceSwitcher() {
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{selected.name}</span>
-                <span className="truncate text-xs">{selected.role}</span>
+                <span className="truncate text-xs text-secondary">
+                  {selected.role}
+                </span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>

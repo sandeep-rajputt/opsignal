@@ -1,9 +1,8 @@
 "use client";
 
 import { createContext, useEffect, useState } from "react";
-import { useAppSelector, useAppDispatch } from "@/Store/hooks";
 
-type ThemeMode = "light" | "dark" | "system";
+export type ThemeMode = "light" | "dark" | "system";
 
 interface ThemeContextType {
   theme: ThemeMode;
