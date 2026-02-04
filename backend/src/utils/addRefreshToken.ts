@@ -6,17 +6,19 @@ import getCookieDomain from "./getCookieDomain.js";
 function addRefreshToken({
   res,
   id,
+  sessionId,
   token,
 }: {
   res: Response;
   id: string | null;
+  sessionId: string | null;
   token: string | null;
 }) {
   const refreshToken =
     token ||
     createToken({
       key: config.REFRESH_TOKEN_SECRET,
-      data: { id },
+      data: { id, sessionId },
       expiresIn: "7d",
     });
 

@@ -13,6 +13,7 @@ import {
   loginUser as loginUserService,
   verifyUser,
   changeUserPasswordService,
+  logoutUserService,
 } from "./user.service.js";
 import safeResponse from "../utils/safeResponse.js";
 import enqueueEmail from "../jobs/queues/email.queue.js";
@@ -137,7 +138,7 @@ export async function loginUser(req: Request, res: Response) {
     await updateRefreshTokenInDb(refreshToken);
 
     // add refresh token in cookie
-    addRefreshToken({ res, id: null, token: refreshToken });
+    addRefreshToken({ res, id: null, sessionId: null, token: refreshToken });
 
     // add access token in cookie
     addAccessToken({ res, id: resData.id, token: null });
@@ -429,6 +430,29 @@ export async function changeUserPassword(req: Request, res: Response) {
     return safeResponse(res, {
       path: req.originalUrl,
       message: "Password changed successfully",
+      data: null,
+      status: 200,
+    });
+  } catch (error) {
+    console.log(error);
+    return safeReject(res, {
+      path: req.originalUrl,
+      message: "Something went wrong",
+      status: 500,
+    });
+  }
+}
+
+export async function logoutUser(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    await logoutUserService(req, res, next);
+    return safeResponse(res, {
+      path: req.originalUrl,
+      message: "Logout successfully",
       data: null,
       status: 200,
     });

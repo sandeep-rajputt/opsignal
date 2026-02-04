@@ -1,4 +1,4 @@
-import type { Request } from "express";
+import type { NextFunction, Request, Response } from "express";
 import { createHash, hashCompare } from "../utils/hash.js";
 import type { CreateUser, LoginUser, LoginUserService } from "./user.types.js";
 import {
@@ -9,7 +9,11 @@ import {
   getUserIdByEmail,
   verifyUser as verifyUserModel,
   updateUserPassword,
+  deleteSessionModel,
 } from "./users.model.js";
+import { verifyToken } from "../utils/jwt.js";
+import config from "../config/config.js";
+import createHttpError from "http-errors";
 
 export async function createUser(data: CreateUser) {
   const hashPassword = await createHash(data.password);
@@ -87,4 +91,21 @@ export async function changeUserPasswordService(
   const hashedPassword = await createHash(newPassword);
   await updateUserPassword(id, hashedPassword);
   return;
+}
+
+export async function logoutUserService(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const resJwt = verifyToken({
+    token: req.cookies.refresh_token,
+    secret: config.REFRESH_TOKEN_SECRET,
+  });
+  if (resJwt.success) {
+    await deleteSessionModel(resJwt.data?.sessionId as string);
+    res.clearCookie("access_token").clearCookie("refresh_token");
+    return;
+  }
+  next(createHttpError(400, "Unable to logout"));
 }

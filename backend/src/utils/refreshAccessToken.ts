@@ -39,7 +39,12 @@ async function refreshAccessToken({
         expiresIn: "15m",
       });
 
-      addRefreshToken({ res, token: newRefreshToken, id: null });
+      addRefreshToken({
+        res,
+        token: newRefreshToken,
+        id: null,
+        sessionId: null,
+      });
       addAccessToken({ res, token: newAccessToken, id: null });
 
       const dbResult = await updateRefreshTokenInDb(newRefreshToken);

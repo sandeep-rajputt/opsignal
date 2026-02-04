@@ -12,6 +12,7 @@ import ipRateLimiter from "../middlewares/ipRateLimiter.js";
 import { verifyController } from "./user.controller.js";
 import userAgentMiddleware from "../middlewares/userAgentMiddleware.js";
 import authMiddleware from "../middlewares/auth.middleware.js";
+import { logoutUser } from "./user.controller.js";
 
 userRouter.post(
   "/register",
@@ -73,6 +74,16 @@ userRouter.post(
     path: "change-user-password",
   }),
   changeUserPassword,
+);
+
+userRouter.post(
+  "/logout",
+  ipRateLimiter({
+    maxRequests: 1,
+    timeInMilliseconds: 1000,
+    path: "logout",
+  }),
+  logoutUser,
 );
 
 userRouter.get("/me", authMiddleware, getUser);

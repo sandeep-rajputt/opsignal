@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChevronUp, Lock, LogOut, MonitorSmartphone, User } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import LogoutButton from "./LogoutButton";
 
 function SideUser() {
   const router = useRouter();
@@ -63,7 +64,7 @@ function SideUser() {
       <SidebarMenuItem>
         <Menubar noClass={true} className="w-full">
           <MenubarMenu>
-            <MenubarTrigger asChild className="p-0 w-full">
+            <MenubarTrigger asChild className="p-0 w-full px-2">
               <SidebarMenuButton
                 size="lg"
                 className="data-[state=open]:bg-sidebar-accent py-7 data-[state=open]:text-sidebar-accent-foreground"
@@ -113,10 +114,11 @@ function SideUser() {
                 </MenubarItem>
               </MenubarGroup>
               <MenubarSeparator />
-              <MenubarItem variant="destructive">
+              {/* <MenubarItem variant="destructive">
                 <LogOut />
                 Logout
-              </MenubarItem>
+              </MenubarItem> */}
+              <LogoutButton />
             </MenubarContent>
           </MenubarMenu>
         </Menubar>

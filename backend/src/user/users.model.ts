@@ -1,3 +1,4 @@
+import type { assert } from "console";
 import { query } from "../config/db.js";
 import type { Timezone } from "../workspace/validation/timezoneSchema.js";
 import type {
@@ -121,4 +122,16 @@ export async function getUserModel(userId: string) {
   );
 
   return res[0];
+}
+
+export async function deleteSessionModel(sessionId: string) {
+  await query(
+    `
+    DELETE FROM sessions
+    WHERE id = $1
+    `,
+    [sessionId],
+  );
+
+  return;
 }
