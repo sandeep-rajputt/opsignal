@@ -15,13 +15,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  SunMedium,
-  Moon,
-  MonitorCog,
-  ChevronsUpDown,
-  Check,
-} from "lucide-react";
+import { SunMedium, Moon, ChevronsUpDown, Check, Monitor } from "lucide-react";
 
 const themes = ["Light", "Dark", "System"];
 
@@ -38,20 +32,20 @@ function ThemeSwitcher() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent py-7 data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className=" text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                 {selected === "Light" && (
-                  <SunMedium className="text-secondary" />
+                  <SunMedium className="text-secondary text-2xl" />
                 )}
                 {selected === "Dark" && <Moon className="text-secondary" />}
                 {selected === "System" && (
-                  <MonitorCog className="text-secondary" />
+                  <Monitor className="text-secondary" />
                 )}
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate text-xs text-secondary">Theme</span>
-                <span className="truncate font-medium">{selected}</span>
+                <span className="truncate font-medium text-sm">{selected}</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
@@ -78,7 +72,7 @@ function ThemeSwitcher() {
                   <div className="flex size-6 items-center justify-center rounded-md border">
                     {t === "Light" && <SunMedium />}
                     {t === "Dark" && <Moon />}
-                    {t === "System" && <MonitorCog />}
+                    {t === "System" && <Monitor />}
                   </div>
                   {t}
                   {t === selected && (

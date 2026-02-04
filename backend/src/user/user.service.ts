@@ -60,6 +60,7 @@ export async function loginUser(data: LoginUser): Promise<LoginUserService> {
       workspaceId: resData.workspaceid,
       timezone: resData.timezone,
       name: resData.name,
+      avatarUrl: resData.avatarurl,
     };
   } else {
     return { success: false, message: "Invalid password" };

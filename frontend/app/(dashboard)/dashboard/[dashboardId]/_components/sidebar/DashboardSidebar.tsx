@@ -6,8 +6,17 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
-import ThemeSwitcher from "./ThemeSwitcher";
+import { WorkspaceSwitcher } from "@/app/(dashboard)/dashboard/[dashboardId]/_components/sidebar/WorkspaceSwitcher";
+import SideUser from "@/app/(dashboard)/dashboard/[dashboardId]/_components/sidebar/SideUser";
+import dynamic from "next/dynamic";
+
+const ThemeSwitcher = dynamic(
+  () =>
+    import("@/app/(dashboard)/dashboard/[dashboardId]/_components/sidebar/ThemeSwitcher"),
+  {
+    ssr: false,
+  },
+);
 
 export function DashboardSidebar({
   ...props
@@ -22,6 +31,7 @@ export function DashboardSidebar({
       </SidebarContent>
       <SidebarFooter>
         <ThemeSwitcher />
+        <SideUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

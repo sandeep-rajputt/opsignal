@@ -28,6 +28,7 @@ export interface CheckUserQueryResponse {
   workspaceid: string | null;
   timezone: Timezone;
   name: string;
+  avatarurl: string | null;
 }
 
 export type LoginUserService =
@@ -38,6 +39,7 @@ export type LoginUserService =
       workspaceId: string | null;
       timezone: Timezone;
       name: string;
+      avatarUrl: string | null;
     };
 
 export interface CreateUserSession {

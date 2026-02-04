@@ -33,18 +33,19 @@ function LoginForm() {
   const onSubmit = async (data: LoginCredential) => {
     try {
       const res = await login(data).unwrap();
+      dispatch(
+        setUser({
+          id: res.data.id,
+          name: res.data.name,
+          email: res.data.email,
+          timezone: res.data.timezone,
+          avatarUrl: res.data.avatarUrl,
+          workspace: res.data.workspace,
+        }),
+      );
       toast.success("Logged in Successfully");
-      if (res.data.workspaceId) {
-        dispatch(
-          setUser({
-            id: res.data.workspaceId,
-            name: res.data.name,
-            email: res.data.email,
-            timezone: res.data.timezone,
-            workspace: null,
-          }),
-        );
-        router.push(`/dashboard/${res.data.workspaceId}`);
+      if (res.data.workspace) {
+        router.push(`/dashboard/${res.data.workspace}`);
       } else {
         router.push("/onboarding");
       }

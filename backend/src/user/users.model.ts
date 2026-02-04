@@ -22,7 +22,7 @@ export async function createUser(data: CreateUserQueryIncommingData) {
 export async function checkUser(data: string) {
   const res = await query<CheckUserQueryResponse>(
     `
-    SELECT u.email, u.password_hash AS passwordhash, u.id, u.email_verified AS emailverified, u.primary_workspace AS workspaceId, u.timezone, u.name
+    SELECT u.email, u.password_hash AS passwordhash, u.id, u.email_verified AS emailverified, u.primary_workspace AS workspaceId, u.timezone, u.name, u.avatar_url AS avatarurl
     FROM users u
     WHERE u.email = $1
     AND u.deleted_at IS NULL
@@ -107,11 +107,13 @@ export async function getUserModel(userId: string) {
   const res = await query<{
     id: string;
     name: string;
+    email: string;
     timezone: Timezone;
     workspace: string;
+    avatarurl: string | null;
   }>(
     `
-    SELECT u.id, u.name, u.email, u.timezone, u.primary_workspace AS workspace
+    SELECT u.id, u.name, u.email, u.timezone, u.primary_workspace AS workspace, u.avatar_url AS avatarurl
     FROM users u
     WHERE u.id = $1
     `,

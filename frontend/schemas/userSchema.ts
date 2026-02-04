@@ -7,6 +7,8 @@ export const userSchema = z.object({
   email: z.string().email("Invalid email address"),
   timezone: timezoneSchema,
   workspace: z.string().nullable,
+  avatarUrl: z.string().nullable().optional(),
 });
 
 export type User = z.infer<typeof userSchema>;
+export default userSchema;

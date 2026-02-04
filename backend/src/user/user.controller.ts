@@ -26,6 +26,7 @@ import emailSchema from "../schemas/common/emailSchema.js";
 import { v4 as uuidv4 } from "uuid";
 import { getUserModel } from "./users.model.js";
 import createHttpError from "http-errors";
+import { email } from "zod";
 
 export async function register(req: Request, res: Response) {
   try {
@@ -146,10 +147,12 @@ export async function loginUser(req: Request, res: Response) {
       message: "Logged in successfully.",
       path: req.originalUrl,
       data: {
-        workspaceId: resData.workspaceId,
-        timezone: resData.timezone,
+        id: resData.id,
         name: resData.name,
         email: data.data.email,
+        timezone: resData.timezone,
+        workspace: resData.workspaceId,
+        avatarUrl: resData.avatarUrl,
       },
     });
   } catch (error) {
@@ -349,7 +352,14 @@ export async function getUser(req: Request, res: Response, next: NextFunction) {
     status: 200,
     message: "You are here",
     path: "/me",
-    data: user,
+    data: {
+      id: user?.id,
+      name: user?.name,
+      timezone: user?.timezone,
+      workspace: user?.workspace,
+      email: user?.email,
+      avatarUrl: user?.avatarurl,
+    },
   });
 }
 
