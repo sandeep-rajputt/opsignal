@@ -9,6 +9,7 @@ CREATE TABLE users (
     avatar_url TEXT,
     email_verified BOOLEAN NOT NULL DEFAULT FALSE,
     primary_workspace UUID DEFAULT NULL,
+    slots INTEGER NOT NULL DEFAULT 5,
     notification BOOLEAN NOT NULL DEFAULT FALSE,
     last_active TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     timezone VARCHAR(255) NOT NULL DEFAULT 'UTC',

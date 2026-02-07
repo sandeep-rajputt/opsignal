@@ -22,7 +22,7 @@ function CreateWorkspaceDialog({
     >
       <DialogContent className="w-full max-w-2xl! ">
         <DialogTitle>Create New Workspace</DialogTitle>
-        <div className="no-scrollbar overflow-y-auto max-h-[90dvh]!">
+        <div className="no-scrollbar overflow-y-auto max-h-[80dvh]!">
           <CreateWorkspaceForm
             detectedTimezone={detectedTimezone as Timezone}
           />

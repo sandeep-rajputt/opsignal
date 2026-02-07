@@ -112,9 +112,10 @@ export async function getUserModel(userId: string) {
     timezone: Timezone;
     workspace: string;
     avatarurl: string | null;
+    slots: number;
   }>(
     `
-    SELECT u.id, u.name, u.email, u.timezone, u.primary_workspace AS workspace, u.avatar_url AS avatarurl
+    SELECT u.id, u.name, u.email, u.timezone, u.primary_workspace AS workspace, u.avatar_url AS avatarurl, u.slots
     FROM users u
     WHERE u.id = $1
     `,

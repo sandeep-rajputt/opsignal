@@ -3,11 +3,13 @@ import { createSlice } from "@reduxjs/toolkit";
 interface Dialogs {
   logout: boolean;
   addNewWorkspace: boolean;
+  addWorkspaceSlot: boolean;
 }
 
 const initialState: Dialogs = {
   logout: false,
   addNewWorkspace: false,
+  addWorkspaceSlot: false,
 };
 
 const dialogsSlice = createSlice({
@@ -26,6 +28,12 @@ const dialogsSlice = createSlice({
     hideAddNewWorkspace(state) {
       state.addNewWorkspace = false;
     },
+    showAddWorkspaceSlot(state) {
+      state.addWorkspaceSlot = true;
+    },
+    hideAddWorkspaceSlot(state) {
+      state.addWorkspaceSlot = false;
+    },
   },
 });
 
@@ -34,6 +42,8 @@ export const {
   showAddNewWorkspace,
   hideLogout,
   hideAddNewWorkspace,
+  showAddWorkspaceSlot,
+  hideAddWorkspaceSlot,
 } = dialogsSlice.actions;
 
 export default dialogsSlice.reducer;

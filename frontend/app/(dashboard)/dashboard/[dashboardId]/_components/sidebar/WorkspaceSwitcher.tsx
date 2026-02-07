@@ -27,7 +27,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/Store/hooks";
-import { showAddNewWorkspace } from "@/Store/slice/dialogsSlice";
+import {
+  showAddNewWorkspace,
+  showAddWorkspaceSlot,
+} from "@/Store/slice/dialogsSlice";
+import { useAppSelector } from "@/Store/hooks";
 
 export function WorkspaceSwitcher() {
   const router = useRouter();
@@ -36,12 +40,13 @@ export function WorkspaceSwitcher() {
   const dispatch = useAppDispatch();
   const { isLoading, data, isFetching } = useGetUserAllWorkspacesQuery(null);
   const { isMobile } = useSidebar();
+  const slots = useAppSelector((state) => state.user.user?.slots);
 
   if (isFetching || isLoading) {
     return <Loader />;
   }
 
-  if (!data?.data.length) {
+  if (!data?.data.length || !slots) {
     router.push("/login");
     return;
   }
@@ -82,13 +87,20 @@ export function WorkspaceSwitcher() {
               <div className="w-full">
                 <div className="flex items-center justify-between w-full">
                   <p>Workspaces</p>
-                  <p>{data.data.length}/5</p>
+                  <p>
+                    {data.data.length}/{slots}
+                  </p>
                 </div>
                 <div className="mt-4">
-                  <Progress value={data.data.length * 20} />
+                  <Progress value={(data.data.length / slots) * 100} />
                 </div>
                 <div className="mt-3">
-                  <Button className="w-full">⚡ Add Workspace Slots</Button>
+                  <Button
+                    className="w-full"
+                    onClick={() => dispatch(showAddWorkspaceSlot())}
+                  >
+                    ⚡ Add Workspace Slots
+                  </Button>
                 </div>
               </div>
             </DropdownMenuItem>
@@ -116,9 +128,11 @@ export function WorkspaceSwitcher() {
                 ),
             )}
 
-            <DropdownMenuLabel className="text-muted-foreground text-xs">
-              Joined Workspaces
-            </DropdownMenuLabel>
+            {data.data.length > 1 && (
+              <DropdownMenuLabel className="text-muted-foreground text-xs">
+                Joined Workspaces
+              </DropdownMenuLabel>
+            )}
             {data.data.map(
               (workspace, index) =>
                 workspace.id !== dashboardId && (

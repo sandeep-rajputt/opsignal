@@ -367,6 +367,7 @@ export async function getUser(req: Request, res: Response, next: NextFunction) {
       workspace: user?.workspace,
       email: user?.email,
       avatarUrl: user?.avatarurl,
+      slots: user?.slots,
     };
 
     await redisClient.set(

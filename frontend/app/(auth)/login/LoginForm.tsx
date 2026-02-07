@@ -33,16 +33,7 @@ function LoginForm() {
   const onSubmit = async (data: LoginCredential) => {
     try {
       const res = await login(data).unwrap();
-      dispatch(
-        setUser({
-          id: res.data.id,
-          name: res.data.name,
-          email: res.data.email,
-          timezone: res.data.timezone,
-          avatarUrl: res.data.avatarUrl,
-          workspace: res.data.workspace,
-        }),
-      );
+      dispatch(setUser({ ...res.data }));
       toast.success("Logged in Successfully");
       if (res.data.workspace) {
         router.push(`/dashboard/${res.data.workspace}`);

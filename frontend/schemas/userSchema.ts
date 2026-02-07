@@ -8,6 +8,7 @@ export const userSchema = z.object({
   timezone: timezoneSchema,
   workspace: z.string().nullable,
   avatarUrl: z.string().nullable().optional(),
+  slots: z.number(),
 });
 
 export type User = z.infer<typeof userSchema>;
