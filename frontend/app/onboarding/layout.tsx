@@ -3,14 +3,17 @@ import { ReactNode } from "react";
 import Container from "@/components/shared/Comtainer";
 import OnboardingHeader from "./_components/OnboardingHeader";
 import { redirect } from "next/navigation";
-import checkPrimaryWorkspace from "@/lib/checkPrimaryWorkspace";
-import ClientPage from "@/app/onboarding/_components/ClientPage";
+import { checkServerAuth } from "@/lib/validateServerAuth";
 
 async function OnboardingLayout({ children }: { children: ReactNode }) {
-  const { status, hasWorkspace, workspaceId } = await checkPrimaryWorkspace();
+  const { isAuthenticated, user } = await checkServerAuth();
 
-  if (status === 200 && hasWorkspace && workspaceId) {
-    redirect(`/dashboard/${workspaceId}`);
+  if (!isAuthenticated) {
+    redirect("/login");
+  }
+
+  if (user.workspace) {
+    redirect(`/dashboard/${user.workspace}`);
   }
 
   return (
@@ -18,9 +21,7 @@ async function OnboardingLayout({ children }: { children: ReactNode }) {
       <Container className="px-3">
         <OnboardingHeader />
       </Container>
-      <Container>
-        <ClientPage status={status}>{children}</ClientPage>
-      </Container>
+      <Container>{children}</Container>
     </Background>
   );
 }

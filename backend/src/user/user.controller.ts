@@ -343,25 +343,53 @@ export async function checkChangePasswordToken(req: Request, res: Response) {
 }
 
 export async function getUser(req: Request, res: Response, next: NextFunction) {
-  const user = await getUserModel(req.user?.id!);
+  try {
+    const redisData = await redisClient.get(`user:${req.user?.id}`);
+    if (redisData) {
+      return safeResponse(res, {
+        status: 200,
+        message: "You are here",
+        path: "/me",
+        data: JSON.parse(redisData),
+      });
+    }
 
-  if (!user) {
-    next(createHttpError(400, "User Not found"));
-  }
+    const user = await getUserModel(req.user?.id!);
 
-  return safeResponse(res, {
-    status: 200,
-    message: "You are here",
-    path: "/me",
-    data: {
+    if (!user) {
+      next(createHttpError(400, "User Not found"));
+    }
+
+    const data = {
       id: user?.id,
       name: user?.name,
       timezone: user?.timezone,
       workspace: user?.workspace,
       email: user?.email,
       avatarUrl: user?.avatarurl,
-    },
-  });
+    };
+
+    await redisClient.set(
+      `user:${req.user?.id}`,
+      JSON.stringify(data),
+      "EX",
+      5 * 60 * 1000,
+    );
+
+    return safeResponse(res, {
+      status: 200,
+      message: "You are here",
+      path: "/me",
+      data: data,
+    });
+  } catch (error) {
+    console.log(error);
+    return safeReject(res, {
+      path: req.originalUrl,
+      message: "Something went wrong",
+      status: 500,
+    });
+  }
 }
 
 export async function changeUserPassword(req: Request, res: Response) {

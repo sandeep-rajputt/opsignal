@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import baseApi from "@/Store/api/baseApi";
 import userReducer from "@/Store/slice/userSlice";
+import dialogsReducer from "@/Store/slice/dialogsSlice";
 
 const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
     user: userReducer,
+    dialogs: dialogsReducer,
   },
   middleware: (gdm) => gdm().concat(baseApi.middleware),
 });

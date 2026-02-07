@@ -1,14 +1,13 @@
-import checkPrimaryWorkspace from "@/lib/checkPrimaryWorkspace";
 import { redirect } from "next/navigation";
+import { checkServerAuth } from "@/lib/validateServerAuth";
 
 async function DashboardPage() {
-  const { status, hasWorkspace, workspaceId } = await checkPrimaryWorkspace();
-
-  if (status === 200 && hasWorkspace && workspaceId) {
-    redirect(`/dashboard/${workspaceId}`);
+  const { user } = await checkServerAuth();
+  if (user?.workspace) {
+    redirect(`/dashboard/${user.workspace}`);
+  } else {
+    redirect("/onboarding");
   }
-
-  redirect("/login");
 }
 
 export default DashboardPage;

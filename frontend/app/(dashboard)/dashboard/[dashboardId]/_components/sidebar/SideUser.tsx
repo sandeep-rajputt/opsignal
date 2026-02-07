@@ -19,11 +19,13 @@ import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChevronUp, Lock, LogOut, MonitorSmartphone, User } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import LogoutButton from "./LogoutButton";
+import { useAppDispatch } from "@/Store/hooks";
+import { showLogout } from "@/Store/slice/dialogsSlice";
 
 function SideUser() {
   const router = useRouter();
   const { isLoading, data } = useGetUserQuery(null);
+  const dispatch = useAppDispatch();
 
   if (isLoading) {
     return (
@@ -114,11 +116,13 @@ function SideUser() {
                 </MenubarItem>
               </MenubarGroup>
               <MenubarSeparator />
-              {/* <MenubarItem variant="destructive">
+              <MenubarItem
+                variant="destructive"
+                onClick={() => dispatch(showLogout())}
+              >
                 <LogOut />
                 Logout
-              </MenubarItem> */}
-              <LogoutButton />
+              </MenubarItem>
             </MenubarContent>
           </MenubarMenu>
         </Menubar>

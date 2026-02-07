@@ -5,17 +5,17 @@ import safeReject from "../utils/safeReject.js";
 type RateLimiter = {
   path: string;
   maxRequests: number;
-  timeInMilliseconds: number;
+  timeInSeconds: number;
 };
 
-function ipRateLimiter({ path, maxRequests, timeInMilliseconds }: RateLimiter) {
+function ipRateLimiter({ path, maxRequests, timeInSeconds }: RateLimiter) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userIp = req.ip || "unknown";
       const key = `rate_limit:${path}:ip:${userIp}`;
 
       const now = Date.now();
-      const startTime = now - timeInMilliseconds;
+      const startTime = now - timeInSeconds;
 
       await redisClient.zremrangebyscore(key, 0, startTime);
 

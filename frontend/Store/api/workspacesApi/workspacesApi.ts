@@ -5,6 +5,7 @@ const workspaceApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getUserAllWorkspaces: builder.query<GetAllWorkspaces, null>({
       query: () => `/api/workspace/get-all-workspace`,
+      providesTags: ["Workspaces"],
     }),
   }),
 });

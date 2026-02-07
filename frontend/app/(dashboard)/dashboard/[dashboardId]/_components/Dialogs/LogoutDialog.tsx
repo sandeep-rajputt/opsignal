@@ -1,24 +1,24 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { LogOut } from "lucide-react";
-import { memo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { MenubarItem } from "@/components/ui/menubar";
 import { toast } from "sonner";
 import { useLogoutUserMutation } from "@/Store/api/logoutUserApi";
 import isApiError from "@/utils/isApiError";
 import { Spinner } from "@/components/ui/spinner";
+import { hideLogout } from "@/Store/slice/dialogsSlice";
+import { useAppDispatch, useAppSelector } from "@/Store/hooks";
 
-const LogOutButton = () => {
-  const [open, setOpen] = useState(false);
+function LogoutDialog() {
+  const logout = useAppSelector((state) => state.dialogs.logout);
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const [logoutUser, { isLoading }] = useLogoutUserMutation();
 
@@ -33,27 +33,13 @@ const LogOutButton = () => {
         apiError?.message || "Something went wrong, please try again later",
       );
     } finally {
-      setOpen(false);
+      dispatch(hideLogout());
     }
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <MenubarItem
-          variant="destructive"
-          className="flex items-center gap-2"
-          onSelect={(e) => {
-            e.preventDefault();
-            setOpen(true);
-          }}
-        >
-          <LogOut className="text-red-400" />
-          Logout
-        </MenubarItem>
-      </DialogTrigger>
-
-      <DialogContent>
+    <Dialog open={logout} onOpenChange={() => dispatch(hideLogout())}>
+      <DialogContent showCloseButton={false}>
         <DialogHeader>
           <DialogTitle>Logout</DialogTitle>
           <DialogDescription>
@@ -63,7 +49,7 @@ const LogOutButton = () => {
 
         <div className="flex gap-2 justify-end">
           {!isLoading && (
-            <Button variant="outline" onClick={() => setOpen(false)}>
+            <Button variant="outline" onClick={() => dispatch(hideLogout())}>
               Cancel
             </Button>
           )}
@@ -82,6 +68,6 @@ const LogOutButton = () => {
       </DialogContent>
     </Dialog>
   );
-};
+}
 
-export default memo(LogOutButton);
+export default LogoutDialog;

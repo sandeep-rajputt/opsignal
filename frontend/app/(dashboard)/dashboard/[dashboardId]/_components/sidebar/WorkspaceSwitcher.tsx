@@ -1,6 +1,8 @@
 "use client";
 import { ChevronsUpDown, CircleFadingPlus } from "lucide-react";
 
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircleIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,37 +24,21 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { useAppDispatch } from "@/Store/hooks";
+import { showAddNewWorkspace } from "@/Store/slice/dialogsSlice";
 
 export function WorkspaceSwitcher() {
   const router = useRouter();
   const params = useParams();
   const dashboardId = params.dashboardId;
-  const { isLoading, data } = useGetUserAllWorkspacesQuery(null);
+  const dispatch = useAppDispatch();
+  const { isLoading, data, isFetching } = useGetUserAllWorkspacesQuery(null);
   const { isMobile } = useSidebar();
 
-  if (isLoading) {
-    return (
-      <SidebarMenu>
-        <SidebarMenuItem>
-          <DropdownMenu>
-            <DropdownMenuTrigger disabled={true} asChild>
-              <SidebarMenuButton
-                size="lg"
-                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-              >
-                <div className=" text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <Skeleton className="w-8 h-8 rounded-full" />
-                </div>
-                <div className="grid flex-1 gap-1 text-left text-sm leading-tight">
-                  <Skeleton className="h-4 w-32" />
-                  <Skeleton className="h-3 w-20" />
-                </div>
-              </SidebarMenuButton>
-            </DropdownMenuTrigger>
-          </DropdownMenu>
-        </SidebarMenuItem>
-      </SidebarMenu>
-    );
+  if (isFetching || isLoading) {
+    return <Loader />;
   }
 
   if (!data?.data.length) {
@@ -92,24 +78,27 @@ export function WorkspaceSwitcher() {
             side={isMobile ? "bottom" : "right"}
             sideOffset={4}
           >
+            <DropdownMenuItem className="border-primary/50 border bg-primary/10 hover:bg-primary/15!">
+              <div className="w-full">
+                <div className="flex items-center justify-between w-full">
+                  <p>Workspaces</p>
+                  <p>{data.data.length}/5</p>
+                </div>
+                <div className="mt-4">
+                  <Progress value={data.data.length * 20} />
+                </div>
+                <div className="mt-3">
+                  <Button className="w-full">⚡ Add Workspace Slots</Button>
+                </div>
+              </div>
+            </DropdownMenuItem>
             <DropdownMenuLabel className="text-muted-foreground text-xs">
-              Workspaces
+              Current Workspace
             </DropdownMenuLabel>
-            {data.data.map((workspace, index) => (
-              <DropdownMenuItem key={workspace.name} className="gap-2 p-2">
-                {workspace.id === dashboardId ? (
-                  <>
-                    <div className="flex size-6 items-center justify-center rounded-md border">
-                      <Avatar>
-                        <AvatarImage src={workspace.image} />
-                        <AvatarFallback>WS</AvatarFallback>
-                      </Avatar>
-                    </div>
-                    {workspace.name}
-                    <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-                  </>
-                ) : (
-                  <>
+            {data.data.map(
+              (workspace, index) =>
+                workspace.id === dashboardId && (
+                  <DropdownMenuItem key={workspace.name} className="gap-2 p-2">
                     <Link
                       href={`/dashboard/${workspace.id}`}
                       className="flex justify-between items-center w-full gap-2"
@@ -123,20 +112,89 @@ export function WorkspaceSwitcher() {
                       {workspace.name}
                       <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
                     </Link>
-                  </>
-                )}
-              </DropdownMenuItem>
-            ))}
+                  </DropdownMenuItem>
+                ),
+            )}
+
+            <DropdownMenuLabel className="text-muted-foreground text-xs">
+              Joined Workspaces
+            </DropdownMenuLabel>
+            {data.data.map(
+              (workspace, index) =>
+                workspace.id !== dashboardId && (
+                  <DropdownMenuItem key={workspace.name} className="gap-2 p-2">
+                    <Link
+                      href={`/dashboard/${workspace.id}`}
+                      className="flex justify-between items-center w-full gap-2"
+                    >
+                      <div className="flex size-6 items-center justify-center rounded-md border">
+                        <Avatar>
+                          <AvatarImage src={workspace.image} />
+                          <AvatarFallback>SR</AvatarFallback>
+                        </Avatar>
+                      </div>
+                      {workspace.name}
+                      <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                    </Link>
+                  </DropdownMenuItem>
+                ),
+            )}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
-              <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
-                <CircleFadingPlus className="size-4" />
-              </div>
-              <div className="text-muted-foreground font-medium">
-                Create New Workspace
-              </div>
-            </DropdownMenuItem>
+            {data.data.length > 4 ? (
+              <>
+                <Alert variant="destructive" className="max-w-md">
+                  <AlertCircleIcon />
+                  <AlertTitle>All slots filled</AlertTitle>
+                  <AlertDescription>
+                    Add more slots to create or join workspaces.
+                  </AlertDescription>
+                </Alert>
+                <DropdownMenuItem className="gap-2 p-2 mt-2 border border-emerald-500/50 text-foreground">
+                  <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
+                    <CircleFadingPlus className="size-4 text-foreground" />
+                  </div>
+                  <div className=" font-medium">Add a slot</div>
+                </DropdownMenuItem>
+              </>
+            ) : (
+              <DropdownMenuItem
+                className="gap-2 p-2"
+                onClick={() => dispatch(showAddNewWorkspace())}
+              >
+                <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
+                  <CircleFadingPlus className="size-4" />
+                </div>
+                <div className="text-muted-foreground font-medium">
+                  Create New Workspace
+                </div>
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  );
+}
+
+function Loader() {
+  return (
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <DropdownMenu>
+          <DropdownMenuTrigger disabled={true} asChild>
+            <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            >
+              <div className=" text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                <Skeleton className="w-8 h-8 rounded-full" />
+              </div>
+              <div className="grid flex-1 gap-1 text-left text-sm leading-tight">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-3 w-20" />
+              </div>
+            </SidebarMenuButton>
+          </DropdownMenuTrigger>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>

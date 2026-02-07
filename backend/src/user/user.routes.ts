@@ -18,7 +18,7 @@ userRouter.post(
   "/register",
   ipRateLimiter({
     maxRequests: 5,
-    timeInMilliseconds: 3 * 60 * 60 * 1000,
+    timeInSeconds: 3 * 60 * 60,
     path: "register",
   }),
   userAgentMiddleware,
@@ -29,7 +29,7 @@ userRouter.post(
   "/login",
   ipRateLimiter({
     maxRequests: 5,
-    timeInMilliseconds: 60000,
+    timeInSeconds: 60 * 60 * 3,
     path: "login",
   }),
   userAgentMiddleware,
@@ -40,7 +40,7 @@ userRouter.get(
   "/verify",
   ipRateLimiter({
     maxRequests: 5,
-    timeInMilliseconds: 60000,
+    timeInSeconds: 60 * 60 * 3,
     path: "verify",
   }),
   verifyController,
@@ -50,7 +50,7 @@ userRouter.post(
   "/reset-password",
   ipRateLimiter({
     maxRequests: 5,
-    timeInMilliseconds: 3 * 60 * 60 * 1000,
+    timeInSeconds: 3 * 60 * 60,
     path: "reset-password",
   }),
   resetPassword,
@@ -60,7 +60,7 @@ userRouter.post(
   "/check-change-password-token",
   ipRateLimiter({
     maxRequests: 5,
-    timeInMilliseconds: 60 * 60 * 1000,
+    timeInSeconds: 60 * 60,
     path: "check-change-password-token",
   }),
   checkChangePasswordToken,
@@ -70,7 +70,7 @@ userRouter.post(
   "/change-user-password",
   ipRateLimiter({
     maxRequests: 5,
-    timeInMilliseconds: 60 * 60 * 1000,
+    timeInSeconds: 60 * 60 * 1000,
     path: "change-user-password",
   }),
   changeUserPassword,
@@ -80,7 +80,7 @@ userRouter.post(
   "/logout",
   ipRateLimiter({
     maxRequests: 1,
-    timeInMilliseconds: 1000,
+    timeInSeconds: 1000,
     path: "logout",
   }),
   logoutUser,
