@@ -1,7 +1,7 @@
 import LogoutDialog from "./LogoutDialog";
 import { normalizeTimezone } from "@/utils/normalizeTimezone";
 import { timezoneSchema } from "@/schemas/common/timezoneSchema";
-import CreateWorkspaceDialog from "@/app/(dashboard)/dashboard/[dashboardId]/_components/Dialogs/CreateWorkspaceDialog";
+import CreateWorkspaceDialog from "./CreateWorkspaceDialog";
 import { Timezone } from "@/schemas/common/timezoneSchema";
 import AddWorkspaceSlotDialog from "./AddWorkspaceSlotDialog";
 

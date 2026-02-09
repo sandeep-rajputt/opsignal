@@ -27,7 +27,6 @@ import emailSchema from "../schemas/common/emailSchema.js";
 import { v4 as uuidv4 } from "uuid";
 import { getUserModel } from "./users.model.js";
 import createHttpError from "http-errors";
-import { email } from "zod";
 
 export async function register(req: Request, res: Response) {
   try {
@@ -178,7 +177,7 @@ export async function verifyController(req: Request, res: Response) {
       });
     }
 
-    const tokenVerifyRes = await verifyToken({
+    const tokenVerifyRes = verifyToken({
       token: String(token),
       secret: config.EMAIL_VERIFY_JWT_TOKEN,
     });
@@ -374,7 +373,7 @@ export async function getUser(req: Request, res: Response, next: NextFunction) {
       `user:${req.user?.id}`,
       JSON.stringify(data),
       "EX",
-      5 * 60 * 1000,
+      5 * 60,
     );
 
     return safeResponse(res, {

@@ -1,11 +1,9 @@
 CREATE TYPE workspace_plan AS ENUM ('free', 'premium');
-CREATE TYPE workspace_status AS ENUM ('active', 'deleted');
 
 
 CREATE TABLE workspaces (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid(),
   name VARCHAR(255) NOT NULL,
-  slug VARCHAR(255) UNIQUE NOT NULL,
   description TEXT,
   
   owner_id UUID NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
@@ -16,7 +14,7 @@ CREATE TABLE workspaces (
   
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW(),
-  deleted_at TIMESTAMP
+  deleted_at TIMESTAMP,
 
   CHECK (
   slug ~* '^[a-z0-9-]+$'

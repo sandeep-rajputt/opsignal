@@ -13,6 +13,6 @@ workspaceRouter.post("/create-primary-workspace", primaryWorkspaceController);
 workspaceRouter.post("/create-workspace", createWorkspaceController);
 workspaceRouter.get("/check-primary", checkPrimaryWorkspaceController);
 
-workspaceRouter.use("/:id/", basicWorkspaceRouter);
+workspaceRouter.use("/:id", basicWorkspaceRouter);
 
 export default workspaceRouter;

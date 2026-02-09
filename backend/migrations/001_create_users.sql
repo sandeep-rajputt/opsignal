@@ -8,7 +8,7 @@ CREATE TABLE users (
     name TEXT NOT NULL,
     avatar_url TEXT,
     email_verified BOOLEAN NOT NULL DEFAULT FALSE,
-    primary_workspace UUID DEFAULT NULL,
+    primary_workspace VARCHAR(255) DEFAULT NULL,
     slots INTEGER NOT NULL DEFAULT 5,
     notification BOOLEAN NOT NULL DEFAULT FALSE,
     last_active TIMESTAMPTZ NOT NULL DEFAULT NOW(),

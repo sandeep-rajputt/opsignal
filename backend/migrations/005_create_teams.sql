@@ -1,7 +1,7 @@
 
 CREATE TABLE teams (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  workspace_id UUID NOT NULL REFERENCES workspaces(id) ON DELETE CASCADE,
+  workspace_id VARCHAR(255) NOT NULL REFERENCES workspaces(slug) ON DELETE CASCADE,
   
   name VARCHAR(255) NOT NULL,
   slug VARCHAR(255) NOT NULL,

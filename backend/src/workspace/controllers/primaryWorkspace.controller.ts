@@ -2,6 +2,7 @@ import type { NextFunction, Request, Response } from "express";
 import { primaryWorkspaceService } from "../service/primaryWorkspace.service.js";
 import safeReject from "../../utils/safeReject.js";
 import { checkPrimaryWorkspaceService } from "../service/checkPrimaryWorkspace.service.js";
+import redisClient from "../../config/redis.js";
 
 async function primaryWorkspaceController(
   req: Request,
@@ -9,6 +10,7 @@ async function primaryWorkspaceController(
   next: NextFunction,
 ) {
   try {
+    await redisClient.del(`user:${req.user?.id}`);
     return await primaryWorkspaceService(req, res, next);
   } catch (error) {
     console.log(error);

@@ -1,8 +1,16 @@
+CREATE TYPE member_role AS ENUM (
+  'owner',
+  'admin',
+  'moderator',
+  'member'
+);
+
+
 CREATE TABLE members (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  workspace_id UUID NOT NULL REFERENCES workspaces(id) ON DELETE CASCADE,
+  workspace_id VARCHAR(255) NOT NULL REFERENCES workspaces(slug) ON DELETE CASCADE,
   team_id UUID REFERENCES teams(id) ON DELETE CASCADE,
 
   role member_role NOT NULL DEFAULT 'owner',
@@ -14,6 +22,7 @@ CREATE TABLE members (
   deleted_at TIMESTAMPTZ DEFAULT NULL,
 
 
+  UNIQUE(user_id, workspace_id),
   UNIQUE(user_id, workspace_id, team_id),
 
 

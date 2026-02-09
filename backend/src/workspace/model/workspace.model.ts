@@ -8,12 +8,12 @@ export async function getAllWorkspaceModel(userId: string) {
     role: string;
   }>(
     `SELECT 
-      w.id,
+      w.slug AS id,
       w.name,
       w.logo_url AS image,
       m.role
    FROM members m
-   JOIN workspaces w ON w.id = m.workspace_id
+   JOIN workspaces w ON w.slug = m.workspace_id
    WHERE m.user_id = $1
    ORDER BY m.joined_at ASC`,
     [userId],

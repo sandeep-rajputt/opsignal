@@ -6,6 +6,7 @@ import workspaceRouter from "./workspace/routes/index.js";
 import "./jobs/workers/start-workers.js";
 import startQueue from "./jobs/queues/start-queue.js";
 import authMiddleware from "./middlewares/auth.middleware.js";
+import { getUserRoleController } from "./workspace/controllers/getUserRole.controller.js";
 await startQueue();
 
 const { PORT } = config;

@@ -5,29 +5,48 @@ const pathNotAllowedToAuthUser = ["/login", "/register", "/verify"];
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set("x-pathname", pathname);
+
+  const refresh_token = req.cookies.get("refresh_token");
+
   if (pathAllowedToAuthUser.some((path) => pathname.startsWith(path))) {
-    const refresh_token = req.cookies.get("refresh_token");
     if (!refresh_token?.value) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
-    return NextResponse.next();
+
+    const match = pathname.match(/\/dashboard\/([^\/]+)/);
+    if (match && match[1]) {
+      requestHeaders.set("x-dashboard-id", match[1]);
+    }
+
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
   }
 
   if (pathNotAllowedToAuthUser.includes(pathname)) {
-    const refresh_token = req.cookies.get("refresh_token");
     if (refresh_token?.value) {
-      console.log("redirect");
       return NextResponse.redirect(new URL("/dashboard", req.url));
     }
-    return NextResponse.next();
+
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
   }
 
-  return NextResponse.next();
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
 }
 
 export const config = {
-  matcher: [
-    // Exclude API routes, static files, image optimizations, and .png files
-    "/((?!api|_next/static|_next/image|.*\\.png$).*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
 };

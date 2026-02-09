@@ -52,7 +52,6 @@ function OnboardingForm({ detectedTimezone }: { detectedTimezone: Timezone }) {
       router.push(`/dashboard/${res.data.id}`);
       setStep("success");
     } catch (err) {
-      console.log("error");
       console.log(err);
       setStep("error");
     }

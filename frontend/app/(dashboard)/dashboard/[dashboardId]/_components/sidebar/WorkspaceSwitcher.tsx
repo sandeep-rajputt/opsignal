@@ -3,6 +3,7 @@ import { ChevronsUpDown, CircleFadingPlus } from "lucide-react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon } from "lucide-react";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,7 +20,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useGetUserAllWorkspacesQuery } from "@/Store/api/workspacesApi/workspacesApi";
-import { useParams } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -35,23 +35,22 @@ import { useAppSelector } from "@/Store/hooks";
 
 export function WorkspaceSwitcher() {
   const router = useRouter();
-  const params = useParams();
-  const dashboardId = params.dashboardId;
   const dispatch = useAppDispatch();
   const { isLoading, data, isFetching } = useGetUserAllWorkspacesQuery(null);
   const { isMobile } = useSidebar();
   const slots = useAppSelector((state) => state.user.user?.slots);
+  const { workspace, status } = useAppSelector(
+    (state) => state.currentWorkspace,
+  );
 
-  if (isFetching || isLoading) {
+  if (isFetching || isLoading || status === "loading" || status === "initial") {
     return <Loader />;
   }
 
   if (!data?.data.length || !slots) {
     router.push("/login");
-    return;
+    return null;
   }
-
-  const selected = data.data.find((w) => w.id === dashboardId)!;
 
   return (
     <SidebarMenu>
@@ -64,16 +63,23 @@ export function WorkspaceSwitcher() {
             >
               <div className=" text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                 <Avatar>
-                  <AvatarImage src={selected.image} />
+                  <AvatarImage src={workspace?.image || undefined} />
                   <AvatarFallback>WS</AvatarFallback>
                 </Avatar>
               </div>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{selected.name}</span>
-                <span className="truncate text-xs text-secondary">
-                  {selected.role}
-                </span>
-              </div>
+              {status === "failed" ||
+              (status === "success" && !workspace?.id) ? (
+                <p>Workspace Not exist</p>
+              ) : (
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">
+                    {workspace?.name}
+                  </span>
+                  <span className="truncate text-xs text-secondary">
+                    {workspace?.role || "Unknown user"}
+                  </span>
+                </div>
+              )}
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
@@ -107,51 +113,53 @@ export function WorkspaceSwitcher() {
             <DropdownMenuLabel className="text-muted-foreground text-xs">
               Current Workspace
             </DropdownMenuLabel>
-            {data.data.map(
-              (workspace, index) =>
-                workspace.id === dashboardId && (
-                  <DropdownMenuItem key={workspace.name} className="gap-2 p-2">
-                    <Link
-                      href={`/dashboard/${workspace.id}`}
-                      className="flex justify-between items-center w-full gap-2"
-                    >
-                      <div className="flex size-6 items-center justify-center rounded-md border">
-                        <Avatar>
-                          <AvatarImage src={workspace.image} />
-                          <AvatarFallback>SR</AvatarFallback>
-                        </Avatar>
-                      </div>
-                      {workspace.name}
-                      <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-                    </Link>
-                  </DropdownMenuItem>
-                ),
-            )}
+            <DropdownMenuItem key={workspace?.name} className="gap-2 p-2">
+              <div className="flex size-6 items-center justify-center rounded-md border">
+                <Avatar>
+                  <AvatarImage src={workspace?.image || undefined} />
+                  <AvatarFallback>WS</AvatarFallback>
+                </Avatar>
+              </div>
+              {status === "failed" ||
+              (status === "success" && !workspace?.id) ? (
+                <p>Workspace not exist</p>
+              ) : (
+                workspace?.name
+              )}
+            </DropdownMenuItem>
 
-            {data.data.length > 1 && (
-              <DropdownMenuLabel className="text-muted-foreground text-xs">
-                Joined Workspaces
-              </DropdownMenuLabel>
-            )}
-            {data.data.map(
-              (workspace, index) =>
-                workspace.id !== dashboardId && (
-                  <DropdownMenuItem key={workspace.name} className="gap-2 p-2">
-                    <Link
-                      href={`/dashboard/${workspace.id}`}
-                      className="flex justify-between items-center w-full gap-2"
-                    >
-                      <div className="flex size-6 items-center justify-center rounded-md border">
-                        <Avatar>
-                          <AvatarImage src={workspace.image} />
-                          <AvatarFallback>SR</AvatarFallback>
-                        </Avatar>
-                      </div>
-                      {workspace.name}
-                      <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-                    </Link>
-                  </DropdownMenuItem>
-                ),
+            <DropdownMenuLabel className="text-muted-foreground text-xs">
+              Joined Workspaces
+            </DropdownMenuLabel>
+            {data.data.map((ws, index) =>
+              ws.id !== workspace?.id ? (
+                <DropdownMenuItem key={ws.name} className="gap-2 p-2">
+                  <Link
+                    href={`/dashboard/${ws.id}`}
+                    className="flex justify-between items-center w-full gap-2"
+                  >
+                    <div className="flex size-6 items-center justify-center rounded-md border">
+                      <Avatar>
+                        <AvatarImage src={ws.image} />
+                        <AvatarFallback>SR</AvatarFallback>
+                      </Avatar>
+                    </div>
+                    {ws.name}
+                    <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                  </Link>
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem key={ws.name} className="gap-2 p-2">
+                  <div className="flex size-6 items-center justify-center rounded-md border">
+                    <Avatar>
+                      <AvatarImage src={ws.image} />
+                      <AvatarFallback>SR</AvatarFallback>
+                    </Avatar>
+                  </div>
+                  {ws.name}
+                  <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                </DropdownMenuItem>
+              ),
             )}
             <DropdownMenuSeparator />
             {data.data.length > 4 ? (

@@ -47,3 +47,5 @@ export interface CreateUserSession {
   ipAddress: string | null;
   device: string;
 }
+
+export type UserRole = "owner" | "admin" | "moderator" | "member";

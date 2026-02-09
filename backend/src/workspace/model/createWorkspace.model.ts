@@ -15,16 +15,16 @@ export async function createWorkspaceModel({
     await client.query("BEGIN");
 
     // create workspace
-    const workspaceRes = await client.query<{ id: string }>(
+    const workspaceRes = await client.query<{ slug: string }>(
       `
         INSERT INTO workspaces(name, slug, description, owner_id, plan)
         VALUES ($1, '${uuidv4()}', $2, $3, $4)
-        RETURNING id
+        RETURNING slug
         `,
       [data.workspaceName, data.workspaceDescription, userId, data.plan],
     );
 
-    const workspaceId = workspaceRes.rows[0]?.id!;
+    const workspaceId = workspaceRes.rows[0]?.slug!;
 
     // create Team
     await client.query<{ id: string }>(

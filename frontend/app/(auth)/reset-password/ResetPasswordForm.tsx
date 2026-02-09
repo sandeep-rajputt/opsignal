@@ -33,7 +33,6 @@ function ResetPassword() {
       toast.success("Password reset link sent successfully ✉️");
     } catch (error) {
       const apiError = isApiError(error);
-      console.log(apiError);
       toast.error(
         apiError?.message || "Something went wrong, please try again later",
       );

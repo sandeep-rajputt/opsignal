@@ -7,9 +7,7 @@ import { type EmailJobPayload } from "../../types/jobs/email/emailJobPayload.js"
 const emailWorker = new Worker<EmailJobPayload>(
   emailQueueName,
   async (job: Job<EmailJobPayload>) => {
-    console.log("Send email");
     await emailHandler(job.data);
-    console.log("Finished");
   },
   workerOptions,
 );
