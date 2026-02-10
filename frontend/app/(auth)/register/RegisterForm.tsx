@@ -90,7 +90,7 @@ function RegisterForm() {
             <button
               type="submit"
               disabled={disabled || isSubmitting}
-              className={`w-fit mx-auto mt-7 px-7 py-2 rounded-md  bg-primary font-semibold text-white ${
+              className={`w-fit mx-auto flex gap-2 items-center justify-center mt-7 px-7 py-2 rounded-md  bg-primary font-semibold text-white ${
                 disabled || isSubmitting ? "cursor-wait" : "cursor-pointer"
               }`}
             >

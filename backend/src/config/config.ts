@@ -22,6 +22,9 @@ const _config = {
   RESET_PASSWORD_TOKEN: process.env.RESET_PASSWORD_TOKEN,
   EMAIL_VERIFY_JWT_TOKEN: process.env.EMAIL_VERIFY_JWT_TOKEN,
   COOKIE_DOMAIN: process.env.COOKIE_DOMAIN,
+  CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
 };
 
 const res = await configSchema.safeParseAsync(_config);

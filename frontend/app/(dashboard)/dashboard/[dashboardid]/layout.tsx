@@ -11,6 +11,7 @@ import HydrateWorkspace from "./HydrateWorkspace";
 import SidebarCustomContent from "./_components/sidebar/SidebarContent";
 import DashboardContent from "./_components/main-screen/DashboardContent";
 import SidebarContentLoader from "./_components/sidebar/SidebarContentLoader";
+import HydrateNuqs from "./HydrateNuqs.client";
 
 async function DashboardLayout({
   children,
@@ -44,6 +45,7 @@ async function DashboardLayout({
           </Background>
         </SidebarInset>
       </SidebarProvider>
+      <HydrateNuqs />
     </>
   );
 }

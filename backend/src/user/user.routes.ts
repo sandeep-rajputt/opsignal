@@ -13,6 +13,11 @@ import { verifyController } from "./user.controller.js";
 import userAgentMiddleware from "../middlewares/userAgentMiddleware.js";
 import authMiddleware from "../middlewares/auth.middleware.js";
 import { logoutUser } from "./user.controller.js";
+import { getUserSessionsController } from "./getUserSessions.controller.js";
+import { revokeSessionController } from "./revokeSession.controller.js";
+import { changePasswordUsingPasswordController } from "./changePasswordUsingPassword.controller.js";
+import { uploadSignatureController } from "./uploadSignature.controller.js";
+import { updateProfileController } from "./updateProfile.controller.js";
 
 userRouter.post(
   "/register",
@@ -87,5 +92,41 @@ userRouter.post(
 );
 
 userRouter.get("/me", authMiddleware, getUser);
+
+userRouter.get("/sessions", authMiddleware, getUserSessionsController);
+
+userRouter.delete(
+  "/sessions/:sessionId",
+  authMiddleware,
+  revokeSessionController,
+);
+
+userRouter.post(
+  "/change-pass-using-password",
+  authMiddleware,
+  changePasswordUsingPasswordController,
+);
+
+userRouter.post(
+  "/upload-signature",
+  authMiddleware,
+  ipRateLimiter({
+    maxRequests: 10,
+    timeInSeconds: 60 * 60,
+    path: "upload-signature",
+  }),
+  uploadSignatureController,
+);
+
+userRouter.post(
+  "/update-profile",
+  authMiddleware,
+  ipRateLimiter({
+    maxRequests: 10,
+    timeInSeconds: 60 * 60,
+    path: "update-profile",
+  }),
+  updateProfileController,
+);
 
 export default userRouter;

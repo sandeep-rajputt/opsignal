@@ -28,6 +28,7 @@
     "@types/pg": "^8.16.0",
     "bcrypt": "^6.0.0",
     "bullmq": "^5.66.4",
+    "cloudinary": "^2.9.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",

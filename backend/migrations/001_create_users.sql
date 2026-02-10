@@ -7,6 +7,7 @@ CREATE TABLE users (
     password_hash TEXT DEFAULT NULL,
     name TEXT NOT NULL,
     avatar_url TEXT,
+    avatar_public_id TEXT DEFAULT NULL,
     email_verified BOOLEAN NOT NULL DEFAULT FALSE,
     primary_workspace VARCHAR(255) DEFAULT NULL,
     slots INTEGER NOT NULL DEFAULT 5,

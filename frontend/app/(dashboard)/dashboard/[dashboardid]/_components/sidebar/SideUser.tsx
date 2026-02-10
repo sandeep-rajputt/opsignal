@@ -20,12 +20,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChevronUp, Lock, LogOut, MonitorSmartphone, User } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAppDispatch } from "@/Store/hooks";
-import { showLogout } from "@/Store/slice/dialogsSlice";
+import { showLogout, showSetting } from "@/Store/slice/dialogsSlice";
+import { useQueryState } from "nuqs";
 
 function SideUser() {
   const router = useRouter();
   const { isLoading, data } = useGetUserQuery(null);
   const dispatch = useAppDispatch();
+  const [_setting, setSetting] = useQueryState("setting");
 
   if (isLoading) {
     return (
@@ -103,14 +105,29 @@ function SideUser() {
               </MenubarItem>
               <MenubarSeparator />
               <MenubarGroup>
-                <MenubarItem>
+                <MenubarItem
+                  onClick={() => {
+                    setSetting("profile");
+                    dispatch(showSetting("profile"));
+                  }}
+                >
                   <User />
                   Profile
                 </MenubarItem>
-                <MenubarItem>
+                <MenubarItem
+                  onClick={() => {
+                    setSetting("security");
+                    dispatch(showSetting("security"));
+                  }}
+                >
                   <Lock /> Security
                 </MenubarItem>
-                <MenubarItem>
+                <MenubarItem
+                  onClick={() => {
+                    setSetting("sessions");
+                    dispatch(showSetting("sessions"));
+                  }}
+                >
                   <MonitorSmartphone />
                   Sessions
                 </MenubarItem>

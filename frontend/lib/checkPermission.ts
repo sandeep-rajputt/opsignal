@@ -1,13 +1,13 @@
 import { Permission, hasPermission } from "@/rbac/permissions";
 import type { ROLE } from "@/rbac/roles";
+import { getCurrentDashboardId } from "./getCurrentDashboardId";
 
 export async function checkPermission({
-  dashboardId,
   permission,
 }: {
-  dashboardId: string;
   permission: Permission;
 }): Promise<{ allowed: boolean; role: ROLE | null }> {
+  const dashboardId = await getCurrentDashboardId();
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/workspace/${dashboardId}/role`,
