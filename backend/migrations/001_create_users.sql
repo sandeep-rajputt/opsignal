@@ -19,12 +19,9 @@ CREATE TABLE users (
     deleted_at TIMESTAMPTZ DEFAULT NULL
 );
 
-
 CREATE INDEX idx_users_email_not_deleted
 ON users(email)
 WHERE deleted_at IS NULL;
-
-
 
 CREATE INDEX idx_users_name
 ON users(name);

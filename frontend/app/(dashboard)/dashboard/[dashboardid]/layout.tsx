@@ -12,6 +12,7 @@ import SidebarCustomContent from "./_components/sidebar/SidebarContent";
 import DashboardContent from "./_components/main-screen/DashboardContent";
 import SidebarContentLoader from "./_components/sidebar/SidebarContentLoader";
 import HydrateNuqs from "./HydrateNuqs.client";
+import { Spinner } from "@/components/ui/spinner";
 
 async function DashboardLayout({
   children,
@@ -34,7 +35,13 @@ async function DashboardLayout({
         </DashboardSidebar>
         <SidebarInset className="bg-transparent">
           <Background>
-            <Suspense fallback={<div>loading</div>}>
+            <Suspense
+              fallback={
+                <div className="w-full h-full flex items-center justify-center">
+                  <Spinner />
+                </div>
+              }
+            >
               <DashboardContent>
                 <div className="h-screen w-full flex items-center justify-center">
                   <SidebarTrigger />

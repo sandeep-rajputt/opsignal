@@ -3,6 +3,7 @@ import config from "./config/config.js";
 import globalErrorHandler from "./middlewares/globalErrorHandler.js";
 import userRouter from "./user/user.routes.js";
 import workspaceRouter from "./workspace/routes/index.js";
+import paymentRouter from "./payment/payment.routes.js";
 import "./jobs/workers/start-workers.js";
 import startQueue from "./jobs/queues/start-queue.js";
 import authMiddleware from "./middlewares/auth.middleware.js";
@@ -16,6 +17,7 @@ const { PORT } = config;
  */
 app.use("/api/user", userRouter);
 app.use("/api/workspace/", authMiddleware, workspaceRouter);
+app.use("/api/payment", paymentRouter);
 
 app.get("/status", (_req, res) => {
   res.status(200).json({

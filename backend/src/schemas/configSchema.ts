@@ -26,6 +26,8 @@ const configSchema = z
     CLOUDINARY_API_SECRET: z
       .string()
       .min(1, "CLOUDINARY_API_SECRET is required"),
+    RAZORPAY_KEY_ID: z.string().min(1, "RAZORPAY_KEY_ID is required"),
+    RAZORPAY_KEY_SECRET: z.string().min(1, "RAZORPAY_KEY_SECRET is required"),
   })
   .superRefine((data, ctx) => {
     if (data.ENV === "development" && !data.COOKIE_DOMAIN) {

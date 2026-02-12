@@ -14,6 +14,12 @@ import onboardingSchema, {
 } from "@/schemas/onboardingSchema";
 import { useRouter } from "next/navigation";
 import { useCreatePrimaryWorkspaceMutation } from "@/Store/api/createPrimaryWorkspaceApi/createPrimaryWorkspaceApi";
+import {
+  useCreateOrderMutation,
+  useVerifyPaymentMutation,
+} from "@/Store/api/paymentApi/paymentApi";
+import { loadRazorpayScript, openRazorpay } from "@/utils/razorpay";
+import { toast } from "sonner";
 
 function OnboardingForm({ detectedTimezone }: { detectedTimezone: Timezone }) {
   const methods = useForm<OnboardingData>({
@@ -26,6 +32,8 @@ function OnboardingForm({ detectedTimezone }: { detectedTimezone: Timezone }) {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2 | 3 | "success" | "error">(1);
   const [createWorkspace] = useCreatePrimaryWorkspaceMutation();
+  const [createOrder] = useCreateOrderMutation();
+  const [verifyPayment] = useVerifyPaymentMutation();
 
   async function handleStep1Submit() {
     const isValid = await methods.trigger([
@@ -49,8 +57,68 @@ function OnboardingForm({ detectedTimezone }: { detectedTimezone: Timezone }) {
   async function onSubmit(data: OnboardingData) {
     try {
       const res = await createWorkspace(data).unwrap();
-      router.push(`/dashboard/${res.data.id}`);
-      setStep("success");
+      const workspaceId = res.data.id;
+
+      if (data.plan === "premium") {
+        const scriptLoaded = await loadRazorpayScript();
+
+        if (!scriptLoaded) {
+          toast.error("Failed to load payment gateway");
+          router.push(`/dashboard/${workspaceId}`);
+          return;
+        }
+
+        try {
+          const orderRes = await createOrder({
+            workspaceId,
+            plan: "premium",
+          }).unwrap();
+
+          openRazorpay({
+            key: orderRes.data.key,
+            amount: orderRes.data.amount,
+            currency: orderRes.data.currency,
+            name: "OPSIGNAL",
+            description: "Premium Workspace Plan",
+            order_id: orderRes.data.orderId,
+            handler: async (response) => {
+              try {
+                await verifyPayment({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  workspaceId,
+                }).unwrap();
+
+                toast.success("Payment successful! Upgraded to Premium");
+                setStep("success");
+                router.push(`/dashboard/${workspaceId}`);
+              } catch (error) {
+                console.log(error);
+                toast.error("Payment verification failed");
+                router.push(`/dashboard/${workspaceId}`);
+              }
+            },
+            theme: {
+              color: "#3b82f6",
+            },
+            modal: {
+              ondismiss: () => {
+                toast.info("Payment cancelled. You can upgrade later.");
+                router.push(`/dashboard/${workspaceId}`);
+              },
+            },
+          });
+        } catch (error) {
+          console.log(error);
+          toast.error("Failed to create payment order");
+          router.push(`/dashboard/${workspaceId}`);
+        }
+      } else {
+        setStep("success");
+        toast.success("Workspace created 🎉");
+        router.push(`/dashboard/${workspaceId}`);
+      }
     } catch (err) {
       console.log(err);
       setStep("error");

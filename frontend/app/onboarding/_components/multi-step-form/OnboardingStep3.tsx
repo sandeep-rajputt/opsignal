@@ -180,8 +180,15 @@ function OnboardingStep3({
           type="submit"
           disabled={isSubmitting}
         >
-          {selectedPlan === "premium" ? "Premium" : "Free"} Workspace{" "}
-          {isSubmitting && <Spinner />}
+          {isSubmitting ? (
+            <>
+              Creating Workspace <Spinner />
+            </>
+          ) : selectedPlan === "premium" ? (
+            "Continue to Payment"
+          ) : (
+            "Create Free Workspace"
+          )}
         </Button>
       </div>
     </div>
