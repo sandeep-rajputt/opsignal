@@ -21,7 +21,7 @@ export async function createWorkspaceModel({
         VALUES ($1, '${uuidv4()}', $2, $3, $4)
         RETURNING slug
         `,
-      [data.workspaceName, data.workspaceDescription, userId, data.plan],
+      [data.workspaceName, data.workspaceDescription, userId, "free"],
     );
 
     const workspaceId = workspaceRes.rows[0]?.slug!;

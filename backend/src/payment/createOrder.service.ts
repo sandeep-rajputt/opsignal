@@ -6,7 +6,7 @@ import safeResponse from "../utils/safeResponse.js";
 import { createOrderSchema } from "./payment.validation.js";
 
 const PLAN_PRICES: Record<"premium", number> = {
-  premium: 200,
+  premium: 1900,
 } as const;
 
 export async function createOrderService(

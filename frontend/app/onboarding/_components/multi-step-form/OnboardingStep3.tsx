@@ -117,7 +117,7 @@ function OnboardingStep3({
                   <div className="mb-6">
                     <h3 className="text-2xl font-bold mb-2">Premium</h3>
                     <div className="flex items-baseline mb-3">
-                      <span className="text-4xl font-bold">₹99</span>
+                      <span className="text-4xl font-bold">₹19</span>
                       <span className="text-secondary ml-2">/ one-time</span>
                     </div>
                     <p className="text-secondary">

@@ -117,7 +117,7 @@ function CreateWorkspaceStep3({
                   <div className="mb-4">
                     <h3 className="text-xl font-bold mb-2">Premium</h3>
                     <div className="flex items-baseline mb-2">
-                      <span className="text-3xl font-bold">₹99</span>
+                      <span className="text-3xl font-bold">₹19</span>
                       <span className="text-secondary ml-2">/ one-time</span>
                     </div>
                     <p className="text-secondary text-sm">
