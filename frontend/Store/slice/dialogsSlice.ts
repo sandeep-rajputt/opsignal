@@ -6,6 +6,8 @@ interface Dialogs {
   logout: boolean;
   addNewWorkspace: boolean;
   addWorkspaceSlot: boolean;
+  addWorkspaceMember: boolean;
+  addTeamMember: boolean;
   setting:
     | {
         visible: true;
@@ -18,6 +20,8 @@ const initialState: Dialogs = {
   logout: false,
   addNewWorkspace: false,
   addWorkspaceSlot: false,
+  addWorkspaceMember: false,
+  addTeamMember: false,
   setting: {
     visible: false,
     component: null,
@@ -52,6 +56,18 @@ const dialogsSlice = createSlice({
     hideSetting(state) {
       state.setting = { visible: false, component: null };
     },
+    showAddWorkspaceMember(state) {
+      state.addWorkspaceMember = true;
+    },
+    hideAddWorkspaceMember(state) {
+      state.addWorkspaceMember = false;
+    },
+    showAddTeamMember(state) {
+      state.addTeamMember = true;
+    },
+    hideAddTeamMember(state) {
+      state.addTeamMember = false;
+    },
   },
 });
 
@@ -64,6 +80,10 @@ export const {
   hideAddWorkspaceSlot,
   showSetting,
   hideSetting,
+  showAddWorkspaceMember,
+  hideAddWorkspaceMember,
+  showAddTeamMember,
+  hideAddTeamMember,
 } = dialogsSlice.actions;
 
 export default dialogsSlice.reducer;

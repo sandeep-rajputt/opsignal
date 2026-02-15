@@ -1,10 +1,6 @@
 import Background from "@/components/shared/Background";
 import { ReactNode, Suspense } from "react";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "./_components/sidebar/DashboardSidebar";
 import Dialogs from "./_components/Dialogs/Dialogs";
 import HydrateWorkspace from "./HydrateWorkspace";
@@ -43,10 +39,7 @@ async function DashboardLayout({
               }
             >
               <DashboardContent>
-                <div className="h-screen w-full flex items-center justify-center">
-                  <SidebarTrigger />
-                  {children}
-                </div>
+                <div className="h-screen w-full ">{children}</div>
               </DashboardContent>
             </Suspense>
           </Background>
