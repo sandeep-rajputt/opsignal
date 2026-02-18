@@ -10,6 +10,7 @@ export interface WorkspaceData {
   description: string | null;
   logo_url: string | null;
   role: ROLE | null;
+  team?: string;
 }
 
 interface WorkspaceSuccessResponse {

@@ -6,6 +6,7 @@ import { Timezone } from "@/schemas/common/timezoneSchema";
 import AddWorkspaceSlotDialog from "./AddWorkspaceSlotDialog";
 import UserSettingDialog from "./UserSetting/UserSettingDialog";
 import AddWorkspaceMember from "./AddWorkspaceMember";
+import AddTeamMember from "./AddTeamMember";
 
 async function Dialogs() {
   const detectedTimezone = normalizeTimezone(
@@ -26,6 +27,7 @@ async function Dialogs() {
       <AddWorkspaceSlotDialog />
       <UserSettingDialog />
       <AddWorkspaceMember />
+      <AddTeamMember />
     </>
   );
 }

@@ -1,6 +1,8 @@
 import { Permission, hasPermission } from "@/rbac/permissions";
 import type { ROLE } from "@/rbac/roles";
+import { cookies } from "next/headers";
 import { getCurrentDashboardId } from "./getCurrentDashboardId";
+import env from "@/config/env";
 
 export async function checkPermission({
   permission,
@@ -8,10 +10,20 @@ export async function checkPermission({
   permission: Permission;
 }): Promise<{ allowed: boolean; role: ROLE | null }> {
   const dashboardId = await getCurrentDashboardId();
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore.toString();
+
+  const baseUrl =
+    env.ENV === "development" ? env.BACKEND_DEVELOPMENT_URL : env.BACKEND_URL;
+
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/workspace/${dashboardId}/role`,
+      `${baseUrl}/api/workspace/${dashboardId}/role`,
       {
+        headers: {
+          Cookie: cookieHeader,
+          "Content-Type": "application/json",
+        },
         credentials: "include",
         cache: "no-store",
       },

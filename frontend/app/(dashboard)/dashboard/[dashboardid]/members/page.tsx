@@ -1,4 +1,5 @@
 import AddWorkspaceMemberButton from "@/components/shared/addWorkspaceMemberButton";
+import AddTeamMemberButton from "@/components/shared/addTeamMemberButton";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { checkPermission } from "@/lib/checkPermission";
 import { Permission } from "@/rbac/permissions";
@@ -12,10 +13,21 @@ async function MembersPage() {
           <h1>Members</h1>
         </div>
 
-        {/* add member in any team */}
-        {(await checkPermission({
-          permission: Permission.ADD_WORKSPACE_MEMBER,
-        })) && <AddWorkspaceMemberButton />}
+        <div className="flex gap-2">
+          {/* add member to team - for moderators */}
+          {(
+            await checkPermission({
+              permission: Permission.ADD_TEAM_MEMBER,
+            })
+          ).allowed && <AddTeamMemberButton />}
+
+          {/* add member in any team - for admins */}
+          {(
+            await checkPermission({
+              permission: Permission.ADD_WORKSPACE_MEMBER,
+            })
+          ).allowed && <AddWorkspaceMemberButton />}
+        </div>
       </header>
     </div>
   );

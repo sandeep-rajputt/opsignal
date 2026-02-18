@@ -7,6 +7,7 @@ interface CurrentWorkspace {
   description: string | null;
   image: string | null;
   role: UserRole | null;
+  team?: string;
 }
 
 interface CurrentWorkspaceSlice {
