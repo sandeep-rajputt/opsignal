@@ -26,18 +26,24 @@ import addWorkspaceMemberSchema, {
   type AddWorkspaceMemberData,
 } from "@/schemas/addWorkspaceMemberSchema";
 import { Spinner } from "@/components/ui/spinner";
-
-// Demo teams data
-const DEMO_TEAMS = [
-  { id: "1", name: "Engineering" },
-  { id: "2", name: "Design" },
-  { id: "3", name: "Marketing" },
-  { id: "4", name: "Sales" },
-];
+import { useGetWorkspaceTeamsQuery } from "@/Store/api";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function AddWorkspaceMember() {
   const isOpen = useAppSelector((state) => state.dialogs.addWorkspaceMember);
+  const workspaceId = useAppSelector(
+    (state) => state.currentWorkspace.workspace?.id,
+  );
   const dispatch = useAppDispatch();
+
+  // Fetch teams from API
+  const {
+    data: teamsData,
+    isLoading: teamsLoading,
+    error: teamsError,
+  } = useGetWorkspaceTeamsQuery(workspaceId || "", {
+    skip: !workspaceId || !isOpen,
+  });
 
   const {
     register,
@@ -64,6 +70,8 @@ function AddWorkspaceMember() {
     toast.success(`Member invitation sent to ${data.email}`);
     handleClose();
   };
+
+  const teams = teamsData?.data || [];
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -128,22 +136,36 @@ function AddWorkspaceMember() {
               render={({ field }) => (
                 <Field>
                   <FieldLabel htmlFor="member-team">Team</FieldLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    disabled={isSubmitting}
-                  >
-                    <SelectTrigger id="member-team" className="w-full">
-                      <SelectValue placeholder="Select a team" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {DEMO_TEAMS.map((t) => (
-                        <SelectItem key={t.id} value={t.id}>
-                          {t.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  {teamsLoading ? (
+                    <Skeleton className="h-9 w-full" />
+                  ) : teamsError ? (
+                    <div className="text-sm text-destructive">
+                      Failed to load teams
+                    </div>
+                  ) : (
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      disabled={isSubmitting || teams.length === 0}
+                    >
+                      <SelectTrigger id="member-team" className="w-full">
+                        <SelectValue
+                          placeholder={
+                            teams.length === 0
+                              ? "No teams available"
+                              : "Select a team"
+                          }
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {teams.map((team) => (
+                          <SelectItem key={team.id} value={team.id}>
+                            {team.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
                   {errors.teamId && (
                     <FieldDescription className="text-destructive">
                       {errors.teamId.message}

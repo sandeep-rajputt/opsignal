@@ -10,24 +10,22 @@ import {
 } from "@/components/ui/dialog";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { hideAddTeamMember } from "@/Store/slice/dialogsSlice";
 import { useAppDispatch, useAppSelector } from "@/Store/hooks";
 import { toast } from "sonner";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import addTeamMemberSchema, {
-  type AddTeamMemberData,
-} from "@/schemas/addTeamMemberSchema";
+import { z } from "zod";
+import emailSchema from "@/schemas/common/emailSchema";
 import { Spinner } from "@/components/ui/spinner";
-import { useGetWorkspaceTeamsQuery } from "@/Store/api";
+import { useGetUserTeamQuery } from "@/Store/api";
 import { Skeleton } from "@/components/ui/skeleton";
+
+const addTeamMemberFormSchema = z.object({
+  email: emailSchema,
+});
+
+type AddTeamMemberFormData = z.infer<typeof addTeamMemberFormSchema>;
 
 function AddTeamMember() {
   const isOpen = useAppSelector((state) => state.dialogs.addTeamMember);
@@ -37,24 +35,22 @@ function AddTeamMember() {
   const dispatch = useAppDispatch();
 
   const {
-    data: teamsData,
-    isLoading: isLoadingTeams,
-    error: teamsError,
-  } = useGetWorkspaceTeamsQuery(currentWorkspace?.id || "", {
+    data: userTeamData,
+    isLoading: isLoadingTeam,
+    error: teamError,
+  } = useGetUserTeamQuery(currentWorkspace?.id || "", {
     skip: !currentWorkspace?.id || !isOpen,
   });
 
   const {
     register,
     handleSubmit,
-    control,
-    reset,
     formState: { errors, isSubmitting },
-  } = useForm<AddTeamMemberData>({
-    resolver: zodResolver(addTeamMemberSchema),
+    reset,
+  } = useForm<AddTeamMemberFormData>({
+    resolver: zodResolver(addTeamMemberFormSchema),
     defaultValues: {
       email: "",
-      teamId: "",
     },
   });
 
@@ -63,14 +59,28 @@ function AddTeamMember() {
     reset();
   };
 
-  const onSubmit = async (data: AddTeamMemberData) => {
-    // Demo: Show success message
-    const selectedTeam = teamsData?.data.find((t) => t.id === data.teamId);
+  const onSubmit = async (data: AddTeamMemberFormData) => {
+    if (!userTeamData?.data?.id) {
+      toast.error("Team information not available");
+      return;
+    }
+
+    // Demo: Show success message with team ID
+    const teamName = userTeamData.data.name;
+    const teamId = userTeamData.data.id;
+
+    console.log("Adding member:", {
+      email: data.email,
+      teamId: teamId,
+    });
+
     toast.success(
-      `Team member invitation sent to ${data.email} for ${selectedTeam?.name || "team"}`,
+      `Team member invitation sent to ${data.email} for ${teamName}`,
     );
     handleClose();
   };
+
+  const userTeam = userTeamData?.data;
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -78,7 +88,7 @@ function AddTeamMember() {
         <DialogHeader>
           <DialogTitle>Add Team Member</DialogTitle>
           <DialogDescription>
-            Invite a new member to join a team
+            Invite a new member to join your team
           </DialogDescription>
         </DialogHeader>
 
@@ -100,50 +110,24 @@ function AddTeamMember() {
               )}
             </Field>
 
-            <Controller
-              name="teamId"
-              control={control}
-              render={({ field }) => (
-                <Field>
-                  <FieldLabel htmlFor="team-member-team">Team</FieldLabel>
-                  {isLoadingTeams ? (
-                    <Skeleton className="h-9 w-full" />
-                  ) : teamsError ? (
-                    <FieldDescription className="text-destructive">
-                      Failed to load teams
-                    </FieldDescription>
-                  ) : (
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      disabled={isSubmitting || !teamsData?.data.length}
-                    >
-                      <SelectTrigger id="team-member-team" className="w-full">
-                        <SelectValue
-                          placeholder={
-                            teamsData?.data.length
-                              ? "Select a team"
-                              : "No teams available"
-                          }
-                        />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {teamsData?.data.map((team) => (
-                          <SelectItem key={team.id} value={team.id}>
-                            {team.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                  {errors.teamId && (
-                    <FieldDescription className="text-destructive">
-                      {errors.teamId.message}
-                    </FieldDescription>
-                  )}
-                </Field>
+            <Field>
+              <FieldLabel htmlFor="team-member-team">Team</FieldLabel>
+              {isLoadingTeam ? (
+                <Skeleton className="h-9 w-full" />
+              ) : teamError ? (
+                <FieldDescription className="text-destructive">
+                  Failed to load your team
+                </FieldDescription>
+              ) : userTeam ? (
+                <div className="flex items-center h-9 px-3 py-2 border border-input rounded-md bg-muted text-sm">
+                  {userTeam.name}
+                </div>
+              ) : (
+                <FieldDescription className="text-destructive">
+                  You are not assigned to any team
+                </FieldDescription>
               )}
-            />
+            </Field>
           </div>
 
           <div className="flex gap-2 justify-end">
@@ -155,7 +139,10 @@ function AddTeamMember() {
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting || isLoadingTeams}>
+            <Button
+              type="submit"
+              disabled={isSubmitting || isLoadingTeam || !userTeam}
+            >
               {isSubmitting ? (
                 <>
                   Adding <Spinner />

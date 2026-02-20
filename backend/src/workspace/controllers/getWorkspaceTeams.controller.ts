@@ -5,7 +5,7 @@ import { getWorkspaceTeamsService } from "../service/getWorkspaceTeams.service.j
 
 export async function getWorkspaceTeamsController(req: Request, res: Response) {
   try {
-    const workspaceId = req.user?.workspace?.id;
+    const workspaceId = req.params.id;
 
     if (!workspaceId) {
       return safeReject(res, {
@@ -20,6 +20,7 @@ export async function getWorkspaceTeamsController(req: Request, res: Response) {
     return safeResponse(res, {
       message: "Teams fetched successfully",
       data: teams,
+      path: req.originalUrl,
       status: 200,
     });
   } catch (error) {
