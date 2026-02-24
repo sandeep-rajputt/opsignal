@@ -4,3 +4,5 @@ export * from "@/Store/api/verifyAccountApi/verifyAccountApi";
 export * from "@/Store/api/changeUserPasswordApi/changeUserPasswordApi";
 export * from "@/Store/api/getWorkspaceTeamsApi/getWorkspaceTeamsApi";
 export * from "@/Store/api/getUserTeamApi/getUserTeamApi";
+export * from "@/Store/api/getMembersApi/getMembersApi";
+export * from "@/Store/api/removeMemberApi/removeMemberApi";

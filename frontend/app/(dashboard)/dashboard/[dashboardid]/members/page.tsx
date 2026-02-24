@@ -1,34 +1,193 @@
+"use client";
+
+import { useState } from "react";
+import { useParams } from "next/navigation";
+import { toast } from "sonner";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import AddWorkspaceMemberButton from "@/components/shared/addWorkspaceMemberButton";
 import AddTeamMemberButton from "@/components/shared/addTeamMemberButton";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { checkPermission } from "@/lib/checkPermission";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { MemberCard } from "@/components/members/MemberCard";
+import { useGetMembersQuery } from "@/Store/api/getMembersApi/getMembersApi";
+import { useGetUserRoleQuery } from "@/Store/api/getUserRoleApi/getUserRoleApi";
+import { useRemoveMemberMutation } from "@/Store/api/removeMemberApi/removeMemberApi";
+import canRemoveMember from "@/lib/canRemoveMember";
+import { usePermission } from "@/hooks/usePermission";
 import { Permission } from "@/rbac/permissions";
+import isApiError from "@/utils/isApiError";
 
-async function MembersPage() {
+function MembersPage() {
+  const params = useParams();
+  const dashboardId = params.dashboardid as string;
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 10;
+
+  // Fetch members data
+  const {
+    data: membersData,
+    isLoading: isLoadingMembers,
+    error: membersError,
+  } = useGetMembersQuery({
+    workspaceId: dashboardId,
+    page: currentPage,
+    limit,
+  });
+
+  // Fetch current user's role
+  const {
+    data: userRoleData,
+    isLoading: isLoadingRole,
+    error: roleError,
+  } = useGetUserRoleQuery(dashboardId);
+
+  // Remove member mutation
+  const [removeMember, { isLoading: isRemoving }] = useRemoveMemberMutation();
+
+  // Check permissions for header buttons
+  const canAddTeamMember = usePermission(Permission.ADD_TEAM_MEMBER);
+  const canAddWorkspaceMember = usePermission(Permission.ADD_WORKSPACE_MEMBER);
+
+  const handleRemoveMember = async (memberId: string) => {
+    try {
+      await removeMember({
+        workspaceId: dashboardId,
+        memberId,
+      }).unwrap();
+
+      toast.success("Member removed successfully");
+    } catch (err) {
+      const apiError = isApiError(err);
+      if (apiError) {
+        toast.error(apiError.message || "Failed to remove member");
+      } else {
+        toast.error("Failed to remove member");
+      }
+    }
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
+
+  const currentUserRole = userRoleData?.message;
+  const members = membersData?.data?.data || [];
+  const total = membersData?.data?.total || 0;
+  const totalPages = Math.ceil(total / limit);
+
   return (
     <div>
       <header className="flex items-center justify-between w-full px-5 py-4">
         <div className="flex gap-5 items-center">
           <SidebarTrigger />
-          <h1>Members</h1>
+          <h1 className="text-xl font-semibold">Members</h1>
         </div>
 
         <div className="flex gap-2">
-          {/* add member to team - for moderators */}
-          {(
-            await checkPermission({
-              permission: Permission.ADD_TEAM_MEMBER,
-            })
-          ).allowed && <AddTeamMemberButton />}
-
-          {/* add member in any team - for admins */}
-          {(
-            await checkPermission({
-              permission: Permission.ADD_WORKSPACE_MEMBER,
-            })
-          ).allowed && <AddWorkspaceMemberButton />}
+          {canAddTeamMember && <AddTeamMemberButton />}
+          {canAddWorkspaceMember && <AddWorkspaceMemberButton />}
         </div>
       </header>
+
+      <main className="px-5 py-4">
+        {/* Loading State */}
+        {(isLoadingMembers || isLoadingRole) && (
+          <div className="space-y-4">
+            {[...Array(5)].map((_, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-4 p-4 border rounded-lg"
+              >
+                <Skeleton className="size-10 rounded-full" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-4 w-48" />
+                  <Skeleton className="h-3 w-64" />
+                </div>
+                <Skeleton className="size-8" />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Error State */}
+        {(membersError || roleError) && (
+          <Alert variant="destructive">
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              {(() => {
+                const memberApiError = membersError
+                  ? isApiError(membersError)
+                  : null;
+                const roleApiError = roleError ? isApiError(roleError) : null;
+
+                if (memberApiError) {
+                  return memberApiError.message || "Failed to load members";
+                }
+                if (roleApiError) {
+                  return roleApiError.message || "Failed to load user role";
+                }
+                return "An error occurred while loading data";
+              })()}
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Members List */}
+        {!isLoadingMembers &&
+          !isLoadingRole &&
+          !membersError &&
+          !roleError &&
+          currentUserRole && (
+            <>
+              {members.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-muted-foreground">No members found</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {members.map((member) => (
+                    <MemberCard
+                      key={member.id}
+                      member={member}
+                      currentUserRole={currentUserRole}
+                      onRemove={handleRemoveMember}
+                      canRemove={canRemoveMember(currentUserRole, member.role)}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-2 mt-6">
+                  <Button
+                    variant="outline"
+                    size="icon-sm"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1 || isRemoving}
+                  >
+                    <ChevronLeft />
+                  </Button>
+
+                  <span className="text-sm text-muted-foreground">
+                    Page {currentPage} of {totalPages}
+                  </span>
+
+                  <Button
+                    variant="outline"
+                    size="icon-sm"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages || isRemoving}
+                  >
+                    <ChevronRight />
+                  </Button>
+                </div>
+              )}
+            </>
+          )}
+      </main>
     </div>
   );
 }

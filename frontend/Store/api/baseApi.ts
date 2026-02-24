@@ -12,7 +12,7 @@ const baseApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Workspaces", "Sessions", "User"],
+  tagTypes: ["Workspaces", "Sessions", "User", "Members"],
   endpoints: () => ({}),
 });
 
