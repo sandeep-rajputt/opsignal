@@ -7,7 +7,7 @@ import type { ROLE } from "@/rbac/roles";
 
 export function usePermission(permission: Permission) {
   const params = useParams();
-  const dashboardId = params.dashboardId as string;
+  const dashboardId = params.dashboardid as string;
 
   const { data, isLoading, error } = useGetUserRoleQuery(dashboardId, {
     skip: !dashboardId,

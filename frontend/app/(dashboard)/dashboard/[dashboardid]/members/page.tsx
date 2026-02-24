@@ -47,8 +47,12 @@ function MembersPage() {
   const [removeMember, { isLoading: isRemoving }] = useRemoveMemberMutation();
 
   // Check permissions for header buttons
-  const canAddTeamMember = usePermission(Permission.ADD_TEAM_MEMBER);
-  const canAddWorkspaceMember = usePermission(Permission.ADD_WORKSPACE_MEMBER);
+  const { allowed: canAddTeamMember } = usePermission(
+    Permission.ADD_TEAM_MEMBER,
+  );
+  const { allowed: canAddWorkspaceMember } = usePermission(
+    Permission.ADD_WORKSPACE_MEMBER,
+  );
 
   const handleRemoveMember = async (memberId: string) => {
     try {
