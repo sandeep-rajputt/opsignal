@@ -6,6 +6,7 @@ import { getWorkspaceTeamsController } from "../controllers/getWorkspaceTeams.co
 import { getUserTeamController } from "../controllers/getUserTeam.controller.js";
 import { getMembersController } from "../controllers/getMembers.controller.js";
 import { removeMemberController } from "../controllers/removeMember.controller.js";
+import { updateMemberRoleController } from "../controllers/updateMemberRole.controller.js";
 import { requirePermission } from "../../middlewares/rbac.middleware.js";
 import { Permission } from "../../rbac/permissions.js";
 
@@ -32,6 +33,12 @@ basicWorkspaceRouter.delete(
   "/members/:memberId",
   requirePermission(Permission.REMOVE_WORKSPACE_MEMBER),
   removeMemberController,
+);
+
+basicWorkspaceRouter.patch(
+  "/members/:memberId/role",
+  requirePermission(Permission.UPDATE_MEMBER_ROLE),
+  updateMemberRoleController,
 );
 
 export default basicWorkspaceRouter;
