@@ -96,6 +96,7 @@ export async function register(req: Request, res: Response) {
 }
 
 export async function loginUser(req: Request, res: Response) {
+  console.log("req recieved");
   try {
     if (req.cookies.refresh_token) {
       return safeReject(res, {

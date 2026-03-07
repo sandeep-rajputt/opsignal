@@ -14,9 +14,11 @@ import { MemberCard } from "@/components/members/MemberCard";
 import { useGetMembersQuery } from "@/Store/api/getMembersApi/getMembersApi";
 import { useGetUserRoleQuery } from "@/Store/api/getUserRoleApi/getUserRoleApi";
 import { useRemoveMemberMutation } from "@/Store/api/removeMemberApi/removeMemberApi";
+import { useUpdateMemberRoleMutation } from "@/Store/api/updateMemberRoleApi/updateMemberRoleApi";
 import canRemoveMember from "@/lib/canRemoveMember";
 import { usePermission } from "@/hooks/usePermission";
 import { Permission } from "@/rbac/permissions";
+import { ROLE } from "@/rbac/roles";
 import isApiError from "@/utils/isApiError";
 
 function MembersPage() {
@@ -46,6 +48,10 @@ function MembersPage() {
   // Remove member mutation
   const [removeMember, { isLoading: isRemoving }] = useRemoveMemberMutation();
 
+  // Update member role mutation
+  const [updateMemberRole, { isLoading: isUpdatingRole }] =
+    useUpdateMemberRoleMutation();
+
   // Check permissions for header buttons
   const { allowed: canAddTeamMember } = usePermission(
     Permission.ADD_TEAM_MEMBER,
@@ -68,6 +74,25 @@ function MembersPage() {
         toast.error(apiError.message || "Failed to remove member");
       } else {
         toast.error("Failed to remove member");
+      }
+    }
+  };
+
+  const handleRoleUpdate = async (memberId: string, newRole: ROLE) => {
+    try {
+      await updateMemberRole({
+        workspaceId: dashboardId,
+        memberId,
+        role: newRole,
+      }).unwrap();
+
+      toast.success("Member role updated successfully");
+    } catch (err) {
+      const apiError = isApiError(err);
+      if (apiError) {
+        toast.error(apiError.message || "Failed to update member role");
+      } else {
+        toast.error("Failed to update member role");
       }
     }
   };
@@ -157,7 +182,9 @@ function MembersPage() {
                       member={member}
                       currentUserRole={currentUserRole}
                       onRemove={handleRemoveMember}
+                      onRoleUpdate={handleRoleUpdate}
                       canRemove={canRemoveMember(currentUserRole, member.role)}
+                      isUpdatingRole={isUpdatingRole}
                     />
                   ))}
                 </div>
@@ -170,7 +197,7 @@ function MembersPage() {
                     variant="outline"
                     size="icon-sm"
                     onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1 || isRemoving}
+                    disabled={currentPage === 1 || isRemoving || isUpdatingRole}
                   >
                     <ChevronLeft />
                   </Button>
@@ -183,7 +210,9 @@ function MembersPage() {
                     variant="outline"
                     size="icon-sm"
                     onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages || isRemoving}
+                    disabled={
+                      currentPage === totalPages || isRemoving || isUpdatingRole
+                    }
                   >
                     <ChevronRight />
                   </Button>

@@ -3,6 +3,7 @@ import { Permission } from "../../rbac/permissions.js";
 import { ROLE, ROLE_HIERARCHY } from "../../rbac/roles.js";
 import updateMemberRoleModel from "../model/updateMemberRole.model.js";
 import getMemberRoleModel from "../model/getMemberRole.model.js";
+import redisClient from "../../config/redis.js";
 
 /**
  * Service for updating workspace member roles with strict role-based permissions
@@ -103,6 +104,11 @@ export async function updateMemberRoleService({
   if (!result.success) {
     throw new Error("Failed to update member role");
   }
+
+  // Invalidate Redis cache for the target member's role
+  await redisClient.del(
+    `users:${targetMemberId}:workspaces:${workspaceId}:role`,
+  );
 
   return {
     success: true,

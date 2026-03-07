@@ -13,7 +13,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ROLE } from "@/rbac/roles";
+import canUpdateMemberRole, {
+  getAvailableRoles,
+} from "@/lib/canUpdateMemberRole";
 
 interface Member {
   id: string;
@@ -29,25 +39,51 @@ interface Member {
 interface MemberCardProps {
   member: Member;
   currentUserRole: ROLE | string;
+  currentUserId?: string;
   onRemove: (memberId: string) => void;
+  onRoleUpdate: (memberId: string, newRole: ROLE) => void;
   canRemove: boolean;
+  isUpdatingRole?: boolean;
 }
 
 export function MemberCard({
   member,
   currentUserRole,
+  currentUserId,
   onRemove,
+  onRoleUpdate,
   canRemove,
+  isUpdatingRole = false,
 }: MemberCardProps) {
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [showRemoveDialog, setShowRemoveDialog] = useState(false);
+  const [showRoleChangeDialog, setShowRoleChangeDialog] = useState(false);
+  const [pendingRole, setPendingRole] = useState<ROLE | null>(null);
 
   const handleRemoveClick = () => {
-    setShowConfirmDialog(true);
+    setShowRemoveDialog(true);
   };
 
   const handleConfirmRemove = () => {
     onRemove(member.id);
-    setShowConfirmDialog(false);
+    setShowRemoveDialog(false);
+  };
+
+  const handleRoleChange = (newRole: string) => {
+    setPendingRole(newRole as ROLE);
+    setShowRoleChangeDialog(true);
+  };
+
+  const handleConfirmRoleChange = () => {
+    if (pendingRole) {
+      onRoleUpdate(member.user_id, pendingRole);
+    }
+    setShowRoleChangeDialog(false);
+    setPendingRole(null);
+  };
+
+  const handleCancelRoleChange = () => {
+    setShowRoleChangeDialog(false);
+    setPendingRole(null);
   };
 
   const getInitials = (name: string) => {
@@ -74,6 +110,14 @@ export function MemberCard({
     }
   };
 
+  const canUpdate = canUpdateMemberRole(
+    currentUserRole,
+    member.role,
+    currentUserId,
+    member.user_id,
+  );
+  const availableRoles = getAvailableRoles(currentUserRole, member.role);
+
   return (
     <>
       <div className="flex items-center justify-between p-4 border rounded-lg bg-card">
@@ -89,9 +133,37 @@ export function MemberCard({
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
               <span className="font-medium">{member.name}</span>
-              <Badge variant={getRoleBadgeVariant(member.role)}>
-                {member.role}
-              </Badge>
+              {canUpdate && availableRoles.length > 0 ? (
+                <Select
+                  value={member.role}
+                  onValueChange={handleRoleChange}
+                  disabled={isUpdatingRole}
+                >
+                  <SelectTrigger className="w-32 h-7">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={member.role}>
+                      <Badge variant={getRoleBadgeVariant(member.role)}>
+                        {member.role}
+                      </Badge>
+                    </SelectItem>
+                    {availableRoles
+                      .filter((role) => role !== member.role)
+                      .map((role) => (
+                        <SelectItem key={role} value={role}>
+                          <Badge variant={getRoleBadgeVariant(role)}>
+                            {role}
+                          </Badge>
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <Badge variant={getRoleBadgeVariant(member.role)}>
+                  {member.role}
+                </Badge>
+              )}
             </div>
             <span className="text-sm text-muted-foreground">
               {member.email}
@@ -116,7 +188,7 @@ export function MemberCard({
         )}
       </div>
 
-      <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+      <Dialog open={showRemoveDialog} onOpenChange={setShowRemoveDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Remove Member</DialogTitle>
@@ -128,13 +200,35 @@ export function MemberCard({
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => setShowConfirmDialog(false)}
+              onClick={() => setShowRemoveDialog(false)}
             >
               Cancel
             </Button>
             <Button variant="destructive" onClick={handleConfirmRemove}>
               Remove
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={showRoleChangeDialog}
+        onOpenChange={setShowRoleChangeDialog}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Change Member Role</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to change {member.name}&apos;s role from{" "}
+              <span className="font-semibold">{member.role}</span> to{" "}
+              <span className="font-semibold">{pendingRole}</span>?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCancelRoleChange}>
+              Cancel
+            </Button>
+            <Button onClick={handleConfirmRoleChange}>Confirm</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
