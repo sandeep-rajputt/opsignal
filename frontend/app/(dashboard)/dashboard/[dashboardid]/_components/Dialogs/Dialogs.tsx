@@ -7,6 +7,9 @@ import AddWorkspaceSlotDialog from "./AddWorkspaceSlotDialog";
 import UserSettingDialog from "./UserSetting/UserSettingDialog";
 import AddWorkspaceMember from "./AddWorkspaceMember";
 import AddTeamMember from "./AddTeamMember";
+import CrerateIncidentDialog from "./CrerateIncidentDialog";
+import CreateTaskDialog from "./CreateTaskDialog";
+import CreateImprovementDialog from "./CreateImprovementDialog";
 
 async function Dialogs() {
   const detectedTimezone = normalizeTimezone(
@@ -28,6 +31,9 @@ async function Dialogs() {
       <UserSettingDialog />
       <AddWorkspaceMember />
       <AddTeamMember />
+      <CrerateIncidentDialog />
+      <CreateTaskDialog />
+      <CreateImprovementDialog />
     </>
   );
 }

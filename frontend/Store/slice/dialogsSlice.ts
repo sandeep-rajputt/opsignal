@@ -8,6 +8,9 @@ interface Dialogs {
   addWorkspaceSlot: boolean;
   addWorkspaceMember: boolean;
   addTeamMember: boolean;
+  createIncident: boolean;
+  createTask: boolean;
+  createImprovement: boolean;
   setting:
     | {
         visible: true;
@@ -22,6 +25,9 @@ const initialState: Dialogs = {
   addWorkspaceSlot: false,
   addWorkspaceMember: false,
   addTeamMember: false,
+  createIncident: false,
+  createTask: false,
+  createImprovement: false,
   setting: {
     visible: false,
     component: null,
@@ -68,6 +74,24 @@ const dialogsSlice = createSlice({
     hideAddTeamMember(state) {
       state.addTeamMember = false;
     },
+    showCreateIncident(state) {
+      state.createIncident = true;
+    },
+    hideCreateIncident(state) {
+      state.createIncident = false;
+    },
+    showCreateTask(state) {
+      state.createTask = true;
+    },
+    hideCreateTask(state) {
+      state.createTask = false;
+    },
+    showCreateImprovement(state) {
+      state.createImprovement = true;
+    },
+    hideCreateImprovement(state) {
+      state.createImprovement = false;
+    },
   },
 });
 
@@ -84,6 +108,12 @@ export const {
   hideAddWorkspaceMember,
   showAddTeamMember,
   hideAddTeamMember,
+  showCreateIncident,
+  hideCreateIncident,
+  showCreateTask,
+  hideCreateTask,
+  showCreateImprovement,
+  hideCreateImprovement,
 } = dialogsSlice.actions;
 
 export default dialogsSlice.reducer;

@@ -1,3 +1,5 @@
+"use client";
+
 import IncidentSvg from "@/svg/IncidentSvg";
 import { Button } from "./button";
 import {
@@ -10,27 +12,34 @@ import { ChevronDown, Plus } from "lucide-react";
 import ImprovementSvg from "@/svg/ImprovementSvg";
 import TaskSvg from "@/svg/TaskSvg";
 import { Separator } from "./separator";
+import { useAppDispatch } from "@/Store/hooks";
+import {
+  showCreateIncident,
+  showCreateTask,
+  showCreateImprovement,
+} from "@/Store/slice/dialogsSlice";
 
 function CreateTaskButton() {
+  const dispatch = useAppDispatch();
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
         <Button className="gap-1">
           <Plus /> Create <ChevronDown className="ml-3" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="gap-1 flex flex-col">
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={() => dispatch(showCreateIncident())}>
           <IncidentSvg />
           Create Incident
         </DropdownMenuItem>
         <Separator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={() => dispatch(showCreateTask())}>
           <TaskSvg />
           Create Task
         </DropdownMenuItem>
         <Separator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={() => dispatch(showCreateImprovement())}>
           <ImprovementSvg />
           Create Improvement
         </DropdownMenuItem>
