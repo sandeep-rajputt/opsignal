@@ -9,7 +9,6 @@ const createImprovementSchema = z.object({
     error: "Select a valid category",
   }),
   teamId: z.string().min(1, "Select a team").max(36, "Invalid team ID"),
-  ownerId: z.string().min(1, "Select an owner").max(36, "Invalid owner ID"),
   description: z
     .string()
     .max(500, "Description must be 500 characters or less")

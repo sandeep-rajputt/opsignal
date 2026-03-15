@@ -27,6 +27,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import createIncidentSchema, {
   CreateIncident,
 } from "@/schemas/createIncidentSchema";
+import { TeamFieldByPermission } from "../others/CreateWorkTeamField";
 
 function CrerateIncidentDialog() {
   const dispatch = useAppDispatch();
@@ -39,7 +40,6 @@ function CrerateIncidentDialog() {
     handleSubmit,
     formState: { errors },
     setValue,
-    watch,
   } = useForm<CreateIncident>({
     resolver: zodResolver(createIncidentSchema),
   });
@@ -56,11 +56,11 @@ function CrerateIncidentDialog() {
       <DialogContent className="sm:max-w-2xl" showCloseButton={false}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
+            <DialogTitle className="flex items-center gap-2 mb-4">
               <IncidentSvg width={20} /> Declare New Incident
             </DialogTitle>
           </DialogHeader>
-          <div className="no-scrollbar max-h-[80vh] overflow-y-auto">
+          <div className="no-scrollbar max-h-[70vh] overflow-y-auto">
             <div className="my-5">
               <Field>
                 <FieldLabel htmlFor="input-demo-api-key">
@@ -87,7 +87,6 @@ function CrerateIncidentDialog() {
                   onValueChange={(value) =>
                     setValue("severity", value as CreateIncident["severity"])
                   }
-                  value={watch("severity")}
                 >
                   <SelectTrigger id="severity">
                     <SelectValue placeholder="Select severity level" />
@@ -106,51 +105,10 @@ function CrerateIncidentDialog() {
                 )}
               </Field>
 
-              <Field className="mt-4">
-                <FieldLabel htmlFor="teamId">
-                  Team <span className="text-destructive">*</span>
-                </FieldLabel>
-                <Select
-                  onValueChange={(value) => setValue("teamId", value)}
-                  value={watch("teamId")}
-                >
-                  <SelectTrigger id="teamId">
-                    <SelectValue placeholder="Select a team" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="team-1">Team 1</SelectItem>
-                    <SelectItem value="team-2">Team 2</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.teamId?.message && (
-                  <FieldDescription className="text-destructive">
-                    {errors.teamId?.message}
-                  </FieldDescription>
-                )}
-              </Field>
-
-              <Field className="mt-4">
-                <FieldLabel htmlFor="commanderId">
-                  Incident Commander <span className="text-destructive">*</span>
-                </FieldLabel>
-                <Select
-                  onValueChange={(value) => setValue("commanderId", value)}
-                  value={watch("commanderId")}
-                >
-                  <SelectTrigger id="commanderId">
-                    <SelectValue placeholder="Select incident commander" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="commander-1">Commander 1</SelectItem>
-                    <SelectItem value="commander-2">Commander 2</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.commanderId?.message && (
-                  <FieldDescription className="text-destructive">
-                    {errors.commanderId?.message}
-                  </FieldDescription>
-                )}
-              </Field>
+              <TeamFieldByPermission
+                onChange={(val) => setValue("teamId", val)}
+                error={errors.teamId?.message}
+              />
 
               <Field className="mt-4">
                 <FieldLabel htmlFor="description">Description</FieldLabel>
@@ -171,7 +129,7 @@ function CrerateIncidentDialog() {
               </Field>
             </div>
           </div>
-          <DialogFooter className="flex gap-2 justify-end">
+          <DialogFooter className="flex gap-2 items-center justify-end mt-3">
             <Button
               type="button"
               variant="outline"

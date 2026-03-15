@@ -9,10 +9,6 @@ const createTaskSchema = z.object({
     error: "Select a valid priority level",
   }),
   teamId: z.string().min(1, "Select a team").max(36, "Invalid team ID"),
-  assigneeId: z
-    .string()
-    .min(1, "Select an assignee")
-    .max(36, "Invalid assignee ID"),
   description: z
     .string()
     .max(500, "Description must be 500 characters or less")

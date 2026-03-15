@@ -9,10 +9,6 @@ const createIncidentSchema = z.object({
     error: "Select a valid severity level",
   }),
   teamId: z.string().min(1, "Select a team").max(36, "Invalid team ID"),
-  commanderId: z
-    .string()
-    .min(1, "Select an incident commander")
-    .max(36, "Invalid commander ID"),
   description: z
     .string()
     .max(500, "Description must be 500 characters or less")

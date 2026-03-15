@@ -25,6 +25,7 @@ import { CheckCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import createTaskSchema, { CreateTask } from "@/schemas/createTaskSchema";
+import { TeamFieldByPermission } from "../others/CreateWorkTeamField";
 
 function CreateTaskDialog() {
   const dispatch = useAppDispatch();
@@ -35,7 +36,6 @@ function CreateTaskDialog() {
     handleSubmit,
     formState: { errors },
     setValue,
-    watch,
   } = useForm<CreateTask>({
     resolver: zodResolver(createTaskSchema),
   });
@@ -83,7 +83,6 @@ function CreateTaskDialog() {
                   onValueChange={(value) =>
                     setValue("priority", value as CreateTask["priority"])
                   }
-                  value={watch("priority")}
                 >
                   <SelectTrigger id="priority">
                     <SelectValue placeholder="Select priority level" />
@@ -102,51 +101,10 @@ function CreateTaskDialog() {
                 )}
               </Field>
 
-              <Field className="mt-4">
-                <FieldLabel htmlFor="teamId">
-                  Team <span className="text-destructive">*</span>
-                </FieldLabel>
-                <Select
-                  onValueChange={(value) => setValue("teamId", value)}
-                  value={watch("teamId")}
-                >
-                  <SelectTrigger id="teamId">
-                    <SelectValue placeholder="Select a team" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="team-1">Team 1</SelectItem>
-                    <SelectItem value="team-2">Team 2</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.teamId?.message && (
-                  <FieldDescription className="text-destructive">
-                    {errors.teamId?.message}
-                  </FieldDescription>
-                )}
-              </Field>
-
-              <Field className="mt-4">
-                <FieldLabel htmlFor="assigneeId">
-                  Assignee <span className="text-destructive">*</span>
-                </FieldLabel>
-                <Select
-                  onValueChange={(value) => setValue("assigneeId", value)}
-                  value={watch("assigneeId")}
-                >
-                  <SelectTrigger id="assigneeId">
-                    <SelectValue placeholder="Select assignee" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="assignee-1">Assignee 1</SelectItem>
-                    <SelectItem value="assignee-2">Assignee 2</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.assigneeId?.message && (
-                  <FieldDescription className="text-destructive">
-                    {errors.assigneeId?.message}
-                  </FieldDescription>
-                )}
-              </Field>
+              <TeamFieldByPermission
+                onChange={(val) => setValue("teamId", val)}
+                error={errors.teamId?.message}
+              />
 
               <Field className="mt-4">
                 <FieldLabel htmlFor="dueDate">Due Date</FieldLabel>
