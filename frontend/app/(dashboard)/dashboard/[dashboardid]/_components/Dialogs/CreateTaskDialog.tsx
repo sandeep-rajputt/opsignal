@@ -26,22 +26,39 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import createTaskSchema, { CreateTask } from "@/schemas/createTaskSchema";
 import { TeamFieldByPermission } from "../others/CreateWorkTeamField";
+import { useCreateTaskMutation } from "@/Store/api/createTaskApi/createTaskApi";
+import { toast } from "sonner";
 
 function CreateTaskDialog() {
   const dispatch = useAppDispatch();
   const isCreateTaskOpen = useAppSelector((state) => state.dialogs.createTask);
+  const workspaceId = useAppSelector(
+    (state) => state.currentWorkspace.workspace?.id,
+  );
+
+  const [createTask, { isLoading }] = useCreateTaskMutation();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
+    reset,
   } = useForm<CreateTask>({
     resolver: zodResolver(createTaskSchema),
   });
 
-  function onSubmit(data: CreateTask) {
-    console.log(data);
+  async function onSubmit(data: CreateTask) {
+    if (!workspaceId) return;
+    try {
+      await createTask({ workspaceId, data }).unwrap();
+      toast.success("Task created successfully");
+      reset();
+      dispatch(hideCreateTask());
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to create task");
+    }
   }
 
   return (
@@ -140,12 +157,14 @@ function CreateTaskDialog() {
               type="button"
               variant="outline"
               onClick={() => dispatch(hideCreateTask())}
+              disabled={isLoading}
             >
               Cancel
             </Button>
             <Button
               type="submit"
               className="flex gap-2 items-center justify-center"
+              disabled={isLoading}
             >
               Create Task <CheckCircle />
             </Button>

@@ -28,24 +28,41 @@ import createImprovementSchema, {
   CreateImprovement,
 } from "@/schemas/createImprovementSchema";
 import { TeamFieldByPermission } from "../others/CreateWorkTeamField";
+import { useCreateImprovementMutation } from "@/Store/api/createImprovementApi/createImprovementApi";
+import { toast } from "sonner";
 
 function CreateImprovementDialog() {
   const dispatch = useAppDispatch();
   const isCreateImprovementOpen = useAppSelector(
     (state) => state.dialogs.createImprovement,
   );
+  const workspaceId = useAppSelector(
+    (state) => state.currentWorkspace.workspace?.id,
+  );
+
+  const [createImprovement, { isLoading }] = useCreateImprovementMutation();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
+    reset,
   } = useForm<CreateImprovement>({
     resolver: zodResolver(createImprovementSchema),
   });
 
-  function onSubmit(data: CreateImprovement) {
-    console.log(data);
+  async function onSubmit(data: CreateImprovement) {
+    if (!workspaceId) return;
+    try {
+      await createImprovement({ workspaceId, data }).unwrap();
+      toast.success("Improvement created successfully");
+      reset();
+      dispatch(hideCreateImprovement());
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to create improvement");
+    }
   }
 
   return (
@@ -154,12 +171,14 @@ function CreateImprovementDialog() {
               type="button"
               variant="outline"
               onClick={() => dispatch(hideCreateImprovement())}
+              disabled={isLoading}
             >
               Cancel
             </Button>
             <Button
               type="submit"
               className="flex gap-2 items-center justify-center"
+              disabled={isLoading}
             >
               Create Improvement <Lightbulb />
             </Button>

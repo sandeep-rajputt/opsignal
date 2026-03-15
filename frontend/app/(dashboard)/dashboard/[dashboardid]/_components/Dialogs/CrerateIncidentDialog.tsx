@@ -28,24 +28,41 @@ import createIncidentSchema, {
   CreateIncident,
 } from "@/schemas/createIncidentSchema";
 import { TeamFieldByPermission } from "../others/CreateWorkTeamField";
+import { useCreateIncidentMutation } from "@/Store/api/createIncidentApi/createIncidentApi";
+import { toast } from "sonner";
 
 function CrerateIncidentDialog() {
   const dispatch = useAppDispatch();
   const isCreateIncidentOpen = useAppSelector(
     (state) => state.dialogs.createIncident,
   );
+  const workspaceId = useAppSelector(
+    (state) => state.currentWorkspace.workspace?.id,
+  );
+
+  const [createIncident, { isLoading }] = useCreateIncidentMutation();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
+    reset,
   } = useForm<CreateIncident>({
     resolver: zodResolver(createIncidentSchema),
   });
 
-  function onSubmit(data: CreateIncident) {
-    console.log(data);
+  async function onSubmit(data: CreateIncident) {
+    if (!workspaceId) return;
+    try {
+      await createIncident({ workspaceId, data }).unwrap();
+      toast.success("Incident declared successfully");
+      reset();
+      dispatch(hideCreateIncident());
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to declare incident");
+    }
   }
 
   return (
@@ -134,12 +151,14 @@ function CrerateIncidentDialog() {
               type="button"
               variant="outline"
               onClick={() => dispatch(hideCreateIncident())}
+              disabled={isLoading}
             >
               Cancel
             </Button>
             <Button
               type="submit"
               className="flex gap-2 items-center justify-center"
+              disabled={isLoading}
             >
               Declare Incident <Rocket />
             </Button>
