@@ -72,7 +72,7 @@ function IncidentHeader({
     );
   }
 
-  if (!data?.data) return null;
+  if (!data?.data) return <h1>Incident not Found</h1>;
 
   const { title, severity, status, team } = data.data;
 

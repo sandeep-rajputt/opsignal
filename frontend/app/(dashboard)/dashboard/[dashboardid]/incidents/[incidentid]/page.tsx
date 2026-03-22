@@ -1,6 +1,8 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/Store/store";
 import { useGetIncidentQuery } from "@/Store/api/getIncidentApi/getIncidentApi";
 import {
   Card,
@@ -10,6 +12,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyContent,
+} from "@/components/ui/empty";
+import { Button } from "@/components/ui/button";
+import { AlertTriangle } from "lucide-react";
 import { marked } from "marked";
 import DOMPurify from "isomorphic-dompurify";
 
@@ -20,6 +32,10 @@ function IncidentPage() {
     dashboardid: string;
     incidentid: string;
   }>();
+  const router = useRouter();
+  const workspaceId = useSelector(
+    (state: RootState) => state.currentWorkspace.workspace?.id ?? dashboardid,
+  );
 
   const { data, isLoading } = useGetIncidentQuery({
     workspaceId: dashboardid,
@@ -55,7 +71,27 @@ function IncidentPage() {
     );
   }
 
-  if (!data?.data) return null;
+  if (!data?.data)
+    return (
+      <div className="flex flex-1 items-center justify-center p-6">
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <AlertTriangle />
+            </EmptyMedia>
+            <EmptyTitle>Incident not found</EmptyTitle>
+            <EmptyDescription>
+              This incident may have been deleted or does not exist.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button onClick={() => router.push(`/dashboard/${workspaceId}`)}>
+              Go to dashboard
+            </Button>
+          </EmptyContent>
+        </Empty>
+      </div>
+    );
 
   const { workspace, team, createdBy, severity, description } = data.data;
 
@@ -86,7 +122,9 @@ function IncidentPage() {
           </div>
           <div className="flex flex-col gap-1">
             <span className="text-xs text-muted-foreground">Team</span>
-            <span className="text-sm font-medium">{team?.name ?? "Global"}</span>
+            <span className="text-sm font-medium">
+              {team?.name ?? "Global"}
+            </span>
           </div>
           <div className="flex flex-col gap-1">
             <span className="text-xs text-muted-foreground">Created by</span>
