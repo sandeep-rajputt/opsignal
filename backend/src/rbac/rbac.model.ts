@@ -12,7 +12,7 @@ export async function getUserRoleModel({
     `
     SELECT m.role
     FROM members m
-    WHERE m.user_id = $1 AND m.workspace_id = $2
+    WHERE m.user_id = $1 AND m.workspace_id = $2 AND m.deleted_at IS NULL
     `,
     [userId, workspaceId],
   );

@@ -13,6 +13,7 @@ export async function getIncidentByIdModel(incidentId: string) {
     workspace_name: string;
     team_name: string | null;
     created_by_name: string;
+    created_by_id: string;
     created_at: string;
     updated_at: string;
   }>(
@@ -29,6 +30,7 @@ export async function getIncidentByIdModel(incidentId: string) {
       w.name AS workspace_name,
       t.name AS team_name,
       u.name AS created_by_name,
+      u.id AS created_by_id,
       i.created_at,
       i.updated_at
     FROM incidents i

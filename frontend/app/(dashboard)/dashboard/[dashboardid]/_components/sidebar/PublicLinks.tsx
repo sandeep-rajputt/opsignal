@@ -14,6 +14,8 @@ async function PublicLinks() {
   const pathname = await getPathname();
 
   const isDashboard = pathname?.split("/").length === 3;
+  const isMembers =
+    pathname?.split("/").length === 4 && pathname?.includes("members");
 
   return (
     <SidebarGroup>
@@ -29,6 +31,12 @@ async function PublicLinks() {
                 <LayoutDashboard /> Dashboard
               </Link>
             )}
+          </SidebarMenuButton>
+          <SidebarMenuButton asChild>
+            <Link href={`/dashboard/${workspaceId}/incidents`} className="flex">
+              <Users />
+              Incidents
+            </Link>
           </SidebarMenuButton>
           <SidebarMenuButton asChild>
             <Link href={`/dashboard/${workspaceId}/members`} className="flex">

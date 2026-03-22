@@ -2,11 +2,12 @@ import type { Request, Response } from "express";
 import safeReject from "../utils/safeReject.js";
 import safeResponse from "../utils/safeResponse.js";
 import {
-  getIncidentByIdModel,
-  checkUserCanViewIncident,
-} from "./getIncident.model.js";
+  getIncidentOwnerModel,
+  softDeleteIncidentModel,
+} from "./deleteWork.model.js";
+import { canDeleteWork } from "./deleteWork.service.js";
 
-async function getIncidentController(req: Request, res: Response) {
+async function deleteIncidentController(req: Request, res: Response) {
   try {
     const workspaceId = req.params.id;
     const incidentId = req.params.incidentId;
@@ -20,7 +21,7 @@ async function getIncidentController(req: Request, res: Response) {
       });
     }
 
-    const incident = await getIncidentByIdModel(incidentId);
+    const incident = await getIncidentOwnerModel(incidentId);
 
     if (!incident) {
       return safeReject(res, {
@@ -38,14 +39,14 @@ async function getIncidentController(req: Request, res: Response) {
       });
     }
 
-    const canView = await checkUserCanViewIncident({
+    const allowed = await canDeleteWork({
       userId,
       workspaceId,
+      createdBy: incident.created_by,
       teamId: incident.team_id,
-      scope: incident.scope,
     });
 
-    if (!canView) {
+    if (!allowed) {
       return safeReject(res, {
         message: "You do not have permission to perform this action.",
         path: req.originalUrl,
@@ -53,29 +54,21 @@ async function getIncidentController(req: Request, res: Response) {
       });
     }
 
+    const deleted = await softDeleteIncidentModel(incidentId);
+
+    if (!deleted) {
+      return safeReject(res, {
+        message: "Something went wrong",
+        path: req.originalUrl,
+        status: 500,
+      });
+    }
+
     return safeResponse(res, {
-      message: "Incident fetched successfully",
+      message: "Incident deleted successfully",
       path: req.originalUrl,
       status: 200,
-      data: {
-        id: incident.id,
-        title: incident.title,
-        status: incident.status,
-        severity: incident.severity,
-        description: incident.description,
-        scope: incident.scope,
-        workspace: {
-          id: incident.workspace_id,
-          name: incident.workspace_name,
-        },
-        team: incident.team_id
-          ? { id: incident.team_id, name: incident.team_name }
-          : null,
-        createdBy: incident.created_by_name,
-        createdById: incident.created_by_id,
-        createdAt: incident.created_at,
-        updatedAt: incident.updated_at,
-      },
+      data: null,
     });
   } catch (error) {
     console.log(error);
@@ -87,4 +80,4 @@ async function getIncidentController(req: Request, res: Response) {
   }
 }
 
-export default getIncidentController;
+export default deleteIncidentController;

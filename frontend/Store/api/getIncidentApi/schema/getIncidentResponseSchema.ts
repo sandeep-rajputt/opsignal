@@ -20,6 +20,7 @@ const getIncidentResponseSchema = baseApiResponseSchema.extend({
       })
       .nullable(),
     createdBy: z.string(),
+    createdById: z.string(),
     createdAt: z.string(),
     updatedAt: z.string(),
   }),

@@ -3,6 +3,10 @@ import ipRateLimiter from "../middlewares/ipRateLimiter.js";
 import createIncidentController from "./createIncident.controller.js";
 import createTaskController from "./createTask.controller.js";
 import createImprovementController from "./createImprovement.controller.js";
+import getIncidentController from "./getIncident.controller.js";
+import deleteIncidentController from "./deleteIncident.controller.js";
+import deleteTaskController from "./deleteTask.controller.js";
+import deleteImprovementController from "./deleteImprovement.controller.js";
 
 const workRouter = express.Router({ mergeParams: true });
 
@@ -19,5 +23,11 @@ workRouter.post(
   createWorkRateLimit,
   createImprovementController,
 );
+
+workRouter.get("/incident/:incidentId", getIncidentController);
+
+workRouter.delete("/incident/:incidentId", deleteIncidentController);
+workRouter.delete("/task/:taskId", deleteTaskController);
+workRouter.delete("/improvement/:improvementId", deleteImprovementController);
 
 export default workRouter;
