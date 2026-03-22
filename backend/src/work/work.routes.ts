@@ -5,6 +5,7 @@ import createTaskController from "./createTask.controller.js";
 import createImprovementController from "./createImprovement.controller.js";
 import getIncidentController from "./getIncident.controller.js";
 import getTaskController from "./getTask.controller.js";
+import getImprovementController from "./getImprovement.controller.js";
 import deleteIncidentController from "./deleteIncident.controller.js";
 import deleteTaskController from "./deleteTask.controller.js";
 import deleteImprovementController from "./deleteImprovement.controller.js";
@@ -27,6 +28,7 @@ workRouter.post(
 
 workRouter.get("/incident/:incidentId", getIncidentController);
 workRouter.get("/task/:taskId", getTaskController);
+workRouter.get("/improvement/:improvementId", getImprovementController);
 
 workRouter.delete("/incident/:incidentId", deleteIncidentController);
 workRouter.delete("/task/:taskId", deleteTaskController);
