@@ -5,6 +5,7 @@ import ReduxProvider from "@/providers/ReduxProvider";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import ExtraProviders from "@/providers/ExtraProviders";
 import NuqsProvider from "@/providers/NuqsProvider";
+import NextTopLoader from "nextjs-toploader";
 
 export const inter = Inter({ subsets: ["latin"] });
 
@@ -27,6 +28,11 @@ export default function RootLayout({
             <body
               className={`${inter.className} antialiased bg-background text-foreground`}
             >
+              <NextTopLoader
+                color="#2563eb"
+                shadow="0 0 10px #2563eb,0 0 5px #2563eb"
+                showSpinner={false}
+              />
               <ExtraProviders>{children}</ExtraProviders>
             </body>
           </ThemeProvider>
