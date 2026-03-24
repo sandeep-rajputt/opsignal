@@ -30,6 +30,7 @@ import createIncidentSchema, {
 import { TeamFieldByPermission } from "../others/CreateWorkTeamField";
 import { useCreateIncidentMutation } from "@/Store/api/createIncidentApi/createIncidentApi";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 function CrerateIncidentDialog() {
   const dispatch = useAppDispatch();
@@ -39,6 +40,7 @@ function CrerateIncidentDialog() {
   const workspaceId = useAppSelector(
     (state) => state.currentWorkspace.workspace?.id,
   );
+  const router = useRouter();
 
   const [createIncident, { isLoading }] = useCreateIncidentMutation();
 
@@ -55,10 +57,11 @@ function CrerateIncidentDialog() {
   async function onSubmit(data: CreateIncident) {
     if (!workspaceId) return;
     try {
-      await createIncident({ workspaceId, data }).unwrap();
+      const res = await createIncident({ workspaceId, data }).unwrap();
       toast.success("Incident declared successfully");
       reset();
       dispatch(hideCreateIncident());
+      router.push(`/dashboard/${workspaceId}/incidents/${res.data.id}`);
     } catch (error) {
       console.log(error);
       toast.error("Failed to declare incident");

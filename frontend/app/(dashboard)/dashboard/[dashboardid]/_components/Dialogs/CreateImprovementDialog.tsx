@@ -30,6 +30,7 @@ import createImprovementSchema, {
 import { TeamFieldByPermission } from "../others/CreateWorkTeamField";
 import { useCreateImprovementMutation } from "@/Store/api/createImprovementApi/createImprovementApi";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 function CreateImprovementDialog() {
   const dispatch = useAppDispatch();
@@ -39,6 +40,7 @@ function CreateImprovementDialog() {
   const workspaceId = useAppSelector(
     (state) => state.currentWorkspace.workspace?.id,
   );
+  const router = useRouter();
 
   const [createImprovement, { isLoading }] = useCreateImprovementMutation();
 
@@ -55,10 +57,11 @@ function CreateImprovementDialog() {
   async function onSubmit(data: CreateImprovement) {
     if (!workspaceId) return;
     try {
-      await createImprovement({ workspaceId, data }).unwrap();
+      const res = await createImprovement({ workspaceId, data }).unwrap();
       toast.success("Improvement created successfully");
       reset();
       dispatch(hideCreateImprovement());
+      router.push(`/dashboard/${workspaceId}/improvements/${res.data.id}`);
     } catch (error) {
       console.log(error);
       toast.error("Failed to create improvement");

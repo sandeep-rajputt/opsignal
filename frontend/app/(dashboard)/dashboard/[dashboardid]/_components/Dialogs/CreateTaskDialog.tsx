@@ -28,6 +28,7 @@ import createTaskSchema, { CreateTask } from "@/schemas/createTaskSchema";
 import { TeamFieldByPermission } from "../others/CreateWorkTeamField";
 import { useCreateTaskMutation } from "@/Store/api/createTaskApi/createTaskApi";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 function CreateTaskDialog() {
   const dispatch = useAppDispatch();
@@ -35,6 +36,7 @@ function CreateTaskDialog() {
   const workspaceId = useAppSelector(
     (state) => state.currentWorkspace.workspace?.id,
   );
+  const router = useRouter();
 
   const [createTask, { isLoading }] = useCreateTaskMutation();
 
@@ -51,10 +53,11 @@ function CreateTaskDialog() {
   async function onSubmit(data: CreateTask) {
     if (!workspaceId) return;
     try {
-      await createTask({ workspaceId, data }).unwrap();
+      const res = await createTask({ workspaceId, data }).unwrap();
       toast.success("Task created successfully");
       reset();
       dispatch(hideCreateTask());
+      router.push(`/dashboard/${workspaceId}/tasks/${res.data.id}`);
     } catch (error) {
       console.log(error);
       toast.error("Failed to create task");
