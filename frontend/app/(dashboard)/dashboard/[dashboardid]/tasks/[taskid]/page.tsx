@@ -106,10 +106,15 @@ function TaskPage() {
         <CardHeader>
           <CardDescription>DESCRIPTION</CardDescription>
         </CardHeader>
-        <CardContent
-          className="prose prose-full"
-          dangerouslySetInnerHTML={{ __html: renderedDescription }}
-        />
+
+        {description ? (
+          <CardContent
+            className="prose prose-full"
+            dangerouslySetInnerHTML={{ __html: renderedDescription }}
+          />
+        ) : (
+          <CardContent>No description provided</CardContent>
+        )}
       </Card>
 
       <Card className="w-64 shrink-0">

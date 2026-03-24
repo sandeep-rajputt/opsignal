@@ -116,20 +116,30 @@ function ImprovementPage() {
           <CardHeader>
             <CardDescription>DESCRIPTION</CardDescription>
           </CardHeader>
-          <CardContent
-            className="prose prose-full"
-            dangerouslySetInnerHTML={{ __html: renderedDescription }}
-          />
+
+          {description ? (
+            <CardContent
+              className="prose prose-full"
+              dangerouslySetInnerHTML={{ __html: renderedDescription }}
+            />
+          ) : (
+            <CardContent>No description provided</CardContent>
+          )}
         </Card>
 
         <Card>
           <CardHeader>
             <CardDescription>EXPECTED IMPACT</CardDescription>
           </CardHeader>
-          <CardContent
-            className="prose prose-full"
-            dangerouslySetInnerHTML={{ __html: renderedExpectedImpact }}
-          />
+
+          {expectedImpact ? (
+            <CardContent
+              className="prose prose-full"
+              dangerouslySetInnerHTML={{ __html: renderedExpectedImpact }}
+            />
+          ) : (
+            <CardContent>No expected impact provided</CardContent>
+          )}
         </Card>
       </div>
 
