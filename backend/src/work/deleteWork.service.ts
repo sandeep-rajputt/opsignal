@@ -1,4 +1,5 @@
-import { getUserRole } from "../rbac/rbac.service.js";
+import { checkPermission, getUserRole } from "../rbac/rbac.service.js";
+import { Permission } from "../rbac/permissions.js";
 import { ROLE } from "../rbac/roles.js";
 import { query } from "../config/db.js";
 
@@ -18,10 +19,16 @@ export async function canDeleteWork({
   // Creator can always delete their own work
   if (userId === createdBy) return true;
 
-  const role = await getUserRole(userId, workspaceId);
-  if (!role) return false;
+  const allowed = await checkPermission({
+    userId,
+    workspaceId,
+    permission: Permission.DELETE_WORK,
+  });
 
-  // Owner and admin can delete any work in the workspace
+  if (!allowed) return false;
+
+  const role = await getUserRole(userId, workspaceId);
+
   if (role === ROLE.OWNER || role === ROLE.ADMIN) return true;
 
   // Moderator can only delete work that belongs to their own team
