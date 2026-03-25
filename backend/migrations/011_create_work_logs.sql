@@ -5,7 +5,6 @@ CREATE TYPE work_log_type AS ENUM (
   'severity_change',
   'priority_change',
   'category_change',
-  'message',
   'content_update'
 );
 
