@@ -83,7 +83,7 @@ function ImprovementHeader({
     <>
       <div className="grid grid-cols-[1fr_auto] items-center justify-between w-full">
         <div className="flex flex-col gap-1.5">
-          <h1 className="text-xl font-bold">{title}</h1>
+          <h1 className="font-semibold">{title}</h1>
           <div className="flex items-center gap-2">
             <Badge variant="destructive">{category}</Badge>
             <Badge variant="outline">{status}</Badge>

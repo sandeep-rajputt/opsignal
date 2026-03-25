@@ -18,7 +18,7 @@ async function ImprovementLayout({
 
   return (
     <div>
-      <div className="flex items-center px-6 py-4 gap-5 w-full">
+      <div className="flex items-center px-5 py-4 gap-5 w-full">
         <SidebarTrigger />
         <ImprovementHeader
           workspaceId={workspaceId}
