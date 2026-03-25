@@ -9,12 +9,19 @@ import getImprovementController from "./getImprovement.controller.js";
 import deleteIncidentController from "./deleteIncident.controller.js";
 import deleteTaskController from "./deleteTask.controller.js";
 import deleteImprovementController from "./deleteImprovement.controller.js";
+import changeIncidentStatusController from "./changeIncidentStatus.controller.js";
 
 const workRouter = express.Router({ mergeParams: true });
 
 const createWorkRateLimit = ipRateLimiter({
   path: "create-work",
   maxRequests: 10,
+  timeInSeconds: 60,
+});
+
+const changeWorkStatusRateLimit = ipRateLimiter({
+  path: "change-work-status",
+  maxRequests: 20,
   timeInSeconds: 60,
 });
 
@@ -33,5 +40,11 @@ workRouter.get("/improvement/:improvementId", getImprovementController);
 workRouter.delete("/incident/:incidentId", deleteIncidentController);
 workRouter.delete("/task/:taskId", deleteTaskController);
 workRouter.delete("/improvement/:improvementId", deleteImprovementController);
+
+workRouter.patch(
+  "/incident/:incidentId/status",
+  changeWorkStatusRateLimit,
+  changeIncidentStatusController,
+);
 
 export default workRouter;

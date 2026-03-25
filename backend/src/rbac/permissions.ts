@@ -13,6 +13,9 @@ export enum Permission {
   VIEW_ALL_WORKSPACE = "view_all_workspacre",
   CREATE_WORKSPACE_WORK = "create_workspace_work",
   CREATE_TEAM_WORK = "create_team_work",
+  CHANGE_WORKSPACE_WORK_STATUS = "change_workspace_work_status",
+  CHANGE_TEAM_WORK_STATUS = "change_team_work_status",
+  DELETE_WORK = "delete_work",
 }
 
 export const RESTRICTED_PERMISSIONS: Record<Permission, ROLE[]> = {
@@ -28,6 +31,14 @@ export const RESTRICTED_PERMISSIONS: Record<Permission, ROLE[]> = {
   [Permission.VIEW_ALL_WORKSPACE]: [ROLE.OWNER, ROLE.ADMIN],
   [Permission.CREATE_WORKSPACE_WORK]: [ROLE.OWNER, ROLE.ADMIN],
   [Permission.CREATE_TEAM_WORK]: [ROLE.MEMBER, ROLE.MODERATOR],
+  [Permission.CHANGE_WORKSPACE_WORK_STATUS]: [ROLE.OWNER, ROLE.ADMIN],
+  [Permission.CHANGE_TEAM_WORK_STATUS]: [
+    ROLE.OWNER,
+    ROLE.ADMIN,
+    ROLE.MODERATOR,
+    ROLE.MEMBER,
+  ],
+  [Permission.DELETE_WORK]: [ROLE.ADMIN, ROLE.OWNER, ROLE.MODERATOR],
 };
 
 export function hasPermission({
