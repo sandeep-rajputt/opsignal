@@ -18,3 +18,4 @@ const getImprovementApi = baseApi.injectEndpoints({
 });
 
 export const { useGetImprovementQuery } = getImprovementApi;
+export default getImprovementApi;
