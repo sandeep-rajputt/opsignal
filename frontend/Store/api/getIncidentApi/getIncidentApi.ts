@@ -16,3 +16,4 @@ const getIncidentApi = baseApi.injectEndpoints({
 });
 
 export const { useGetIncidentQuery } = getIncidentApi;
+export default getIncidentApi;

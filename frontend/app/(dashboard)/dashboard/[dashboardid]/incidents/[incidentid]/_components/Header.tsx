@@ -1,25 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Spinner } from "@/components/ui/spinner";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
 import { useGetIncidentQuery } from "@/Store/api/getIncidentApi/getIncidentApi";
-import { useDeleteIncidentMutation } from "@/Store/api/deleteIncidentApi/deleteIncidentApi";
-import { usePermission } from "@/hooks/usePermission";
-import { useAppSelector } from "@/Store/hooks";
-import { Permission } from "@/rbac/permissions";
-import isApiError from "@/utils/isApiError";
+import IncidentActionButton from "@/components/ui/IncidentActionButton";
 
 function IncidentHeader({
   workspaceId,
@@ -28,31 +12,8 @@ function IncidentHeader({
   workspaceId: string;
   incidentId: string;
 }) {
-  const router = useRouter();
-  const [confirmOpen, setConfirmOpen] = useState(false);
-
+  console.log("render header");
   const { data, isLoading } = useGetIncidentQuery({ workspaceId, incidentId });
-  const [deleteIncident, { isLoading: isDeleting }] =
-    useDeleteIncidentMutation();
-
-  const { allowed: canDeleteWork } = usePermission(Permission.DELETE_WORK);
-  const currentUser = useAppSelector((state) => state.user.user);
-
-  const isCreator = !!currentUser && data?.data?.createdById === currentUser.id;
-  const showDelete = canDeleteWork || isCreator;
-
-  async function handleDelete() {
-    try {
-      await deleteIncident({ workspaceId, incidentId }).unwrap();
-      toast.success("Incident deleted successfully");
-      router.push(`/dashboard/${workspaceId}/incidents`);
-    } catch (err) {
-      const apiError = isApiError(err);
-      toast.error(apiError?.message || "Failed to delete incident");
-    } finally {
-      setConfirmOpen(false);
-    }
-  }
 
   if (isLoading) {
     return (
@@ -88,43 +49,15 @@ function IncidentHeader({
           </div>
         </div>
 
-        {showDelete && (
-          <div className="flex items-center gap-2">
-            <Button variant="destructive" onClick={() => setConfirmOpen(true)}>
-              Delete
-            </Button>
-          </div>
-        )}
+        <IncidentActionButton
+          workspaceId={workspaceId}
+          createdById={data.data.createdById}
+          incidentName={title}
+          incidentId={data.data.id}
+          status={status}
+          severity={severity}
+        />
       </div>
-
-      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <DialogContent showCloseButton={false}>
-          <DialogHeader>
-            <DialogTitle>Delete Incident</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete this incident? This action cannot
-              be undone.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="flex gap-2 justify-end">
-            {!isDeleting && (
-              <Button variant="outline" onClick={() => setConfirmOpen(false)}>
-                Cancel
-              </Button>
-            )}
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-              disabled={isDeleting}
-              className="flex gap-2 items-center justify-center"
-            >
-              Delete
-              {isDeleting && <Spinner />}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }

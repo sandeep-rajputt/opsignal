@@ -27,7 +27,7 @@ function SideUser() {
   const router = useRouter();
   const { isLoading, data } = useGetUserQuery(null);
   const dispatch = useAppDispatch();
-  const [_setting, setSetting] = useQueryState("setting");
+  const [setting, setSetting] = useQueryState("setting");
 
   if (isLoading) {
     return (
