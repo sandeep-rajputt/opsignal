@@ -11,6 +11,8 @@ import deleteTaskController from "./deleteTask.controller.js";
 import deleteImprovementController from "./deleteImprovement.controller.js";
 import changeIncidentStatusController from "./changeIncidentStatus.controller.js";
 import changeIncidentSeverityController from "./changeIncidentSeverity.controller.js";
+import changeTaskStatusController from "./changeTaskStatus.controller.js";
+import changeTaskPriorityController from "./changeTaskPriority.controller.js";
 
 const workRouter = express.Router({ mergeParams: true });
 
@@ -52,6 +54,18 @@ workRouter.patch(
   "/incident/:incidentId/severity",
   changeWorkStatusRateLimit,
   changeIncidentSeverityController,
+);
+
+workRouter.patch(
+  "/task/:taskId/status",
+  changeWorkStatusRateLimit,
+  changeTaskStatusController,
+);
+
+workRouter.patch(
+  "/task/:taskId/priority",
+  changeWorkStatusRateLimit,
+  changeTaskPriorityController,
 );
 
 export default workRouter;

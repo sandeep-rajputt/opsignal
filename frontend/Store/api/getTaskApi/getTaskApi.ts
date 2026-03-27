@@ -16,3 +16,4 @@ const getTaskApi = baseApi.injectEndpoints({
 });
 
 export const { useGetTaskQuery } = getTaskApi;
+export default getTaskApi;

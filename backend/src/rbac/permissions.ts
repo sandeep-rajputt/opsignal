@@ -17,6 +17,8 @@ export enum Permission {
   CHANGE_TEAM_WORK_STATUS = "change_team_work_status",
   CHANGE_WORKSPACE_WORK_SEVERITY = "change_workspace_work_severity",
   CHANGE_TEAM_WORK_SEVERITY = "change_team_work_severity",
+  CHANGE_WORKSPACE_WORK_PRIORITY = "change_workspace_work_priority",
+  CHANGE_TEAM_WORK_PRIORITY = "change_team_work_priority",
   DELETE_WORK = "delete_work",
 }
 
@@ -45,6 +47,13 @@ export const RESTRICTED_PERMISSIONS: Record<Permission, ROLE[]> = {
     ROLE.OWNER,
     ROLE.ADMIN,
     ROLE.MODERATOR,
+  ],
+  [Permission.CHANGE_WORKSPACE_WORK_PRIORITY]: [ROLE.OWNER, ROLE.ADMIN],
+  [Permission.CHANGE_TEAM_WORK_PRIORITY]: [
+    ROLE.OWNER,
+    ROLE.ADMIN,
+    ROLE.MODERATOR,
+    ROLE.MEMBER,
   ],
   [Permission.DELETE_WORK]: [ROLE.ADMIN, ROLE.OWNER, ROLE.MODERATOR],
 };

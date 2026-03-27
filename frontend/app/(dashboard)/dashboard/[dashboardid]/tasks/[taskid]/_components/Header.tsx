@@ -1,25 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Spinner } from "@/components/ui/spinner";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
 import { useGetTaskQuery } from "@/Store/api/getTaskApi/getTaskApi";
-import { useDeleteTaskMutation } from "@/Store/api/deleteTaskApi/deleteTaskApi";
-import { usePermission } from "@/hooks/usePermission";
-import { useAppSelector } from "@/Store/hooks";
-import { Permission } from "@/rbac/permissions";
-import isApiError from "@/utils/isApiError";
+import TaskActionButton from "@/components/ui/TaskActionButton";
 
 function TaskHeader({
   workspaceId,
@@ -28,30 +12,7 @@ function TaskHeader({
   workspaceId: string;
   taskId: string;
 }) {
-  const router = useRouter();
-  const [confirmOpen, setConfirmOpen] = useState(false);
-
   const { data, isLoading } = useGetTaskQuery({ workspaceId, taskId });
-  const [deleteTask, { isLoading: isDeleting }] = useDeleteTaskMutation();
-
-  const { allowed: canDeleteWork } = usePermission(Permission.DELETE_WORK);
-  const currentUser = useAppSelector((state) => state.user.user);
-
-  const isCreator = !!currentUser && data?.data?.createdById === currentUser.id;
-  const showDelete = canDeleteWork || isCreator;
-
-  async function handleDelete() {
-    try {
-      await deleteTask({ workspaceId, taskId }).unwrap();
-      toast.success("Task deleted successfully");
-      router.push(`/dashboard/${workspaceId}/tasks`);
-    } catch (err) {
-      const apiError = isApiError(err);
-      toast.error(apiError?.message || "Failed to delete task");
-    } finally {
-      setConfirmOpen(false);
-    }
-  }
 
   if (isLoading) {
     return (
@@ -87,43 +48,15 @@ function TaskHeader({
           </div>
         </div>
 
-        {showDelete && (
-          <div className="flex items-center gap-2">
-            <Button variant="destructive" onClick={() => setConfirmOpen(true)}>
-              Delete
-            </Button>
-          </div>
-        )}
+        <TaskActionButton
+          workspaceId={workspaceId}
+          createdById={data.data.createdById}
+          taskName={title}
+          taskId={data.data.id}
+          status={status}
+          priority={priority}
+        />
       </div>
-
-      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <DialogContent showCloseButton={false}>
-          <DialogHeader>
-            <DialogTitle>Delete Task</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete this task? This action cannot be
-              undone.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="flex gap-2 justify-end">
-            {!isDeleting && (
-              <Button variant="outline" onClick={() => setConfirmOpen(false)}>
-                Cancel
-              </Button>
-            )}
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-              disabled={isDeleting}
-              className="flex gap-2 items-center justify-center"
-            >
-              Delete
-              {isDeleting && <Spinner />}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }
