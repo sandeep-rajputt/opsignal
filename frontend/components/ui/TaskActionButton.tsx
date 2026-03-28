@@ -128,6 +128,9 @@ function TaskActionButton({
         workspaceId,
         taskId,
         data: { status: pendingStatus },
+        currentStatus: status as TaskStatus,
+        userName: currentUser?.name ?? "Unknown",
+        userId: currentUser?.id ?? "",
       }).unwrap();
       toast.success("Task status updated successfully");
     } catch (err) {
@@ -161,6 +164,9 @@ function TaskActionButton({
         workspaceId,
         taskId,
         data: { priority: pendingPriority },
+        currentPriority: priority as TaskPriority,
+        userName: currentUser?.name ?? "Unknown",
+        userId: currentUser?.id ?? "",
       }).unwrap();
       toast.success("Task priority updated successfully");
     } catch (err) {

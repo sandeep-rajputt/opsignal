@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { AlertTriangle } from "lucide-react";
 import { marked } from "marked";
 import DOMPurify from "isomorphic-dompurify";
+import ActivityTimeLine from "@/app/(dashboard)/dashboard/[dashboardid]/tasks/[taskid]/_components/ActivityTimeline";
 
 marked.use({ gfm: true, breaks: true });
 
@@ -101,55 +102,60 @@ function TaskPage() {
   const renderedDescription = DOMPurify.sanitize(raw);
 
   return (
-    <div className="flex gap-6 p-6 items-start">
-      <Card className="flex-1">
-        <CardHeader>
-          <CardDescription>DESCRIPTION</CardDescription>
-        </CardHeader>
+    <div>
+      <div className="flex gap-6 p-6 items-start">
+        <Card className="flex-1">
+          <CardHeader>
+            <CardDescription>DESCRIPTION</CardDescription>
+          </CardHeader>
 
-        {description ? (
-          <CardContent
-            className="prose prose-full"
-            dangerouslySetInnerHTML={{ __html: renderedDescription }}
-          />
-        ) : (
-          <CardContent>No description provided</CardContent>
-        )}
-      </Card>
+          {description ? (
+            <CardContent
+              className="prose prose-full"
+              dangerouslySetInnerHTML={{ __html: renderedDescription }}
+            />
+          ) : (
+            <CardContent>No description provided</CardContent>
+          )}
+        </Card>
 
-      <Card className="w-64 shrink-0">
-        <CardHeader>
-          <CardTitle>Information</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4 -mt-5">
-          <div className="flex flex-col gap-1">
-            <span className="text-xs text-muted-foreground">Workspace</span>
-            <span className="text-sm font-medium">{workspace.name}</span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-xs text-muted-foreground">Team</span>
-            <span className="text-sm font-medium">
-              {team?.name ?? "Global"}
-            </span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-xs text-muted-foreground">Created by</span>
-            <span className="text-sm font-medium">{createdBy}</span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-xs text-muted-foreground">Priority</span>
-            <span className="text-sm font-medium capitalize">{priority}</span>
-          </div>
-          {dueDate && (
+        <Card className="w-64 shrink-0">
+          <CardHeader>
+            <CardTitle>Information</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4 -mt-5">
             <div className="flex flex-col gap-1">
-              <span className="text-xs text-muted-foreground">Due date</span>
+              <span className="text-xs text-muted-foreground">Workspace</span>
+              <span className="text-sm font-medium">{workspace.name}</span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Team</span>
               <span className="text-sm font-medium">
-                {new Date(dueDate).toLocaleDateString()}
+                {team?.name ?? "Global"}
               </span>
             </div>
-          )}
-        </CardContent>
-      </Card>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Created by</span>
+              <span className="text-sm font-medium">{createdBy}</span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Priority</span>
+              <span className="text-sm font-medium capitalize">{priority}</span>
+            </div>
+            {dueDate && (
+              <div className="flex flex-col gap-1">
+                <span className="text-xs text-muted-foreground">Due date</span>
+                <span className="text-sm font-medium">
+                  {new Date(dueDate).toLocaleDateString()}
+                </span>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+      <div>
+        <ActivityTimeLine />
+      </div>
     </div>
   );
 }
