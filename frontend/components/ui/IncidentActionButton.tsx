@@ -130,6 +130,9 @@ function IncidentActionButton({
         workspaceId,
         incidentId,
         data: { status: pendingStatus },
+        currentStatus: status as IncidentStatus,
+        userName: currentUser?.name ?? "Unknown",
+        userId: currentUser?.id ?? "",
       }).unwrap();
       toast.success("Incident status updated successfully");
     } catch (err) {
@@ -163,6 +166,9 @@ function IncidentActionButton({
         workspaceId,
         incidentId,
         data: { severity: pendingSeverity },
+        currentSeverity: severity as IncidentSeverity,
+        userName: currentUser?.name ?? "Unknown",
+        userId: currentUser?.id ?? "",
       }).unwrap();
       toast.success("Incident severity updated successfully");
     } catch (err) {
