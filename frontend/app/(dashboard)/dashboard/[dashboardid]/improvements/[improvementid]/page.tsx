@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { AlertTriangle } from "lucide-react";
 import { marked } from "marked";
 import DOMPurify from "isomorphic-dompurify";
+import ActivityTimeLine from "@/app/(dashboard)/dashboard/[dashboardid]/improvements/[improvementid]/_components/ActivityTimeline";
 
 marked.use({ gfm: true, breaks: true });
 
@@ -110,64 +111,69 @@ function ImprovementPage() {
   const renderedExpectedImpact = DOMPurify.sanitize(rawExpectedImpact);
 
   return (
-    <div className="flex gap-6 p-6 items-start">
-      <div className="flex flex-col gap-6 flex-1">
-        <Card>
+    <div>
+      <div className="flex gap-6 p-6 items-start">
+        <div className="flex flex-col gap-6 flex-1">
+          <Card>
+            <CardHeader>
+              <CardDescription>DESCRIPTION</CardDescription>
+            </CardHeader>
+
+            {description ? (
+              <CardContent
+                className="prose prose-full"
+                dangerouslySetInnerHTML={{ __html: renderedDescription }}
+              />
+            ) : (
+              <CardContent>No description provided</CardContent>
+            )}
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardDescription>EXPECTED IMPACT</CardDescription>
+            </CardHeader>
+
+            {expectedImpact ? (
+              <CardContent
+                className="prose prose-full"
+                dangerouslySetInnerHTML={{ __html: renderedExpectedImpact }}
+              />
+            ) : (
+              <CardContent>No expected impact provided</CardContent>
+            )}
+          </Card>
+        </div>
+
+        <Card className="w-64 shrink-0">
           <CardHeader>
-            <CardDescription>DESCRIPTION</CardDescription>
+            <CardTitle>Information</CardTitle>
           </CardHeader>
-
-          {description ? (
-            <CardContent
-              className="prose prose-full"
-              dangerouslySetInnerHTML={{ __html: renderedDescription }}
-            />
-          ) : (
-            <CardContent>No description provided</CardContent>
-          )}
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardDescription>EXPECTED IMPACT</CardDescription>
-          </CardHeader>
-
-          {expectedImpact ? (
-            <CardContent
-              className="prose prose-full"
-              dangerouslySetInnerHTML={{ __html: renderedExpectedImpact }}
-            />
-          ) : (
-            <CardContent>No expected impact provided</CardContent>
-          )}
+          <CardContent className="flex flex-col gap-4 -mt-5">
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Workspace</span>
+              <span className="text-sm font-medium">{workspace.name}</span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Team</span>
+              <span className="text-sm font-medium">
+                {team?.name ?? "Global"}
+              </span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Created by</span>
+              <span className="text-sm font-medium">{createdBy}</span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Category</span>
+              <span className="text-sm font-medium capitalize">{category}</span>
+            </div>
+          </CardContent>
         </Card>
       </div>
-
-      <Card className="w-64 shrink-0">
-        <CardHeader>
-          <CardTitle>Information</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4 -mt-5">
-          <div className="flex flex-col gap-1">
-            <span className="text-xs text-muted-foreground">Workspace</span>
-            <span className="text-sm font-medium">{workspace.name}</span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-xs text-muted-foreground">Team</span>
-            <span className="text-sm font-medium">
-              {team?.name ?? "Global"}
-            </span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-xs text-muted-foreground">Created by</span>
-            <span className="text-sm font-medium">{createdBy}</span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-xs text-muted-foreground">Category</span>
-            <span className="text-sm font-medium capitalize">{category}</span>
-          </div>
-        </CardContent>
-      </Card>
+      <div>
+        <ActivityTimeLine />
+      </div>
     </div>
   );
 }

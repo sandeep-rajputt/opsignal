@@ -8,6 +8,7 @@ import getTaskController from "./getTask.controller.js";
 import getImprovementController from "./getImprovement.controller.js";
 import getIncidentLogsController from "./getIncidentLogs.controller.js";
 import getTaskLogsController from "./getTaskLogs.controller.js";
+import getImprovementLogsController from "./getImprovementLogs.controller.js";
 import deleteIncidentController from "./deleteIncident.controller.js";
 import deleteTaskController from "./deleteTask.controller.js";
 import deleteImprovementController from "./deleteImprovement.controller.js";
@@ -60,6 +61,12 @@ workRouter.get(
   "/task/:taskId/logs",
   getWorkLogsRateLimit,
   getTaskLogsController,
+);
+
+workRouter.get(
+  "/improvement/:improvementId/logs",
+  getWorkLogsRateLimit,
+  getImprovementLogsController,
 );
 
 workRouter.delete("/incident/:incidentId", deleteIncidentController);

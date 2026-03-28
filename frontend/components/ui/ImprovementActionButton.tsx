@@ -130,6 +130,9 @@ function ImprovementActionButton({
         workspaceId,
         improvementId,
         data: { status: pendingStatus },
+        currentStatus: status as ImprovementStatus,
+        userName: currentUser?.name ?? "Unknown",
+        userId: currentUser?.id ?? "",
       }).unwrap();
       toast.success("Improvement status updated successfully");
     } catch (err) {
@@ -163,6 +166,9 @@ function ImprovementActionButton({
         workspaceId,
         improvementId,
         data: { category: pendingCategory },
+        currentCategory: category as ImprovementCategory,
+        userName: currentUser?.name ?? "Unknown",
+        userId: currentUser?.id ?? "",
       }).unwrap();
       toast.success("Improvement category updated successfully");
     } catch (err) {
