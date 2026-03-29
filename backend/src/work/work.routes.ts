@@ -7,6 +7,7 @@ import getIncidentController from "./getIncident.controller.js";
 import getTaskController from "./getTask.controller.js";
 import getImprovementController from "./getImprovement.controller.js";
 import getAllIncidentsController from "./getAllIncidents.controller.js";
+import getAllTasksController from "./getAllTasks.controller.js";
 import getIncidentLogsController from "./getIncidentLogs.controller.js";
 import getTaskLogsController from "./getTaskLogs.controller.js";
 import getImprovementLogsController from "./getImprovementLogs.controller.js";
@@ -55,6 +56,7 @@ const getAllWorkRateLimit = ipRateLimiter({
 });
 
 workRouter.get("/incidents", getAllWorkRateLimit, getAllIncidentsController);
+workRouter.get("/tasks", getAllWorkRateLimit, getAllTasksController);
 workRouter.get("/incident/:incidentId", getIncidentController);
 workRouter.get("/task/:taskId", getTaskController);
 workRouter.get("/improvement/:improvementId", getImprovementController);

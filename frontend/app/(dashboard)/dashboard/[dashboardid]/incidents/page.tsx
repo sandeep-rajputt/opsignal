@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/Store/store";
 import { useGetIncidentsQuery } from "@/Store/api/getIncidentsApi/getIncidentsApi";
@@ -24,10 +24,10 @@ import {
 } from "@/components/ui/empty";
 import { AlertTriangle } from "lucide-react";
 import IncidentActionButton from "@/components/ui/IncidentActionButton";
+import Link from "next/link";
 
 function IncidentsPage() {
   const { dashboardid } = useParams<{ dashboardid: string }>();
-  const router = useRouter();
   const workspaceId = useSelector(
     (state: RootState) => state.currentWorkspace.workspace?.id ?? dashboardid,
   );
@@ -109,59 +109,63 @@ function IncidentsPage() {
       </div>
       <div className="px-5 pb-5 grid gap-4">
         {data.data.map((incident) => (
-          <Card
+          <Link
             key={incident.id}
-            className="cursor-pointer hover:border-primary/50 transition-colors"
-            onClick={() =>
-              router.push(`/dashboard/${workspaceId}/incidents/${incident.id}`)
-            }
+            href={`/dashboard/${workspaceId}/incidents/${incident.id}`}
           >
-            <CardHeader>
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1">
-                  <CardTitle className="text-base">{incident.title}</CardTitle>
-                  {incident.description && (
-                    <CardDescription className="mt-2 line-clamp-2">
-                      {incident.description}
-                    </CardDescription>
-                  )}
+            <Card className="cursor-pointer hover:border-primary/50 transition-colors">
+              <CardHeader>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <CardTitle className="text-base">
+                      {incident.title}
+                    </CardTitle>
+                    {incident.description && (
+                      <CardDescription className="mt-2 line-clamp-2">
+                        {incident.description}
+                      </CardDescription>
+                    )}
+                  </div>
+                  <div
+                    onClick={(e) => e.stopPropagation()}
+                    className="shrink-0"
+                  >
+                    <IncidentActionButton
+                      incidentId={incident.id}
+                      incidentName={incident.title}
+                      workspaceId={workspaceId}
+                      createdById={incident.createdById}
+                      status={incident.status}
+                      severity={incident.severity}
+                    />
+                  </div>
                 </div>
-                <div onClick={(e) => e.stopPropagation()} className="shrink-0">
-                  <IncidentActionButton
-                    incidentId={incident.id}
-                    incidentName={incident.title}
-                    workspaceId={workspaceId}
-                    createdById={incident.createdById}
-                    status={incident.status}
-                    severity={incident.severity}
-                  />
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="flex flex-wrap gap-2 items-center -mt-3">
-              <Badge
-                variant="outline"
-                className={
-                  incident.severity === "critical"
-                    ? "border-red-500 text-red-500"
-                    : incident.severity === "high"
-                      ? "border-orange-500 text-orange-500"
-                      : incident.severity === "medium"
-                        ? "border-yellow-500 text-yellow-500"
-                        : "border-blue-500 text-blue-500"
-                }
-              >
-                {incident.severity}
-              </Badge>
-              <Badge variant="secondary" className="capitalize">
-                {incident.status}
-              </Badge>
-              <Badge variant="ghost">{incident.team?.name ?? "Global"}</Badge>
-              <span className="text-xs text-muted-foreground ml-auto">
-                Created by {incident.createdBy}
-              </span>
-            </CardContent>
-          </Card>
+              </CardHeader>
+              <CardContent className="flex flex-wrap gap-2 items-center -mt-3">
+                <Badge
+                  variant="outline"
+                  className={
+                    incident.severity === "critical"
+                      ? "border-red-500 text-red-500"
+                      : incident.severity === "high"
+                        ? "border-orange-500 text-orange-500"
+                        : incident.severity === "medium"
+                          ? "border-yellow-500 text-yellow-500"
+                          : "border-blue-500 text-blue-500"
+                  }
+                >
+                  {incident.severity}
+                </Badge>
+                <Badge variant="secondary" className="capitalize">
+                  {incident.status}
+                </Badge>
+                <Badge variant="ghost">{incident.team?.name ?? "Global"}</Badge>
+                <span className="text-xs text-muted-foreground ml-auto">
+                  Created by {incident.createdBy}
+                </span>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </div>
     </div>
