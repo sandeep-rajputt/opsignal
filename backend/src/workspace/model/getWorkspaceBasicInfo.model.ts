@@ -11,12 +11,14 @@ export async function getWorkspaceBasicInfoModel(
     description: string | null;
     logo_url: string | null;
     role: ROLE | null;
+    plan: "free" | "premium";
   }>(
     `SELECT 
       w.slug AS id,
       w.name,
       w.description,
       w.logo_url,
+      w.plan,
       m.role
     FROM workspaces w
     LEFT JOIN members m ON m.workspace_id = w.slug AND m.user_id = $2 AND m.deleted_at IS NULL

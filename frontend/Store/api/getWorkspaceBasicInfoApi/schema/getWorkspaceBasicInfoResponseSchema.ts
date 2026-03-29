@@ -9,6 +9,7 @@ const getWorkspaceBasicInfoResponseSchema = baseApiResponseSchema.extend({
     description: z.string().nullable(),
     logo_url: z.string().nullable(),
     role: roleSchema.nullable(),
+    plan: z.enum(["free", "premium"]),
   }),
 });
 

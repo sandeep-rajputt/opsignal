@@ -38,6 +38,30 @@ const currentWorkspaceSlice = createSlice({
     ) => {
       state.status = action.payload;
     },
+    updateWorkspaceSettings: (
+      state,
+      action: PayloadAction<{
+        name?: string;
+        description?: string | null;
+        image?: string | null;
+        id?: string;
+      }>,
+    ) => {
+      if (state.workspace) {
+        if (action.payload.name !== undefined) {
+          state.workspace.name = action.payload.name;
+        }
+        if (action.payload.description !== undefined) {
+          state.workspace.description = action.payload.description;
+        }
+        if (action.payload.image !== undefined) {
+          state.workspace.image = action.payload.image;
+        }
+        if (action.payload.id !== undefined) {
+          state.workspace.id = action.payload.id;
+        }
+      }
+    },
   },
 });
 
@@ -45,6 +69,7 @@ export const {
   setCurrentWorkspace,
   clearCurrentWorkspace,
   setWorkspaceStatus,
+  updateWorkspaceSettings,
 } = currentWorkspaceSlice.actions;
 
 export default currentWorkspaceSlice.reducer;

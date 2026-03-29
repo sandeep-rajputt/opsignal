@@ -11,6 +11,7 @@ export interface WorkspaceData {
   logo_url: string | null;
   role: ROLE | null;
   team?: string;
+  plan: "free" | "premium";
 }
 
 interface WorkspaceSuccessResponse {

@@ -8,11 +8,17 @@ import {
   AlertTriangle,
   CheckSquare,
   TrendingUp,
+  Settings,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { usePermission } from "@/hooks/usePermission";
+import { Permission } from "@/rbac/permissions";
 
 function NavLinks({ workspaceId }: { workspaceId: string }) {
   const pathname = usePathname();
+  const { allowed: canEditWorkspace } = usePermission(
+    Permission.EDIT_WORKSPACE,
+  );
 
   const isDashboard = pathname?.split("/").length === 3;
   const isIncidents =
@@ -23,6 +29,8 @@ function NavLinks({ workspaceId }: { workspaceId: string }) {
     pathname?.split("/").length === 4 && pathname?.includes("improvements");
   const isMembers =
     pathname?.split("/").length === 4 && pathname?.includes("members");
+  const isSettings =
+    pathname?.split("/").length === 4 && pathname?.includes("settings");
 
   const links = [
     {
@@ -30,50 +38,64 @@ function NavLinks({ workspaceId }: { workspaceId: string }) {
       label: "Dashboard",
       icon: LayoutDashboard,
       isActive: isDashboard,
+      show: true,
     },
     {
       href: `/dashboard/${workspaceId}/incidents`,
       label: "Incidents",
       icon: AlertTriangle,
       isActive: isIncidents,
+      show: true,
     },
     {
       href: `/dashboard/${workspaceId}/tasks`,
       label: "Tasks",
       icon: CheckSquare,
       isActive: isTasks,
+      show: true,
     },
     {
       href: `/dashboard/${workspaceId}/improvements`,
       label: "Improvements",
       icon: TrendingUp,
       isActive: isImprovements,
+      show: true,
     },
     {
       href: `/dashboard/${workspaceId}/members`,
       label: "Members",
       icon: Users,
       isActive: isMembers,
+      show: true,
+    },
+    {
+      href: `/dashboard/${workspaceId}/settings`,
+      label: "Settings",
+      icon: Settings,
+      isActive: isSettings,
+      show: canEditWorkspace,
     },
   ];
 
   return (
     <>
-      {links.map(({ href, label, icon: Icon, isActive }) => (
-        <SidebarMenuItem key={label}>
-          <SidebarMenuButton isActive={isActive} asChild={!isActive}>
-            {isActive ? (
-              <>
-                <Icon /> {label}
-              </>
-            ) : (
-              <Link href={href} className="flex">
-                <Icon /> {label}
-              </Link>
-            )}
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      ))}
+      {links
+        .filter((link) => link.show)
+        .map(({ href, label, icon: Icon, isActive }) => (
+          <SidebarMenuItem key={label}>
+            <SidebarMenuButton isActive={isActive} asChild={!isActive}>
+              {isActive ? (
+                <>
+                  <Icon /> {label}
+                </>
+              ) : (
+                <Link href={href} className="flex">
+                  <Icon /> {label}
+                </Link>
+              )}
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        ))}
     </>
   );
 }

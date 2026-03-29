@@ -6,6 +6,7 @@ const getWorkspaceBasicInfoApi = baseApi.injectEndpoints({
     getWorkspaceBasicInfo: builder.query<GetWorkspaceBasicInfoResponse, string>(
       {
         query: (workspaceId) => `/api/workspace/${workspaceId}/basic-info`,
+        providesTags: ["Workspaces"],
       },
     ),
   }),

@@ -7,6 +7,8 @@ import { getUserTeamController } from "../controllers/getUserTeam.controller.js"
 import { getMembersController } from "../controllers/getMembers.controller.js";
 import { removeMemberController } from "../controllers/removeMember.controller.js";
 import { updateMemberRoleController } from "../controllers/updateMemberRole.controller.js";
+import { updateWorkspaceSettingsController } from "../controllers/updateWorkspaceSettings.controller.js";
+import { checkSlugAvailabilityController } from "../controllers/checkSlugAvailability.controller.js";
 import { requirePermission } from "../../middlewares/rbac.middleware.js";
 import { Permission } from "../../rbac/permissions.js";
 
@@ -39,6 +41,18 @@ basicWorkspaceRouter.patch(
   "/members/:memberId/role",
   requirePermission(Permission.UPDATE_MEMBER_ROLE),
   updateMemberRoleController,
+);
+
+basicWorkspaceRouter.patch(
+  "/settings",
+  requirePermission(Permission.EDIT_WORKSPACE),
+  updateWorkspaceSettingsController,
+);
+
+basicWorkspaceRouter.get(
+  "/check-slug",
+  requirePermission(Permission.EDIT_WORKSPACE),
+  checkSlugAvailabilityController,
 );
 
 export default basicWorkspaceRouter;
