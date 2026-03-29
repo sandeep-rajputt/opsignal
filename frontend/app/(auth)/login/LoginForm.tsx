@@ -90,7 +90,7 @@ function LoginForm() {
       </form>
 
       <div className="flex flex-col mt-7 gap-5">
-        <div className="w-full relative mt-5">
+        {/* <div className="w-full relative mt-5">
           <div className="h-px w-[40%] bg-tertiary/50 absolute left-0 top-2.5" />
           <div className="h-px w-[40%] bg-tertiary/50 absolute right-0 top-2.5" />
           <p className="mx-auto w-fit text-tertiary">OR</p>
@@ -105,7 +105,7 @@ function LoginForm() {
             disable={disabled || isSubmitting}
             handleClick={disableClick}
           />
-        </div>
+        </div> */}
 
         <p className="text-center text-sm text-secondary">
           Don’t have an account?{" "}
