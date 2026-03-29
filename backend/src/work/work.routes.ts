@@ -21,6 +21,9 @@ import changeTaskStatusController from "./changeTaskStatus.controller.js";
 import changeTaskPriorityController from "./changeTaskPriority.controller.js";
 import changeImprovementStatusController from "./changeImprovementStatus.controller.js";
 import changeImprovementCategoryController from "./changeImprovementCategory.controller.js";
+import getBasicFeedController from "./getBasicFeed.controller.js";
+import { requirePermission } from "../middlewares/rbac.middleware.js";
+import { Permission } from "../rbac/permissions.js";
 
 const workRouter = express.Router({ mergeParams: true });
 
@@ -56,6 +59,18 @@ const getAllWorkRateLimit = ipRateLimiter({
   timeInSeconds: 60,
 });
 
+workRouter.get(
+  "/workspace-feed",
+  getAllWorkRateLimit,
+  requirePermission(Permission.WORKSPACE_BASIC_FEED),
+  getBasicFeedController,
+);
+workRouter.get(
+  "/team-feed",
+  getAllWorkRateLimit,
+  requirePermission(Permission.TEAM_BASIC_FEED),
+  getBasicFeedController,
+);
 workRouter.get("/incidents", getAllWorkRateLimit, getAllIncidentsController);
 workRouter.get("/tasks", getAllWorkRateLimit, getAllTasksController);
 workRouter.get(
