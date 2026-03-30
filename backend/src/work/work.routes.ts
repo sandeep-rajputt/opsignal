@@ -22,6 +22,10 @@ import changeTaskPriorityController from "./changeTaskPriority.controller.js";
 import changeImprovementStatusController from "./changeImprovementStatus.controller.js";
 import changeImprovementCategoryController from "./changeImprovementCategory.controller.js";
 import getBasicFeedController from "./getBasicFeed.controller.js";
+import getRecentActivityController from "./getRecentActivity.controller.js";
+import getOverviewController from "./getOverview.controller.js";
+import getIncidentsBySeverityController from "./getIncidentsBySeverity.controller.js";
+import getTasksByStatusController from "./getTasksByStatus.controller.js";
 import { requirePermission } from "../middlewares/rbac.middleware.js";
 import { Permission } from "../rbac/permissions.js";
 
@@ -70,6 +74,54 @@ workRouter.get(
   getAllWorkRateLimit,
   requirePermission(Permission.TEAM_BASIC_FEED),
   getBasicFeedController,
+);
+workRouter.get(
+  "/workspace-recent-activity",
+  getAllWorkRateLimit,
+  requirePermission(Permission.WORKSPACE_BASIC_FEED),
+  getRecentActivityController,
+);
+workRouter.get(
+  "/team-recent-activity",
+  getAllWorkRateLimit,
+  requirePermission(Permission.TEAM_BASIC_FEED),
+  getRecentActivityController,
+);
+workRouter.get(
+  "/workspace-overview",
+  getAllWorkRateLimit,
+  requirePermission(Permission.WORKSPACE_BASIC_FEED),
+  getOverviewController,
+);
+workRouter.get(
+  "/team-overview",
+  getAllWorkRateLimit,
+  requirePermission(Permission.TEAM_BASIC_FEED),
+  getOverviewController,
+);
+workRouter.get(
+  "/workspace-incidents-by-severity",
+  getAllWorkRateLimit,
+  requirePermission(Permission.WORKSPACE_BASIC_FEED),
+  getIncidentsBySeverityController,
+);
+workRouter.get(
+  "/team-incidents-by-severity",
+  getAllWorkRateLimit,
+  requirePermission(Permission.TEAM_BASIC_FEED),
+  getIncidentsBySeverityController,
+);
+workRouter.get(
+  "/workspace-tasks-by-status",
+  getAllWorkRateLimit,
+  requirePermission(Permission.WORKSPACE_BASIC_FEED),
+  getTasksByStatusController,
+);
+workRouter.get(
+  "/team-tasks-by-status",
+  getAllWorkRateLimit,
+  requirePermission(Permission.TEAM_BASIC_FEED),
+  getTasksByStatusController,
 );
 workRouter.get("/incidents", getAllWorkRateLimit, getAllIncidentsController);
 workRouter.get("/tasks", getAllWorkRateLimit, getAllTasksController);
