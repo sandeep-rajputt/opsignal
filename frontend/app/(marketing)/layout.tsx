@@ -1,15 +1,8 @@
-import Background from "@/components/shared/Background";
+import MarketingBackground from "@/components/shared/MarketingBackground";
 import { ReactNode } from "react";
-import Container from "@/components/shared/Comtainer";
 
-function AuthLayout({ children }: { children: ReactNode }) {
-  return (
-    <Background>
-      <Container>
-        <div className="w-full">{children}</div>
-      </Container>
-    </Background>
-  );
+function MarketingLayout({ children }: { children: ReactNode }) {
+  return <MarketingBackground>{children}</MarketingBackground>;
 }
 
-export default AuthLayout;
+export default MarketingLayout;
