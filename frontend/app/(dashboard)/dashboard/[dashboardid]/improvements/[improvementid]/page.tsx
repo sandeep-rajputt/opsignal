@@ -45,7 +45,7 @@ function ImprovementPage() {
 
   if (isLoading) {
     return (
-      <div className="flex gap-6 p-6 items-start">
+      <div className="flex flex-col gap-4 p-4 lg:flex-row lg:gap-6 lg:p-6 items-start">
         <div className="flex flex-col gap-6 flex-1">
           <Card>
             <CardContent className="flex flex-col gap-3 pt-2">
@@ -64,7 +64,7 @@ function ImprovementPage() {
             </CardContent>
           </Card>
         </div>
-        <Card className="w-64 shrink-0">
+        <Card className="w-full lg:w-64 shrink-0">
           <CardContent className="flex flex-col gap-4 pt-2">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="flex flex-col gap-1">
@@ -112,7 +112,7 @@ function ImprovementPage() {
 
   return (
     <div>
-      <div className="flex gap-6 p-6 items-start">
+      <div className="flex flex-col gap-4 p-4 lg:flex-row lg:gap-6 lg:p-6 items-start">
         <div className="flex flex-col gap-6 flex-1">
           <Card>
             <CardHeader>
@@ -145,7 +145,7 @@ function ImprovementPage() {
           </Card>
         </div>
 
-        <Card className="w-64 shrink-0">
+        <Card className="w-full lg:w-64 shrink-0">
           <CardHeader>
             <CardTitle>Information</CardTitle>
           </CardHeader>

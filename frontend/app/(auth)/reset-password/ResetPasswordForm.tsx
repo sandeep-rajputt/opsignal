@@ -63,7 +63,7 @@ function ResetPassword() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`w-fit mx-auto mt-7 px-7 py-2 rounded-md  bg-primary font-semibold text-white ${
+            className={`w-full sm:w-fit mx-auto mt-7 px-7 py-2 rounded-md bg-primary font-semibold text-white ${
               isSubmitting ? "cursor-wait" : "cursor-pointer"
             }`}
           >

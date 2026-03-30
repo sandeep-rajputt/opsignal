@@ -187,13 +187,13 @@ function SettingsPage() {
   if (!canEditWorkspace) {
     return (
       <div>
-        <header className="flex items-center justify-between w-full px-5 py-4">
-          <div className="flex gap-5 items-center">
+        <header className="flex flex-col gap-3 px-4 py-4 lg:flex-row lg:items-center lg:justify-between lg:px-6">
+          <div className="flex gap-3 items-center lg:gap-5">
             <SidebarTrigger />
             <h1 className="text-xl font-semibold">Settings</h1>
           </div>
         </header>
-        <main className="px-5 py-4">
+        <main className="px-4 py-4 lg:px-6">
           <Alert variant="destructive">
             <AlertTitle>Access Denied</AlertTitle>
             <AlertDescription>
@@ -208,13 +208,13 @@ function SettingsPage() {
   if (isLoading) {
     return (
       <div>
-        <header className="flex items-center justify-between w-full px-5 py-4">
-          <div className="flex gap-5 items-center">
+        <header className="flex flex-col gap-3 px-4 py-4 lg:flex-row lg:items-center lg:justify-between lg:px-6">
+          <div className="flex gap-3 items-center lg:gap-5">
             <SidebarTrigger />
             <h1 className="text-xl font-semibold">Settings</h1>
           </div>
         </header>
-        <main className="px-5 py-4">
+        <main className="px-4 py-4 lg:px-6">
           <div className="max-w-2xl space-y-6">
             <div className="flex items-center gap-4">
               <Skeleton className="h-20 w-20 rounded-full" />
@@ -236,13 +236,13 @@ function SettingsPage() {
     const apiError = isApiError(error);
     return (
       <div>
-        <header className="flex items-center justify-between w-full px-5 py-4">
-          <div className="flex gap-5 items-center">
+        <header className="flex flex-col gap-3 px-4 py-4 lg:flex-row lg:items-center lg:justify-between lg:px-6">
+          <div className="flex gap-3 items-center lg:gap-5">
             <SidebarTrigger />
             <h1 className="text-xl font-semibold">Settings</h1>
           </div>
         </header>
-        <main className="px-5 py-4">
+        <main className="px-4 py-4 lg:px-6">
           <Alert variant="destructive">
             <AlertTitle>Error</AlertTitle>
             <AlertDescription>
@@ -263,14 +263,14 @@ function SettingsPage() {
 
   return (
     <div>
-      <header className="flex items-center justify-between w-full px-5 py-4">
-        <div className="flex gap-5 items-center">
+      <header className="flex flex-col gap-3 px-4 py-4 lg:flex-row lg:items-center lg:justify-between lg:px-6">
+        <div className="flex gap-3 items-center lg:gap-5">
           <SidebarTrigger />
           <h1 className="text-xl font-semibold">Settings</h1>
         </div>
       </header>
 
-      <main className="px-5 py-4">
+      <main className="px-4 py-4 lg:px-6">
         <div className="max-w-2xl">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="flex items-center gap-4">

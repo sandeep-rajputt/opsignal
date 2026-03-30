@@ -39,7 +39,9 @@ async function DashboardLayout({
               }
             >
               <DashboardContent>
-                <div className="h-screen w-full ">{children}</div>
+                <div className="h-screen w-full @container/main">
+                  {children}
+                </div>
               </DashboardContent>
             </Suspense>
           </Background>

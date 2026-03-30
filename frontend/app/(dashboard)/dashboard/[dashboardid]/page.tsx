@@ -15,6 +15,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { AlertTriangleIcon } from "lucide-react";
 import {
   Activity,
   BarChart3,
@@ -103,7 +104,7 @@ function Dashboard() {
 
   return (
     <div>
-      <div className="flex gap-5 items-center w-full justify-between px-5 py-4">
+      <div className="flex gap-3 items-center w-full justify-between px-4 py-4 lg:gap-5 lg:px-6">
         <div className="flex gap-2 items-center">
           <SidebarTrigger />
           <h1 className="font-semibold">Dashboard</h1>
@@ -113,9 +114,10 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="px-5 pb-3">
-        <Alert>
-          <AlertDescription>
+      <div className="px-4 pb-3 lg:px-6">
+        <Alert className="border-amber-200 bg-amber-50 text-foreground dark:border-amber-900 dark:bg-amber-950 ">
+          <AlertDescription className="flex gap-2 items-center justify-center">
+            <AlertTriangleIcon />
             This project is still under active development. Some features like
             workspace upgrades, team management, and advanced analytics are
             currently being built.
@@ -123,7 +125,7 @@ function Dashboard() {
         </Alert>
       </div>
 
-      <div className="px-5 pb-5 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 pb-5 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
         {roleLoading || basicFeedLoading ? (
           <>
             {Array.from({ length: 4 }).map((_, i) => (
@@ -233,7 +235,7 @@ function Dashboard() {
         )}
       </div>
 
-      <div className="px-5 pb-5 grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 pb-5 @3xl/main:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">

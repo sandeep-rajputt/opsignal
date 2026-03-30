@@ -45,7 +45,7 @@ function TaskPage() {
 
   if (isLoading) {
     return (
-      <div className="flex gap-6 p-6 items-start">
+      <div className="flex flex-col gap-4 p-4 lg:flex-row lg:gap-6 lg:p-6 items-start">
         <Card className="flex-1">
           <CardContent className="flex flex-col gap-3 pt-2">
             <Skeleton className="h-5 w-32" />
@@ -58,7 +58,7 @@ function TaskPage() {
             <Skeleton className="h-4 w-3/4" />
           </CardContent>
         </Card>
-        <Card className="w-64 shrink-0">
+        <Card className="w-full lg:w-64 shrink-0">
           <CardContent className="flex flex-col gap-4 pt-2">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="flex flex-col gap-1">
@@ -103,7 +103,7 @@ function TaskPage() {
 
   return (
     <div>
-      <div className="flex gap-6 p-6 items-start">
+      <div className="flex flex-col gap-4 p-4 lg:flex-row lg:gap-6 lg:p-6 items-start">
         <Card className="flex-1">
           <CardHeader>
             <CardDescription>DESCRIPTION</CardDescription>
@@ -119,7 +119,7 @@ function TaskPage() {
           )}
         </Card>
 
-        <Card className="w-64 shrink-0">
+        <Card className="w-full lg:w-64 shrink-0">
           <CardHeader>
             <CardTitle>Information</CardTitle>
           </CardHeader>

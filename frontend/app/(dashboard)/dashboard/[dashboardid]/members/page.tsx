@@ -108,8 +108,8 @@ function MembersPage() {
 
   return (
     <div>
-      <header className="flex items-center justify-between w-full px-5 py-4">
-        <div className="flex gap-5 items-center">
+      <header className="flex flex-col gap-3 px-4 py-4 lg:flex-row lg:items-center lg:justify-between lg:px-6">
+        <div className="flex gap-3 items-center lg:gap-5">
           <SidebarTrigger />
           <h1 className="text-xl font-semibold">Members</h1>
         </div>
@@ -120,7 +120,7 @@ function MembersPage() {
         </div>
       </header>
 
-      <main className="px-5 py-4">
+      <main className="px-4 py-4 lg:px-6">
         {/* Loading State */}
         {(isLoadingMembers || isLoadingRole) && (
           <div className="space-y-4">

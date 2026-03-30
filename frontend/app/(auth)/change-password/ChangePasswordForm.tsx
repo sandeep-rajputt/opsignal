@@ -122,11 +122,11 @@ function ChangePasswordForm() {
       )}
       {formState === "success" && (
         <div>
-          <h2 className="text-4xl text-center font-bold text-foreground">
+          <h2 className="text-3xl sm:text-4xl text-center font-bold text-foreground">
             Change password
           </h2>
 
-          <p className="text-secondary w-full mx-auto mt-3 mb-7 max-w-sm text-center">
+          <p className="text-secondary w-full mx-auto mt-3 mb-7 max-w-sm text-center text-sm sm:text-base">
             Set a new password to keep your account secure and continue.
           </p>
           <form
@@ -152,7 +152,7 @@ function ChangePasswordForm() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-fit mx-auto mt-7 px-7 py-2 rounded-md bg-primary font-semibold text-white ${
+              className={`w-full sm:w-fit mx-auto mt-7 px-7 py-2 rounded-md bg-primary font-semibold text-white ${
                 isSubmitting ? "cursor-wait" : "cursor-pointer"
               }`}
             >

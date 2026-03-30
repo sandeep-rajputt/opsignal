@@ -10,10 +10,10 @@ function Login() {
   return (
     <div>
       <div>
-        <h2 className="text-4xl text-center font-bold text-foreground mt-3">
+        <h2 className="text-3xl sm:text-4xl text-center font-bold text-foreground mt-3">
           Log in
         </h2>
-        <p className="text-secondary text-center mt-3 mb-7">
+        <p className="text-secondary text-center mt-3 mb-7 text-sm sm:text-base">
           Log in to manage your account and workspaces.
         </p>
         <LoginForm />

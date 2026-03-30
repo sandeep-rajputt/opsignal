@@ -48,10 +48,10 @@ function RegisterForm() {
     <div>
       {step === "form" && (
         <>
-          <h2 className="text-4xl text-center font-bold text-foreground">
+          <h2 className="text-3xl sm:text-4xl text-center font-bold text-foreground">
             Register
           </h2>
-          <p className="text-secondary w-full mx-auto  mt-3 mb-7 max-w-sm text-center">
+          <p className="text-secondary w-full mx-auto mt-3 mb-7 max-w-sm text-center text-sm sm:text-base">
             Create your account to manage your workspaces and get started.
           </p>
           <form
@@ -90,7 +90,7 @@ function RegisterForm() {
             <button
               type="submit"
               disabled={disabled || isSubmitting}
-              className={`w-fit mx-auto flex gap-2 items-center justify-center mt-7 px-7 py-2 rounded-md  bg-primary font-semibold text-white ${
+              className={`w-full sm:w-fit mx-auto flex gap-2 items-center justify-center mt-7 px-7 py-2 rounded-md bg-primary font-semibold text-white ${
                 disabled || isSubmitting ? "cursor-wait" : "cursor-pointer"
               }`}
             >
@@ -111,7 +111,7 @@ function RegisterForm() {
               <p className="mx-auto w-fit text-tertiary">OR</p>
             </div>
 
-            <div className="flex gap-5 mt-5">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 mt-5">
               <GoogleButton
                 disable={disabled || isSubmitting}
                 handleClick={disableClick}

@@ -39,7 +39,7 @@ function IncidentsPage() {
   if (isLoading) {
     return (
       <div>
-        <div className="flex gap-5 items-center w-full justify-between px-5 py-4">
+        <div className="flex gap-3 items-center w-full justify-between px-4 py-4 lg:gap-5 lg:px-6">
           <div className="flex gap-2 items-center">
             <SidebarTrigger />
             <h1 className="font-semibold">Incidents</h1>
@@ -48,7 +48,7 @@ function IncidentsPage() {
             <CreateTaskButton />
           </div>
         </div>
-        <div className="px-5 pb-5 grid gap-4">
+        <div className="px-4 lg:px-6 pb-5 grid gap-4">
           {Array.from({ length: 3 }).map((_, i) => (
             <Card key={i}>
               <CardContent className="flex flex-col gap-3 pt-2">
@@ -70,7 +70,7 @@ function IncidentsPage() {
   if (!data?.data || data.data.length === 0) {
     return (
       <div>
-        <div className="flex gap-5 items-center w-full justify-between px-5 py-4">
+        <div className="flex gap-3 items-center w-full justify-between px-4 py-4 lg:gap-5 lg:px-6">
           <div className="flex gap-2 items-center">
             <SidebarTrigger />
             <h1 className="font-semibold">Incidents</h1>
@@ -98,7 +98,7 @@ function IncidentsPage() {
 
   return (
     <div>
-      <div className="flex gap-5 items-center w-full justify-between px-5 py-4">
+      <div className="flex gap-3 items-center w-full justify-between px-4 py-4 lg:gap-5 lg:px-6">
         <div className="flex gap-2 items-center">
           <SidebarTrigger />
           <h1 className="font-semibold">Incidents</h1>
@@ -107,7 +107,7 @@ function IncidentsPage() {
           <CreateTaskButton />
         </div>
       </div>
-      <div className="px-5 pb-5 grid gap-4">
+      <div className="px-4 lg:px-6 pb-5 grid gap-4">
         {data.data.map((incident) => (
           <Link
             key={incident.id}

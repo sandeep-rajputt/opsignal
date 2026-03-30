@@ -75,7 +75,7 @@ function LoginForm() {
         <button
           type="submit"
           disabled={disabled || isSubmitting}
-          className={`w-fit mx-auto mt-7 px-7 flex items-center justify-center gap-2 py-2 rounded-md  bg-primary font-semibold text-white ${
+          className={`w-full sm:w-fit mx-auto mt-7 px-7 flex items-center justify-center gap-2 py-2 rounded-md bg-primary font-semibold text-white ${
             disabled || isSubmitting ? "cursor-wait" : "cursor-pointer"
           }`}
         >
@@ -96,7 +96,7 @@ function LoginForm() {
           <p className="mx-auto w-fit text-tertiary">OR</p>
         </div>
 
-        <div className="flex gap-5 mt-5">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 mt-5">
           <GoogleButton
             disable={disabled || isSubmitting}
             handleClick={disableClick}
