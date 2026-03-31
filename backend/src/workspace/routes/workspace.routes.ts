@@ -11,46 +11,75 @@ import { updateWorkspaceSettingsController } from "../controllers/updateWorkspac
 import { checkSlugAvailabilityController } from "../controllers/checkSlugAvailability.controller.js";
 import { requirePermission } from "../../middlewares/rbac.middleware.js";
 import { Permission } from "../../rbac/permissions.js";
+import rateLimiter from "../../middlewares/rateLimiter.js";
 
 const basicWorkspaceRouter = express.Router({ mergeParams: true });
 
-basicWorkspaceRouter.get("/role", getUserRoleController);
+const getWorkspaceRateLimit = rateLimiter({
+  path: "get-workspace-info",
+  maxRequests: 30,
+  timeInSeconds: 60,
+});
 
-basicWorkspaceRouter.get("/basic-info", getWorkspaceBasicInfoController);
+const updateWorkspaceRateLimit = rateLimiter({
+  path: "update-workspace",
+  maxRequests: 10,
+  timeInSeconds: 60,
+});
 
-basicWorkspaceRouter.get("/teams", getWorkspaceTeamsController);
+basicWorkspaceRouter.get("/role", getWorkspaceRateLimit, getUserRoleController);
 
-basicWorkspaceRouter.get("/team", getUserTeamController);
+basicWorkspaceRouter.get(
+  "/basic-info",
+  getWorkspaceRateLimit,
+  getWorkspaceBasicInfoController,
+);
+
+basicWorkspaceRouter.get(
+  "/teams",
+  getWorkspaceRateLimit,
+  getWorkspaceTeamsController,
+);
+
+basicWorkspaceRouter.get("/team", getWorkspaceRateLimit, getUserTeamController);
 
 basicWorkspaceRouter.get(
   "/members",
+  getWorkspaceRateLimit,
   requirePermission(Permission.SEE_WORKSPACE_MEMBERS),
   getWorkspaceMembersController,
 );
 
-// Members management routes - role-based visibility and removal
-basicWorkspaceRouter.get("/members-list", getMembersController);
+basicWorkspaceRouter.get(
+  "/members-list",
+  getWorkspaceRateLimit,
+  getMembersController,
+);
 
 basicWorkspaceRouter.delete(
   "/members/:memberId",
+  updateWorkspaceRateLimit,
   requirePermission(Permission.REMOVE_WORKSPACE_MEMBER),
   removeMemberController,
 );
 
 basicWorkspaceRouter.patch(
   "/members/:memberId/role",
+  updateWorkspaceRateLimit,
   requirePermission(Permission.UPDATE_MEMBER_ROLE),
   updateMemberRoleController,
 );
 
 basicWorkspaceRouter.patch(
   "/settings",
+  updateWorkspaceRateLimit,
   requirePermission(Permission.EDIT_WORKSPACE),
   updateWorkspaceSettingsController,
 );
 
 basicWorkspaceRouter.get(
   "/check-slug",
+  getWorkspaceRateLimit,
   requirePermission(Permission.EDIT_WORKSPACE),
   checkSlugAvailabilityController,
 );

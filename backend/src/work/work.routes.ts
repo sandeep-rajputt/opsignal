@@ -1,5 +1,5 @@
 import express from "express";
-import ipRateLimiter from "../middlewares/ipRateLimiter.js";
+import rateLimiter from "../middlewares/rateLimiter.js";
 import createIncidentController from "./createIncident.controller.js";
 import createTaskController from "./createTask.controller.js";
 import createImprovementController from "./createImprovement.controller.js";
@@ -31,13 +31,13 @@ import { Permission } from "../rbac/permissions.js";
 
 const workRouter = express.Router({ mergeParams: true });
 
-const createWorkRateLimit = ipRateLimiter({
+const createWorkRateLimit = rateLimiter({
   path: "create-work",
   maxRequests: 10,
   timeInSeconds: 60,
 });
 
-const changeWorkStatusRateLimit = ipRateLimiter({
+const changeWorkStatusRateLimit = rateLimiter({
   path: "change-work-status",
   maxRequests: 20,
   timeInSeconds: 60,
@@ -51,13 +51,13 @@ workRouter.post(
   createImprovementController,
 );
 
-const getWorkLogsRateLimit = ipRateLimiter({
+const getWorkLogsRateLimit = rateLimiter({
   path: "get-work-logs",
   maxRequests: 30,
   timeInSeconds: 60,
 });
 
-const getAllWorkRateLimit = ipRateLimiter({
+const getAllWorkRateLimit = rateLimiter({
   path: "get-all-work",
   maxRequests: 30,
   timeInSeconds: 60,
@@ -130,9 +130,17 @@ workRouter.get(
   getAllWorkRateLimit,
   getAllImprovementsController,
 );
-workRouter.get("/incident/:incidentId", getIncidentController);
-workRouter.get("/task/:taskId", getTaskController);
-workRouter.get("/improvement/:improvementId", getImprovementController);
+workRouter.get(
+  "/incident/:incidentId",
+  getAllWorkRateLimit,
+  getIncidentController,
+);
+workRouter.get("/task/:taskId", getAllWorkRateLimit, getTaskController);
+workRouter.get(
+  "/improvement/:improvementId",
+  getAllWorkRateLimit,
+  getImprovementController,
+);
 
 workRouter.get(
   "/incident/:incidentId/logs",
@@ -152,9 +160,21 @@ workRouter.get(
   getImprovementLogsController,
 );
 
-workRouter.delete("/incident/:incidentId", deleteIncidentController);
-workRouter.delete("/task/:taskId", deleteTaskController);
-workRouter.delete("/improvement/:improvementId", deleteImprovementController);
+workRouter.delete(
+  "/incident/:incidentId",
+  changeWorkStatusRateLimit,
+  deleteIncidentController,
+);
+workRouter.delete(
+  "/task/:taskId",
+  changeWorkStatusRateLimit,
+  deleteTaskController,
+);
+workRouter.delete(
+  "/improvement/:improvementId",
+  changeWorkStatusRateLimit,
+  deleteImprovementController,
+);
 
 workRouter.patch(
   "/incident/:incidentId/status",

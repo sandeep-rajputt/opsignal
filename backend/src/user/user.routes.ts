@@ -9,6 +9,7 @@ import {
   changeUserPassword,
 } from "./user.controller.js";
 import ipRateLimiter from "../middlewares/ipRateLimiter.js";
+import rateLimiter from "../middlewares/rateLimiter.js";
 import { verifyController } from "./user.controller.js";
 import userAgentMiddleware from "../middlewares/userAgentMiddleware.js";
 import authMiddleware from "../middlewares/auth.middleware.js";
@@ -91,26 +92,54 @@ userRouter.post(
   logoutUser,
 );
 
-userRouter.get("/me", authMiddleware, getUser);
+userRouter.get(
+  "/me",
+  authMiddleware,
+  rateLimiter({
+    maxRequests: 30,
+    timeInSeconds: 60,
+    path: "get-user",
+  }),
+  getUser,
+);
 
-userRouter.get("/sessions", authMiddleware, getUserSessionsController);
+userRouter.get(
+  "/sessions",
+  authMiddleware,
+  rateLimiter({
+    maxRequests: 30,
+    timeInSeconds: 60,
+    path: "get-sessions",
+  }),
+  getUserSessionsController,
+);
 
 userRouter.delete(
   "/sessions/:sessionId",
   authMiddleware,
+  rateLimiter({
+    maxRequests: 10,
+    timeInSeconds: 60,
+    path: "revoke-session",
+  }),
   revokeSessionController,
 );
 
 userRouter.post(
   "/change-pass-using-password",
   authMiddleware,
+  rateLimiter({
+    maxRequests: 5,
+    timeInSeconds: 60 * 60,
+    path: "change-pass-using-password",
+  }),
   changePasswordUsingPasswordController,
 );
 
 userRouter.post(
   "/upload-signature",
   authMiddleware,
-  ipRateLimiter({
+  rateLimiter({
     maxRequests: 10,
     timeInSeconds: 60 * 60,
     path: "upload-signature",
@@ -121,7 +150,7 @@ userRouter.post(
 userRouter.post(
   "/update-profile",
   authMiddleware,
-  ipRateLimiter({
+  rateLimiter({
     maxRequests: 10,
     timeInSeconds: 60 * 60,
     path: "update-profile",

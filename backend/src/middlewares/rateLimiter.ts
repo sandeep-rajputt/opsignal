@@ -8,11 +8,15 @@ type RateLimiter = {
   timeInSeconds: number;
 };
 
-function ipRateLimiter({ path, maxRequests, timeInSeconds }: RateLimiter) {
+function rateLimiter({ path, maxRequests, timeInSeconds }: RateLimiter) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const userId = req.user?.id;
       const userIp = req.ip || "unknown";
-      const key = `rate_limit:${path}:ip:${userIp}`;
+
+      const identifier = userId || userIp;
+      const keyType = userId ? "user" : "ip";
+      const key = `rate_limit:${path}:${keyType}:${identifier}`;
 
       const now = Date.now();
       const startTime = now - timeInSeconds * 1000;
@@ -39,4 +43,4 @@ function ipRateLimiter({ path, maxRequests, timeInSeconds }: RateLimiter) {
   };
 }
 
-export default ipRateLimiter;
+export default rateLimiter;
