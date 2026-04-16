@@ -60,6 +60,12 @@ function MembersPage() {
     Permission.ADD_WORKSPACE_MEMBER,
   );
 
+  // Show only one button based on role hierarchy
+  // OWNER/ADMIN see "Add Member" (can add to any team with role selection)
+  // MODERATOR sees "Add Team Member" (can only add to their own team)
+  const showAddWorkspaceMemberButton = canAddWorkspaceMember;
+  const showAddTeamMemberButton = canAddTeamMember && !canAddWorkspaceMember;
+
   const handleRemoveMember = async (memberId: string) => {
     try {
       await removeMember({
@@ -115,8 +121,8 @@ function MembersPage() {
         </div>
 
         <div className="flex gap-2">
-          {canAddTeamMember && <AddTeamMemberButton />}
-          {canAddWorkspaceMember && <AddWorkspaceMemberButton />}
+          {showAddTeamMemberButton && <AddTeamMemberButton />}
+          {showAddWorkspaceMemberButton && <AddWorkspaceMemberButton />}
         </div>
       </header>
 

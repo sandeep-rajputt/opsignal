@@ -26,8 +26,12 @@ import addWorkspaceMemberSchema, {
   type AddWorkspaceMemberData,
 } from "@/schemas/addWorkspaceMemberSchema";
 import { Spinner } from "@/components/ui/spinner";
-import { useGetWorkspaceTeamsQuery } from "@/Store/api";
+import {
+  useGetWorkspaceTeamsQuery,
+  useAddWorkspaceMemberMutation,
+} from "@/Store/api";
 import { Skeleton } from "@/components/ui/skeleton";
+import isApiError from "@/utils/isApiError";
 
 function AddWorkspaceMember() {
   const isOpen = useAppSelector((state) => state.dialogs.addWorkspaceMember);
@@ -45,12 +49,16 @@ function AddWorkspaceMember() {
     skip: !workspaceId || !isOpen,
   });
 
+  // Add workspace member mutation
+  const [addWorkspaceMember, { isLoading: isAdding }] =
+    useAddWorkspaceMemberMutation();
+
   const {
     register,
     handleSubmit,
     control,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<AddWorkspaceMemberData>({
     resolver: zodResolver(addWorkspaceMemberSchema),
     defaultValues: {
@@ -66,9 +74,27 @@ function AddWorkspaceMember() {
   };
 
   const onSubmit = async (data: AddWorkspaceMemberData) => {
-    // Demo: Show success message
-    toast.success(`Member invitation sent to ${data.email}`);
-    handleClose();
+    if (!workspaceId) {
+      toast.error("Workspace not found");
+      return;
+    }
+
+    try {
+      await addWorkspaceMember({
+        workspaceId,
+        ...data,
+      }).unwrap();
+
+      toast.success("Member added successfully");
+      handleClose();
+    } catch (err) {
+      const apiError = isApiError(err);
+      if (apiError) {
+        toast.error(apiError.message || "Failed to add member");
+      } else {
+        toast.error("Failed to add member");
+      }
+    }
   };
 
   const teams = teamsData?.data || [];
@@ -92,7 +118,7 @@ function AddWorkspaceMember() {
                 type="email"
                 placeholder="member@example.com"
                 {...register("email")}
-                disabled={isSubmitting}
+                disabled={isAdding}
               />
               {errors.email && (
                 <FieldDescription className="text-destructive">
@@ -110,7 +136,7 @@ function AddWorkspaceMember() {
                   <Select
                     onValueChange={field.onChange}
                     value={field.value}
-                    disabled={isSubmitting}
+                    disabled={isAdding}
                   >
                     <SelectTrigger id="member-role" className="w-full">
                       <SelectValue placeholder="Select a role" />
@@ -146,7 +172,7 @@ function AddWorkspaceMember() {
                     <Select
                       onValueChange={field.onChange}
                       value={field.value}
-                      disabled={isSubmitting || teams.length === 0}
+                      disabled={isAdding || teams.length === 0}
                     >
                       <SelectTrigger id="member-team" className="w-full">
                         <SelectValue
@@ -181,12 +207,12 @@ function AddWorkspaceMember() {
               variant="outline"
               onClick={handleClose}
               type="button"
-              disabled={isSubmitting}
+              disabled={isAdding}
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? (
+            <Button type="submit" disabled={isAdding}>
+              {isAdding ? (
                 <>
                   Adding <Spinner />
                 </>

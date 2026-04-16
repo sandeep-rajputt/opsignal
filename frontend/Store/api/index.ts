@@ -6,5 +6,8 @@ export * from "@/Store/api/getWorkspaceTeamsApi/getWorkspaceTeamsApi";
 export * from "@/Store/api/getUserTeamApi/getUserTeamApi";
 export * from "@/Store/api/getMembersApi/getMembersApi";
 export * from "@/Store/api/removeMemberApi/removeMemberApi";
+export * from "@/Store/api/updateMemberRoleApi/updateMemberRoleApi";
+export * from "@/Store/api/addWorkspaceMemberApi/addWorkspaceMemberApi";
+export * from "@/Store/api/addTeamMemberApi/addTeamMemberApi";
 export * from "@/Store/api/updateWorkspaceSettingsApi/updateWorkspaceSettingsApi";
 export * from "@/Store/api/checkSlugAvailabilityApi/checkSlugAvailabilityApi";

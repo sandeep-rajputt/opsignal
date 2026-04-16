@@ -7,6 +7,8 @@ import { getUserTeamController } from "../controllers/getUserTeam.controller.js"
 import { getMembersController } from "../controllers/getMembers.controller.js";
 import { removeMemberController } from "../controllers/removeMember.controller.js";
 import { updateMemberRoleController } from "../controllers/updateMemberRole.controller.js";
+import { addWorkspaceMemberController } from "../controllers/addWorkspaceMember.controller.js";
+import { addTeamMemberController } from "../controllers/addTeamMember.controller.js";
 import { updateWorkspaceSettingsController } from "../controllers/updateWorkspaceSettings.controller.js";
 import { checkSlugAvailabilityController } from "../controllers/checkSlugAvailability.controller.js";
 import { requirePermission } from "../../middlewares/rbac.middleware.js";
@@ -54,6 +56,20 @@ basicWorkspaceRouter.get(
   "/members-list",
   getWorkspaceRateLimit,
   getMembersController,
+);
+
+basicWorkspaceRouter.post(
+  "/members",
+  updateWorkspaceRateLimit,
+  requirePermission(Permission.ADD_WORKSPACE_MEMBER),
+  addWorkspaceMemberController,
+);
+
+basicWorkspaceRouter.post(
+  "/team/members",
+  updateWorkspaceRateLimit,
+  requirePermission(Permission.ADD_TEAM_MEMBER),
+  addTeamMemberController,
 );
 
 basicWorkspaceRouter.delete(

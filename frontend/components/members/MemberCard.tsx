@@ -64,7 +64,7 @@ export function MemberCard({
   };
 
   const handleConfirmRemove = () => {
-    onRemove(member.id);
+    onRemove(member.user_id);
     setShowRemoveDialog(false);
   };
 

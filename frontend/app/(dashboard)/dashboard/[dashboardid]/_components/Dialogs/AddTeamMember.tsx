@@ -18,8 +18,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import emailSchema from "@/schemas/common/emailSchema";
 import { Spinner } from "@/components/ui/spinner";
-import { useGetUserTeamQuery } from "@/Store/api";
+import { useGetUserTeamQuery, useAddTeamMemberMutation } from "@/Store/api";
 import { Skeleton } from "@/components/ui/skeleton";
+import isApiError from "@/utils/isApiError";
 
 const addTeamMemberFormSchema = z.object({
   email: emailSchema,
@@ -42,10 +43,13 @@ function AddTeamMember() {
     skip: !currentWorkspace?.id || !isOpen,
   });
 
+  // Add team member mutation
+  const [addTeamMember, { isLoading: isAdding }] = useAddTeamMemberMutation();
+
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     reset,
   } = useForm<AddTeamMemberFormData>({
     resolver: zodResolver(addTeamMemberFormSchema),
@@ -65,19 +69,28 @@ function AddTeamMember() {
       return;
     }
 
-    // Demo: Show success message with team ID
-    const teamName = userTeamData.data.name;
-    const teamId = userTeamData.data.id;
+    if (!currentWorkspace?.id) {
+      toast.error("Workspace not found");
+      return;
+    }
 
-    console.log("Adding member:", {
-      email: data.email,
-      teamId: teamId,
-    });
+    try {
+      await addTeamMember({
+        workspaceId: currentWorkspace.id,
+        email: data.email,
+        teamId: userTeamData.data.id,
+      }).unwrap();
 
-    toast.success(
-      `Team member invitation sent to ${data.email} for ${teamName}`,
-    );
-    handleClose();
+      toast.success(`Team member added successfully`);
+      handleClose();
+    } catch (err) {
+      const apiError = isApiError(err);
+      if (apiError) {
+        toast.error(apiError.message || "Failed to add team member");
+      } else {
+        toast.error("Failed to add team member");
+      }
+    }
   };
 
   const userTeam = userTeamData?.data;
@@ -101,7 +114,7 @@ function AddTeamMember() {
                 type="email"
                 placeholder="member@example.com"
                 {...register("email")}
-                disabled={isSubmitting}
+                disabled={isAdding}
               />
               {errors.email && (
                 <FieldDescription className="text-destructive">
@@ -135,15 +148,15 @@ function AddTeamMember() {
               variant="outline"
               onClick={handleClose}
               type="button"
-              disabled={isSubmitting}
+              disabled={isAdding}
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting || isLoadingTeam || !userTeam}
+              disabled={isAdding || isLoadingTeam || !userTeam}
             >
-              {isSubmitting ? (
+              {isAdding ? (
                 <>
                   Adding <Spinner />
                 </>
